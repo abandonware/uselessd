@@ -16,12 +16,14 @@ preliminary form of debugging. You may need to specify the full path (e.g. /usr/
 
 ------------
 
-Relevant directories when making a purge/addition:
+Relevant directories and files when making a purge/addition:
 
 src, for actual code
 man, for manpages (rm or mod where necessary)
 shell-completion, for bash and zsh routines (rm routines for tools no longer present, such as kernel-install)
 units, for systemd unit files (services, targets, sockets, etc.) - rm or mod where necessary
+configure.ac
+Makefile.am
 
 and potentially others, e.g. sysctl.d for setting default dynamic kernel parameters
 
