@@ -38,10 +38,6 @@ LIBUDEV_CURRENT=5
 LIBUDEV_REVISION=0
 LIBUDEV_AGE=4
 
-LIBGUDEV_CURRENT=1
-LIBGUDEV_REVISION=3
-LIBGUDEV_AGE=1
-
 LIBSYSTEMD_LOGIN_CURRENT=9
 LIBSYSTEMD_LOGIN_REVISION=1
 LIBSYSTEMD_LOGIN_AGE=9
@@ -300,13 +296,6 @@ bin_PROGRAMS = \
 	systemd-analyze \
 	systemd-run
 
-dist_bin_SCRIPTS = \
-	src/kernel-install/kernel-install
-
-dist_kernelinstall_SCRIPTS = \
-	src/kernel-install/50-depmod.install \
-	src/kernel-install/90-loaderentry.install
-
 rootlibexec_PROGRAMS = \
 	systemd \
 	systemd-cgroups-agent \
@@ -342,14 +331,12 @@ dist_bashcompletion_DATA = \
 	shell-completion/bash/systemctl \
 	shell-completion/bash/systemd-analyze \
 	shell-completion/bash/systemd-run \
-	shell-completion/bash/udevadm \
-	shell-completion/bash/kernel-install
+	shell-completion/bash/udevadm
 
 dist_zshcompletion_DATA = \
 	shell-completion/zsh/_systemctl \
 	shell-completion/zsh/_journalctl \
 	shell-completion/zsh/_udevadm \
-	shell-completion/zsh/_kernel-install \
 	shell-completion/zsh/_systemd-nspawn \
 	shell-completion/zsh/_systemd-analyze \
 	shell-completion/zsh/_sd_hosts_or_user_at_host \
@@ -2104,8 +2091,7 @@ SUBDIRS += \
 	docs/libudev
 
 noinst_DATA += \
-	docs/html/libudev \
-	docs/html/gudev
+	docs/html/libudev
 endif
 
 include_HEADERS += \
@@ -2151,16 +2137,11 @@ EXTRA_DIST += \
 
 CLEANFILES += \
 	src/libudev/libudev.pc \
-	docs/html/libudev \
-	docs/html/gudev
+	docs/html/libudev
 
 docs/html/libudev:
 	$(AM_V_at)$(MKDIR_P) $(dir $@)
 	$(AM_V_LN)$(LN_S) -f ../libudev/html $@
-
-docs/html/gudev:
-	$(AM_V_at)$(MKDIR_P) $(dir $@)
-	$(AM_V_LN)$(LN_S) -f ../gudev/html $@
 
 # move lib from $(libdir) to $(rootlibdir) and update devel link, if needed
 libudev-install-hook:
@@ -2514,161 +2495,6 @@ udevlibexec_PROGRAMS += \
 
 dist_udevrules_DATA += \
 	rules/61-accelerometer.rules
-
-# ------------------------------------------------------------------------------
-if ENABLE_GUDEV
-if ENABLE_GTK_DOC
-SUBDIRS += \
-	docs/gudev
-endif
-
-libgudev_includedir = \
-	$(includedir)/gudev-1.0/gudev
-
-libgudev_include_HEADERS = \
-	src/gudev/gudev.h \
-	src/gudev/gudevenums.h \
-	src/gudev/gudevenumtypes.h \
-	src/gudev/gudevtypes.h \
-	src/gudev/gudevclient.h \
-	src/gudev/gudevdevice.h \
-	src/gudev/gudevenumerator.h
-
-lib_LTLIBRARIES += libgudev-1.0.la
-
-pkgconfiglib_DATA += \
-	src/gudev/gudev-1.0.pc
-
-CLEANFILES += \
-	src/gudev/gudev-1.0.pc
-
-libgudev_1_0_la_SOURCES = \
-	src/gudev/gudevenums.h \
-	src/gudev/gudevenumtypes.h \
-	src/gudev/gudevenumtypes.h\
-	src/gudev/gudevtypes.h \
-	src/gudev/gudevclient.h \
-	src/gudev/gudevclient.c \
-	src/gudev/gudevdevice.h \
-	src/gudev/gudevdevice.c \
-	src/gudev/gudevenumerator.h \
-	src/gudev/gudevenumerator.c \
-	src/gudev/gudevprivate.h
-
-nodist_libgudev_1_0_la_SOURCES = \
-	src/gudev/gudevmarshal.h \
-	src/gudev/gudevmarshal.c \
-	src/gudev/gudevenumtypes.h \
-	src/gudev/gudevenumtypes.c
-
-BUILT_SOURCES += \
-	$(nodist_libgudev_1_0_la_SOURCES)
-
-libgudev_1_0_la_CPPFLAGS = \
-	$(AM_CPPFLAGS) \
-	-I$(top_builddir)/src\
-	-I$(top_srcdir)/src\
-	-I$(top_builddir)/src/gudev \
-	-I$(top_srcdir)/src/gudev \
-	-D_POSIX_PTHREAD_SEMANTICS -D_REENTRANT \
-	-D_GUDEV_COMPILATION \
-	-DG_LOG_DOMAIN=\"GUdev\"
-
-libgudev_1_0_la_CFLAGS = \
-	$(AM_CFLAGS) \
-	-fvisibility=default \
-	$(GLIB_CFLAGS)
-
-libgudev_1_0_la_LIBADD = \
-	libudev.la \
-	$(GLIB_LIBS)
-
-libgudev_1_0_la_LDFLAGS = \
-	$(AM_LDFLAGS) \
-	-version-info $(LIBGUDEV_CURRENT):$(LIBGUDEV_REVISION):$(LIBGUDEV_AGE) \
-	-export-dynamic -no-undefined \
-	-export-symbols-regex '^g_udev_.*'
-
-src/gudev/gudevmarshal.h: src/gudev/gudevmarshal.list
-	$(AM_V_at)$(MKDIR_P) $(dir $@)
-	$(AM_V_GEN)glib-genmarshal $< --prefix=g_udev_marshal --header > $@
-
-src/gudev/gudevmarshal.c: src/gudev/gudevmarshal.list
-	$(AM_V_at)$(MKDIR_P) $(dir $@)
-	$(AM_V_GEN)echo '#include "gudevmarshal.h"' > $@ && \
-	glib-genmarshal $< --prefix=g_udev_marshal --body >> $@
-
-src/gudev/gudevenumtypes.%: src/gudev/gudevenumtypes.%.template src/gudev/gudevenums.h
-	$(AM_V_at)$(MKDIR_P) $(dir $@)
-	$(AM_V_GEN)glib-mkenums --template $^ > $@
-
-if HAVE_INTROSPECTION
--include $(INTROSPECTION_MAKEFILE)
-
-src/gudev/GUdev-1.0.gir: libgudev-1.0.la
-
-src_gudev_GUdev_1_0_gir_INCLUDES = GObject-2.0
-
-src_gudev_GUdev_1_0_gir_CFLAGS = \
-	$(INCLUDES) \
-	-D_GUDEV_COMPILATION \
-	-D_GUDEV_WORK_AROUND_DEV_T_BUG \
-	-I$(top_srcdir)/src \
-	-I$(top_builddir)/src \
-	-I$(top_srcdir)/src/gdev \
-	-I$(top_builddir)/src/gdev
-
-src_gudev_GUdev_1_0_gir_LIBS = libgudev-1.0.la
-
-src_gudev_GUdev_1_0_gir_SCANNERFLAGS = \
-	--pkg-export=gudev-1.0 \
-	--warn-all
-
-src_gudev_GUdev_1_0_gir_FILES = \
-	src/gudev/gudev.h \
-	src/gudev/gudevtypes.h \
-	src/gudev/gudevenums.h \
-	src/gudev/gudevenumtypes.h \
-	src/gudev/gudevclient.h \
-	src/gudev/gudevdevice.h \
-	src/gudev/gudevenumerator.h \
-	src/gudev/gudevclient.c \
-	src/gudev/gudevdevice.c \
-	src/gudev/gudevenumerator.c
-
-INTROSPECTION_GIRS = src/gudev/GUdev-1.0.gir
-INTROSPECTION_SCANNER_ARGS = --c-include=gudev/gudev.h
-
-girdir = $(datadir)/gir-1.0
-gir_DATA = \
-	src/gudev/GUdev-1.0.gir
-
-typelibsdir = $(libdir)/girepository-1.0
-typelibs_DATA = \
-	src/gudev/GUdev-1.0.typelib
-
-CLEANFILES += $(gir_DATA) $(typelibs_DATA)
-endif # HAVE_INTROSPECTION
-
-# move lib from $(libdir) to $(rootlibdir) and update devel link, if needed
-libgudev-install-hook:
-	libname=libgudev-1.0.so && $(move-to-rootlibdir)
-
-libgudev-uninstall-hook:
-	rm -f $(DESTDIR)$(rootlibdir)/libgudev-1.0.so*
-
-INSTALL_EXEC_HOOKS += libgudev-install-hook
-UNINSTALL_EXEC_HOOKS += libgudev-uninstall-hook
-endif
-
-EXTRA_DIST += \
-	src/gudev/gudev-1.0.pc.in \
-	src/gudev/gudevmarshal.list \
-	src/gudev/gudevenumtypes.h.template \
-	src/gudev/gudevenumtypes.c.template \
-	src/gudev/gjs-example.js \
-	src/gudev/seed-example-enum.js \
-	src/gudev/seed-example.js
 
 # ------------------------------------------------------------------------------
 mtd_probe_SOURCES =  \
@@ -3351,26 +3177,6 @@ endif
 
 EXTRA_DIST += \
 	units/systemd-random-seed.service.in
-
-# ------------------------------------------------------------------------------
-if ENABLE_BACKLIGHT
-rootlibexec_PROGRAMS += \
-	systemd-backlight
-
-nodist_systemunit_DATA += \
-	units/systemd-backlight@.service
-
-systemd_backlight_SOURCES = \
-	src/backlight/backlight.c
-
-systemd_backlight_LDADD = \
-	libsystemd-label.la \
-	libsystemd-shared.la \
-	libudev-private.la
-endif
-
-EXTRA_DIST += \
-	units/systemd-backlight@.service.in
 
 # ------------------------------------------------------------------------------
 if HAVE_LIBCRYPTSETUP
@@ -4545,8 +4351,6 @@ www_target = www.freedesktop.org:/srv/www.freedesktop.org/www/software/systemd
 doc-sync: all destdir-sphinx
 	gtkdoc-rebase --html-dir=docs/libudev/html --online
 	rsync -rlv --delete docs/libudev/html/ --omit-dir-times $(www_target)/libudev/
-	gtkdoc-rebase --html-dir=docs/gudev/html --online
-	rsync -rlv --delete docs/gudev/html/ --omit-dir-times $(www_target)/gudev/
 	rsync -rlv --delete-excluded --include="*.html" --exclude="*" --omit-dir-times man/ $(www_target)/man/
 	rsync -rlv --delete --omit-dir-times docs/html/python-systemd/ $(www_target)/python-systemd/
 
