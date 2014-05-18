@@ -666,14 +666,6 @@ fi
 AM_CONDITIONAL(ENABLE_RANDOMSEED, [test "$have_randomseed" = "yes"])
 
 # ------------------------------------------------------------------------------
-have_backlight=no
-AC_ARG_ENABLE(backlight, AS_HELP_STRING([--disable-backlight], [disable backlight tools]))
-if test "x$enable_backlight" != "xno"; then
-        have_backlight=yes
-fi
-AM_CONDITIONAL(ENABLE_BACKLIGHT, [test "$have_backlight" = "yes"])
-
-# ------------------------------------------------------------------------------
 have_logind=no
 AC_ARG_ENABLE(logind, AS_HELP_STRING([--disable-logind], [disable login daemon]))
 if test "x$enable_logind" != "xno"; then
@@ -830,14 +822,6 @@ AS_IF([test "x${FIRMWARE_PATH}" != "x"], [ AC_DEFINE(HAVE_FIRMWARE, 1, [Define i
 AM_CONDITIONAL(ENABLE_FIRMWARE, [test "x${FIRMWARE_PATH}" != "x"])
 
 # ------------------------------------------------------------------------------
-AC_ARG_ENABLE([gudev],
-       AS_HELP_STRING([--disable-gudev], [disable Gobject libudev support @<:@default=enabled@:>@]),
-       [], [enable_gudev=yes])
-AS_IF([test "x$enable_gudev" = "xyes"], [ PKG_CHECK_MODULES([GLIB], [glib-2.0 >= 2.22.0 gobject-2.0 >= 2.22.0 gio-2.0]) ])
-AM_CONDITIONAL([ENABLE_GUDEV], [test "x$enable_gudev" = "xyes"])
-AS_IF([test "x$enable_gudev" = "xyes"], [ AC_DEFINE(HAVE_GLIB, 1, [Define if glib is available]) ])
-
-# ------------------------------------------------------------------------------
 have_manpages=no
 AC_ARG_ENABLE(manpages, AS_HELP_STRING([--disable-manpages], [disable manpages]))
 AS_IF([test "x$enable_manpages" != xno], [
@@ -981,8 +965,6 @@ AC_CONFIG_FILES([
         Makefile po/Makefile.in
         docs/libudev/Makefile
         docs/libudev/version.xml
-        docs/gudev/Makefile
-        docs/gudev/version.xml
 ])
 
 AC_OUTPUT
@@ -1009,7 +991,6 @@ AC_MSG_RESULT([
         quotacheck:              ${have_quotacheck}
         tmpfiles:                ${have_tmpfiles}
         randomseed:              ${have_randomseed}
-        backlight:               ${have_backlight}
         logind:                  ${have_logind}
         machined:                ${have_machined}
         hostnamed:               ${have_hostnamed}
@@ -1021,7 +1002,6 @@ AC_MSG_RESULT([
         kmod:                    ${have_kmod}
         blkid:                   ${have_blkid}
         nss-myhostname:          ${have_myhostname}
-        gudev:                   ${enable_gudev}
         gintrospection:          ${enable_introspection}
         Python:                  ${have_python}
         Python Headers:          ${have_python_devel}
