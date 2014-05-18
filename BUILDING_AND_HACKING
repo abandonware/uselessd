@@ -1,0 +1,36 @@
+In the event of autogen.sh not properly generating build-aux scripts, run `autoreconf -i`
+(potentially twice on some systems) instead.
+
+------------
+
+Run `make all update-man-list` to regenerate manpages after modification.
+
+------------
+
+Run `perl hwdb/ids-update.pl` to update udev hardware database (relevant only for Linux builds).
+
+------------
+
+Run systemd as a system instance with `systemd --test` to determine and dump startup sequence after making a change, as a
+preliminary form of debugging. You may need to specify the full path (e.g. /usr/lib/systemd/systemd), if it's not in your $PATH.
+
+------------
+
+Relevant directories when making a purge/addition:
+
+src, for actual code
+man, for manpages (rm or mod where necessary)
+shell-completion, for bash and zsh routines (rm routines for tools no longer present, such as kernel-install)
+units, for systemd unit files (services, targets, sockets, etc.) - rm or mod where necessary
+
+and potentially others, e.g. sysctl.d for setting default dynamic kernel parameters
+
+-----------
+
+Read relevant files in test, for information on the testing suite.
+
+-----------
+
+...
+
+
