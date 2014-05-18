@@ -956,8 +956,6 @@ libsystemd_core_la_SOURCES = \
 	src/core/condition.h \
 	src/core/namespace.c \
 	src/core/namespace.h \
-	src/core/tcpwrap.c \
-	src/core/tcpwrap.h \
 	src/core/securebits.h \
 	src/core/initreq.h \
 	src/core/special.h \
@@ -990,7 +988,6 @@ nodist_libsystemd_core_la_SOURCES = \
 libsystemd_core_la_CFLAGS = \
 	$(AM_CFLAGS) \
 	$(DBUS_CFLAGS) \
-	$(LIBWRAP_CFLAGS) \
 	$(PAM_CFLAGS) \
 	$(AUDIT_CFLAGS) \
 	$(KMOD_CFLAGS) \
@@ -1006,7 +1003,6 @@ libsystemd_core_la_LIBADD = \
 	libsystemd-id128-internal.la \
 	libsystemd-daemon.la \
 	libudev.la \
-	$(LIBWRAP_LIBS) \
 	$(PAM_LIBS) \
 	$(AUDIT_LIBS) \
 	$(CAP_LIBS) \
