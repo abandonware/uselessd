@@ -3436,28 +3436,6 @@ EXTRA_DIST += \
 	units/systemd-timedated.service.in
 
 # ------------------------------------------------------------------------------
-if HAVE_MYHOSTNAME
-libnss_myhostname_la_SOURCES = \
-	src/nss-myhostname/nss-myhostname.c \
-	src/nss-myhostname/ifconf.h \
-	src/nss-myhostname/netlink.c
-
-libnss_myhostname_la_CFLAGS = \
-	$(AM_CFLAGS)
-
-libnss_myhostname_la_LDFLAGS = \
-	$(AM_LDFLAGS) \
-	-module \
-	-export-dynamic \
-	-avoid-version \
-	-shared \
-	-shrext .so.2
-
-lib_LTLIBRARIES += \
-	libnss_myhostname.la
-endif
-
-# ------------------------------------------------------------------------------
 if ENABLE_MACHINED
 systemd_machined_SOURCES = \
 	src/machine/machined.c \

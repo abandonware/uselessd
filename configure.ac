@@ -784,25 +784,6 @@ AC_SUBST(TELINIT)
 AC_CHECK_HEADERS_ONCE([valgrind/memcheck.h])
 
 # ------------------------------------------------------------------------------
-have_myhostname=no
-AC_ARG_ENABLE(myhostname, AS_HELP_STRING([--disable-myhostname], [disable nss-myhostname support]))
-if test "x$enable_myhostname" != "xno"; then
-        AC_HEADER_STDC
-        AC_CHECK_HEADERS([arpa/inet.h fcntl.h inttypes.h netdb.h netinet/in.h stdlib.h string.h sys/socket.h sys/time.h unistd.h nss.h sys/ioctl.h sys/auxv.h])
-
-        AC_C_CONST
-        AC_TYPE_SIZE_T
-        AC_HEADER_TIME
-
-        AC_FUNC_MALLOC
-        AC_FUNC_SELECT_ARGTYPES
-        AC_CHECK_FUNCS([gethostbyaddr gethostbyname gettimeofday inet_ntoa memset select socket strcspn strdup strerror strncasecmp strcasecmp strspn])
-
-        have_myhostname=yes
-fi
-AM_CONDITIONAL(HAVE_MYHOSTNAME, [test "$have_myhostname" = "yes"])
-
-# ------------------------------------------------------------------------------
 AC_ARG_WITH(firmware-path,
        AS_HELP_STRING([--with-firmware-path=DIR[[[:DIR[...]]]]],
           [Firmware search path (default="")]),
@@ -1001,7 +982,6 @@ AC_MSG_RESULT([
         efi:                     ${have_efi}
         kmod:                    ${have_kmod}
         blkid:                   ${have_blkid}
-        nss-myhostname:          ${have_myhostname}
         gintrospection:          ${enable_introspection}
         Python:                  ${have_python}
         Python Headers:          ${have_python_devel}
