@@ -155,6 +155,7 @@ CC_CHECK_FLAGS_APPEND([with_cflags], [CFLAGS], [\
         -ffunction-sections \
         -fdata-sections \
         -fstack-protector \
+        -fPIE \
         --param=ssp-buffer-size=4])
 AC_SUBST([OUR_CFLAGS], "$with_cflags $address_sanitizer_cflags")
 
@@ -169,6 +170,7 @@ CC_CHECK_FLAGS_APPEND([with_ldflags], [LDFLAGS], [\
         -Wl,--no-undefined \
         -Wl,--gc-sections \
         -Wl,-z,relro \
+        -pie \
         -Wl,-z,now])
 AC_SUBST([OUR_LDFLAGS], "$with_ldflags $address_sanitizer_ldflags")
 
