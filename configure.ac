@@ -686,14 +686,6 @@ AM_CONDITIONAL(ENABLE_MACHINED, [test "$have_machined" = "yes"])
 AS_IF([test "$have_machined" = "yes"], [ AC_DEFINE(HAVE_MACHINED, [1], [Machined support available]) ])
 
 # ------------------------------------------------------------------------------
-have_hostnamed=no
-AC_ARG_ENABLE(hostnamed, AS_HELP_STRING([--disable-hostnamed], [disable hostname daemon]))
-if test "x$enable_hostnamed" != "xno"; then
-        have_hostnamed=yes
-fi
-AM_CONDITIONAL(ENABLE_HOSTNAMED, [test "$have_hostnamed" = "yes"])
-
-# ------------------------------------------------------------------------------
 have_timedated=no
 AC_ARG_ENABLE(timedated, AS_HELP_STRING([--disable-timedated], [disable timedate daemon]))
 if test "x$enable_timedated" != "xno"; then
