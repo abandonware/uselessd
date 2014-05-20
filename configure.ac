@@ -694,14 +694,6 @@ fi
 AM_CONDITIONAL(ENABLE_TIMEDATED, [test "$have_timedated" = "yes"])
 
 # ------------------------------------------------------------------------------
-have_localed=no
-AC_ARG_ENABLE(localed, AS_HELP_STRING([--disable-localed], [disable locale daemon]))
-if test "x$enable_localed" != "xno"; then
-        have_localed=yes
-fi
-AM_CONDITIONAL(ENABLE_LOCALED, [test "$have_localed" = "yes"])
-
-# ------------------------------------------------------------------------------
 have_coredump=no
 AC_ARG_ENABLE(coredump, AS_HELP_STRING([--disable-coredump], [disable coredump hook]))
 if test "x$enable_coredump" != "xno"; then
@@ -968,9 +960,7 @@ AC_MSG_RESULT([
         randomseed:              ${have_randomseed}
         logind:                  ${have_logind}
         machined:                ${have_machined}
-        hostnamed:               ${have_hostnamed}
         timedated:               ${have_timedated}
-        localed:                 ${have_localed}
         coredump:                ${have_coredump}
         polkit:                  ${have_polkit}
         efi:                     ${have_efi}
