@@ -3114,27 +3114,6 @@ EXTRA_DIST += \
 	units/systemd-readahead-done.service.in
 
 # ------------------------------------------------------------------------------
-if ENABLE_BOOTCHART
-systemd_bootchart_SOURCES = \
-	src/bootchart/bootchart.c \
-	src/bootchart/bootchart.h \
-	src/bootchart/store.c \
-	src/bootchart/store.h \
-	src/bootchart/svg.c \
-	src/bootchart/svg.h
-
-systemd_bootchart_LDADD = \
-	libsystemd-shared.la \
-	libsystemd-journal.la
-
-rootlibexec_PROGRAMS += \
-	systemd-bootchart
-
-dist_pkgsysconf_DATA += \
-	src/bootchart/bootchart.conf
-endif
-
-# ------------------------------------------------------------------------------
 if ENABLE_QUOTACHECK
 rootlibexec_PROGRAMS += \
 	systemd-quotacheck
