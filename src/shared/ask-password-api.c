@@ -211,8 +211,7 @@ int ask_password_tty(
                                 loop_write(ttyfd, "\a", 1, false);
                                 continue;
                         }
-
-                } else {
+                        
                         passphrase[p++] = c;
 
                         if (!silent_mode && ttyfd >= 0)
