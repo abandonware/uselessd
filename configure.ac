@@ -686,14 +686,6 @@ AM_CONDITIONAL(ENABLE_MACHINED, [test "$have_machined" = "yes"])
 AS_IF([test "$have_machined" = "yes"], [ AC_DEFINE(HAVE_MACHINED, [1], [Machined support available]) ])
 
 # ------------------------------------------------------------------------------
-have_timedated=no
-AC_ARG_ENABLE(timedated, AS_HELP_STRING([--disable-timedated], [disable timedate daemon]))
-if test "x$enable_timedated" != "xno"; then
-        have_timedated=yes
-fi
-AM_CONDITIONAL(ENABLE_TIMEDATED, [test "$have_timedated" = "yes"])
-
-# ------------------------------------------------------------------------------
 have_coredump=no
 AC_ARG_ENABLE(coredump, AS_HELP_STRING([--disable-coredump], [disable coredump hook]))
 if test "x$enable_coredump" != "xno"; then
@@ -960,7 +952,6 @@ AC_MSG_RESULT([
         randomseed:              ${have_randomseed}
         logind:                  ${have_logind}
         machined:                ${have_machined}
-        timedated:               ${have_timedated}
         coredump:                ${have_coredump}
         polkit:                  ${have_polkit}
         efi:                     ${have_efi}
