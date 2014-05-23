@@ -1700,22 +1700,6 @@ systemd_efi_boot_generator_SOURCES = \
 systemd_efi_boot_generator_LDADD = \
 	libsystemd-label.la \
 	libsystemd-shared.la
-
-# ------------------------------------------------------------------------------
-bootctl_SOURCES = \
-	src/boot/boot.h \
-	src/boot/boot-loader.h \
-	src/boot/bootctl.c \
-	src/boot/boot-loader.c \
-	src/boot/boot-efi.c
-
-bootctl_LDADD = \
-	libsystemd-shared.la \
-	libsystemd-id128.la \
-	libsystemd-daemon.la
-
-bin_PROGRAMS += \
-	bootctl
 endif
 
 # ------------------------------------------------------------------------------
