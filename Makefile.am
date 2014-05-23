@@ -153,7 +153,6 @@ AM_CPPFLAGS = \
 	-DSYSTEMD_SLEEP_BINARY_PATH=\"$(rootlibexecdir)/systemd-sleep\" \
 	-DSYSTEMCTL_BINARY_PATH=\"$(rootbindir)/systemctl\" \
 	-DSYSTEMD_TTY_ASK_PASSWORD_AGENT_BINARY_PATH=\"$(rootbindir)/systemd-tty-ask-password-agent\" \
-	-DSYSTEMD_STDIO_BRIDGE_BINARY_PATH=\"$(bindir)/systemd-stdio-bridge\" \
 	-DROOTPREFIX=\"$(rootprefix)\" \
 	-DRANDOM_SEED=\"$(localstatedir)/lib/systemd/random-seed\" \
 	-DSYSTEMD_CRYPTSETUP_PATH=\"$(rootlibexecdir)/systemd-cryptsetup\" \
@@ -289,12 +288,9 @@ rootbin_PROGRAMS = \
 bin_PROGRAMS = \
 	systemd-cgls \
 	systemd-cgtop \
-	systemd-stdio-bridge \
-	systemd-nspawn \
 	systemd-detect-virt \
 	systemd-delta \
-	systemd-analyze \
-	systemd-run
+	systemd-analyze
 
 rootlibexec_PROGRAMS = \
 	systemd \
@@ -1805,43 +1801,6 @@ systemd_cgtop_SOURCES = \
 
 systemd_cgtop_LDADD = \
 	libsystemd-shared.la
-
-# ------------------------------------------------------------------------------
-systemd_nspawn_SOURCES = \
-	src/nspawn/nspawn.c \
-	src/core/mount-setup.c \
-	src/core/mount-setup.h \
-	src/core/loopback-setup.c \
-	src/core/loopback-setup.h
-
-systemd_nspawn_LDADD = \
-	libsystemd-label.la \
-	libsystemd-capability.la \
-	libsystemd-shared.la \
-	libsystemd-daemon.la \
-	libsystemd-id128-internal.la \
-	libsystemd-bus.la
-
-# ------------------------------------------------------------------------------
-systemd_run_SOURCES = \
-	src/run/run.c
-
-systemd_run_LDADD = \
-	libsystemd-label.la \
-	libsystemd-capability.la \
-	libsystemd-shared.la \
-	libsystemd-daemon.la \
-	libsystemd-id128-internal.la \
-	libsystemd-bus.la
-
-# ------------------------------------------------------------------------------
-systemd_stdio_bridge_SOURCES = \
-	src/stdio-bridge/stdio-bridge.c
-
-systemd_stdio_bridge_LDADD = \
-	libsystemd-shared.la \
-	libsystemd-bus.la \
-	libsystemd-daemon.la
 
 # ------------------------------------------------------------------------------
 systemd_tty_ask_password_agent_SOURCES = \
