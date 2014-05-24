@@ -600,18 +600,6 @@ fi
 AM_CONDITIONAL(HAVE_QRENCODE, [test "$have_qrencode" = "yes"])
 
 # ------------------------------------------------------------------------------
-have_microhttpd=no
-AC_ARG_ENABLE(microhttpd, AS_HELP_STRING([--disable-microhttpd], [disable microhttpd support]))
-if test "x$enable_microhttpd" != "xno"; then
-        PKG_CHECK_MODULES(MICROHTTPD, [libmicrohttpd >= 0.9.5],
-                [AC_DEFINE(HAVE_MICROHTTPD, 1, [Define if microhttpd is available]) have_microhttpd=yes], have_microhttpd=no)
-        if test "x$have_microhttpd" = xno -a "x$enable_microhttpd" = xyes; then
-                AC_MSG_ERROR([*** microhttpd support requested but libraries not found])
-        fi
-fi
-AM_CONDITIONAL(HAVE_MICROHTTPD, [test "$have_microhttpd" = "yes"])
-
-# ------------------------------------------------------------------------------
 have_binfmt=no
 AC_ARG_ENABLE(binfmt, AS_HELP_STRING([--disable-binfmt], [disable binfmt tool]))
 if test "x$enable_binfmt" != "xno"; then
@@ -667,14 +655,6 @@ if test "x$enable_logind" != "xno"; then
 fi
 AM_CONDITIONAL(ENABLE_LOGIND, [test "$have_logind" = "yes"])
 AS_IF([test "$have_logind" = "yes"], [ AC_DEFINE(HAVE_LOGIND, [1], [Logind support available]) ])
-
-# ------------------------------------------------------------------------------
-have_coredump=no
-AC_ARG_ENABLE(coredump, AS_HELP_STRING([--disable-coredump], [disable coredump hook]))
-if test "x$enable_coredump" != "xno"; then
-        have_coredump=yes
-fi
-AM_CONDITIONAL(ENABLE_COREDUMP, [test "$have_coredump" = "yes"])
 
 # ------------------------------------------------------------------------------
 have_polkit=no
@@ -924,7 +904,6 @@ AC_MSG_RESULT([
         XATTR:                   ${have_xattr}
         GCRYPT:                  ${have_gcrypt}
         QRENCODE:                ${have_qrencode}
-        MICROHTTPD:              ${have_microhttpd}
         CHKCONFIG:               ${have_chkconfig}
         binfmt:                  ${have_binfmt}
         vconsole:                ${have_vconsole}
@@ -933,7 +912,6 @@ AC_MSG_RESULT([
         tmpfiles:                ${have_tmpfiles}
         randomseed:              ${have_randomseed}
         logind:                  ${have_logind}
-        coredump:                ${have_coredump}
         polkit:                  ${have_polkit}
         efi:                     ${have_efi}
         kmod:                    ${have_kmod}
