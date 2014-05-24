@@ -3,7 +3,7 @@ In the event of autogen.sh not properly generating build-aux scripts, run `autor
 
 ------------
 
-Run `make all update-man-list` to regenerate manpages after modification.
+Run `make update-man-list` to regenerate manpages after modification.
 
 ------------
 
@@ -24,6 +24,7 @@ shell-completion, for bash and zsh routines (rm routines for tools no longer pre
 units, for systemd unit files (services, targets, sockets, etc.) - rm or mod where necessary
 configure.ac
 Makefile.am
+Makefile-man.am
 
 and potentially others, e.g. sysctl.d for setting default dynamic kernel parameters
 

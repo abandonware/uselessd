@@ -9,7 +9,6 @@ MANPAGES += \
 	man/journalctl.1 \
 	man/journald.conf.5 \
 	man/kernel-command-line.7 \
-	man/kernel-install.8 \
 	man/locale.conf.5 \
 	man/localtime.5 \
 	man/machine-id.5 \
@@ -63,9 +62,7 @@ MANPAGES += \
 	man/systemd-journald.service.8 \
 	man/systemd-machine-id-setup.1 \
 	man/systemd-notify.1 \
-	man/systemd-nspawn.1 \
 	man/systemd-remount-fs.service.8 \
-	man/systemd-run.1 \
 	man/systemd-shutdownd.service.8 \
 	man/systemd-sleep.conf.5 \
 	man/systemd-suspend.service.8 \
@@ -603,17 +600,6 @@ man/systemd-user.conf.html: man/systemd-system.conf.html
 	$(html-alias)
 
 
-if ENABLE_BACKLIGHT
-MANPAGES += \
-	man/systemd-backlight@.service.8
-MANPAGES_ALIAS += \
-	man/systemd-backlight.8
-man/systemd-backlight.8: man/systemd-backlight@.service.8
-man/systemd-backlight.html: man/systemd-backlight@.service.html
-	$(html-alias)
-
-endif
-
 if ENABLE_BINFMT
 MANPAGES += \
 	man/binfmt.d.5 \
@@ -626,46 +612,12 @@ man/systemd-binfmt.html: man/systemd-binfmt.service.html
 
 endif
 
-if ENABLE_BOOTCHART
-MANPAGES += \
-	man/bootchart.conf.5 \
-	man/systemd-bootchart.1
-MANPAGES_ALIAS += \
-	#
-
-
-endif
-
 if ENABLE_COREDUMP
 MANPAGES += \
 	man/systemd-coredumpctl.1
 MANPAGES_ALIAS += \
 	#
 
-
-endif
-
-if ENABLE_HOSTNAMED
-MANPAGES += \
-	man/hostnamectl.1 \
-	man/systemd-hostnamed.service.8
-MANPAGES_ALIAS += \
-	man/systemd-hostnamed.8
-man/systemd-hostnamed.8: man/systemd-hostnamed.service.8
-man/systemd-hostnamed.html: man/systemd-hostnamed.service.html
-	$(html-alias)
-
-endif
-
-if ENABLE_LOCALED
-MANPAGES += \
-	man/localectl.1 \
-	man/systemd-localed.service.8
-MANPAGES_ALIAS += \
-	man/systemd-localed.8
-man/systemd-localed.8: man/systemd-localed.service.8
-man/systemd-localed.html: man/systemd-localed.service.html
-	$(html-alias)
 
 endif
 
@@ -678,18 +630,6 @@ MANPAGES_ALIAS += \
 	man/systemd-logind.8
 man/systemd-logind.8: man/systemd-logind.service.8
 man/systemd-logind.html: man/systemd-logind.service.html
-	$(html-alias)
-
-endif
-
-if ENABLE_MACHINED
-MANPAGES += \
-	man/machinectl.1 \
-	man/systemd-machined.service.8
-MANPAGES_ALIAS += \
-	man/systemd-machined.8
-man/systemd-machined.8: man/systemd-machined.service.8
-man/systemd-machined.html: man/systemd-machined.service.html
 	$(html-alias)
 
 endif
@@ -744,18 +684,6 @@ man/systemd-readahead.html: man/systemd-readahead-replay.service.html
 
 endif
 
-if ENABLE_TIMEDATED
-MANPAGES += \
-	man/systemd-timedated.service.8 \
-	man/timedatectl.1
-MANPAGES_ALIAS += \
-	man/systemd-timedated.8
-man/systemd-timedated.8: man/systemd-timedated.service.8
-man/systemd-timedated.html: man/systemd-timedated.service.html
-	$(html-alias)
-
-endif
-
 if ENABLE_VCONSOLE
 MANPAGES += \
 	man/systemd-vconsole-setup.service.8 \
@@ -806,15 +734,6 @@ man/systemd-journal-gatewayd.html: man/systemd-journal-gatewayd.service.html
 
 man/systemd-journal-gatewayd.socket.html: man/systemd-journal-gatewayd.service.html
 	$(html-alias)
-
-endif
-
-if HAVE_MYHOSTNAME
-MANPAGES += \
-	man/nss-myhostname.8
-MANPAGES_ALIAS += \
-	#
-
 
 endif
 
@@ -974,15 +893,5 @@ man/sd_uid_is_on_seat.html: man/sd_uid_get_state.html
 
 man/systemd-user-sessions.html: man/systemd-user-sessions.service.html
 	$(html-alias)
-
-endif
-
-if HAVE_PYTHON
-MANPAGES += \
-	man/systemd.directives.7 \
-	man/systemd.index.7
-MANPAGES_ALIAS += \
-	#
-
 
 endif
