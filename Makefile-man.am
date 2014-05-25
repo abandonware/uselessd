@@ -612,15 +612,6 @@ man/systemd-binfmt.html: man/systemd-binfmt.service.html
 
 endif
 
-if ENABLE_COREDUMP
-MANPAGES += \
-	man/systemd-coredumpctl.1
-MANPAGES_ALIAS += \
-	#
-
-
-endif
-
 if ENABLE_LOGIND
 MANPAGES += \
 	man/loginctl.1 \
@@ -717,22 +708,6 @@ MANPAGES_ALIAS += \
 	man/systemd-cryptsetup.8
 man/systemd-cryptsetup.8: man/systemd-cryptsetup@.service.8
 man/systemd-cryptsetup.html: man/systemd-cryptsetup@.service.html
-	$(html-alias)
-
-endif
-
-if HAVE_MICROHTTPD
-MANPAGES += \
-	man/systemd-journal-gatewayd.service.8
-MANPAGES_ALIAS += \
-	man/systemd-journal-gatewayd.8 \
-	man/systemd-journal-gatewayd.socket.8
-man/systemd-journal-gatewayd.8: man/systemd-journal-gatewayd.service.8
-man/systemd-journal-gatewayd.socket.8: man/systemd-journal-gatewayd.service.8
-man/systemd-journal-gatewayd.html: man/systemd-journal-gatewayd.service.html
-	$(html-alias)
-
-man/systemd-journal-gatewayd.socket.html: man/systemd-journal-gatewayd.service.html
 	$(html-alias)
 
 endif
