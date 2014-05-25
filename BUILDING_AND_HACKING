@@ -1,4 +1,4 @@
-In the event of autogen.sh not properly generating build-aux scripts, run `autoreconf -i`
+In the event of autogen.sh not properly generating build-aux scripts, run `autoreconf -fi`
 (potentially twice on some systems) instead.
 
 ------------
@@ -7,7 +7,7 @@ Run `make update-man-list` to regenerate manpages after modification.
 
 ------------
 
-Run `perl hwdb/ids-update.pl` to update udev hardware database (relevant only for Linux builds).
+Run `perl hwdb/ids-update.pl` or `make hwdb-update` to update udev hardware database (relevant only for Linux builds).
 
 ------------
 
