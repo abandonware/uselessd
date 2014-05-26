@@ -620,7 +620,7 @@ libsystemd_shared_la_SOURCES = \
 	src/shared/linux/fanotify.h \
 	src/shared/linux/seccomp.h \
 	src/shared/linux/seccomp-bpf.h \
-	src/shared/linux/capability.h \
+	src/shared/linux/posix_capability.h \
 	src/shared/missing.h \
 	src/shared/list.h \
 	src/shared/macro.h \
@@ -2385,18 +2385,6 @@ journalctl_LDADD = \
 if HAVE_ACL
 journalctl_LDADD += \
 	libsystemd-acl.la
-endif
-
-if HAVE_QRENCODE
-journalctl_SOURCES += \
-	src/journal/journal-qrcode.c \
-	src/journal/journal-qrcode.h
-
-journalctl_CFLAGS += \
-	$(QRENCODE_CFLAGS)
-
-journalctl_LDADD += \
-	$(QRENCODE_LIBS)
 endif
 
 test_journal_SOURCES = \
