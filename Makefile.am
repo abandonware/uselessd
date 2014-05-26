@@ -620,6 +620,7 @@ libsystemd_shared_la_SOURCES = \
 	src/shared/linux/fanotify.h \
 	src/shared/linux/seccomp.h \
 	src/shared/linux/seccomp-bpf.h \
+	src/shared/linux/capability.h \
 	src/shared/missing.h \
 	src/shared/list.h \
 	src/shared/macro.h \
