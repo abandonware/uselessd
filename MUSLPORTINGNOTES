@@ -1,0 +1,146 @@
+added -fno-stack-protector
+
+GNUisms to address:
+locale_t, secure_getenv(), __secure_getenv() (replace with getenv())
+
+GLOB_BRACE undeclared in src/shared/util.c and src/tmpfiles/tmpfiles.c
+
+__compar_fn_t in src/systemctl/systemctl.c and src/shared/strbuf.c (added typedef declaration in util.h)
+
+glibc-specific printf.h enum usage, provide as a third-party header in src/shared/printf.h and add to Makefile.am
+appears to be the result of VA_FORMAT_ADVANCE definition in macro.h
+in particular, unsatisfied enums (later supplied) and duplicate cases in macro.h, which lead to conflict
+
+undeclared _PATH_UTMPX and _PATH_WTMPX (fixed by adding macro definitions to utmp-wtmp.h from <paths.h>)
+
+FILE type not found, fixed by adding #include <stdio.h> in label.c and label.h
+
+undefined reference to `parse_printf_format', addressed by removal using old file as reference, shown below
+(may need to address usage in log.c later)
+backported old patch, caveat emptor: https://bugs.freedesktop.org/show_bug.cgi?id=55213
+
+strndupa(), must replace with strndup() + free() (watch the scope)
+
+FTW_CONTINUE, FTW_SKIP_SUBTREE and FTW_ACTIONRETVAL undeclared in src/core/mount-setup.c
+(removed FTW_ACTIONRETVAL and FTW_SKIP_SUBTREE, added #define FTW_CONTINUE 0 in src/core/mount-setup.h meaning keep traversing)
+
+Due to removal of stdio-bridge, we must break dbus polkit connections in src/shared/dbus-common.c
+
+canonicalize_file_name() should be replaced with realpath() or similar (if implementation conforms with POSIX.1-2008 or is custom,
+it will be secure) in (see below) - done...
+
+utmpxname() undefined should be addressed by adding a dummy function to src/shared/utmp-wtmp.c
+
+unknown type ssize_t -> add #include <sys/types.h> to src/shared/strbuf.h
+
+glibc-specific header error.h included in src/notify/notify.h w/o being used, remove it
+
+qsort_r in src/udev/udevadm-hwdb.c, replace with qsort
+
+duplicate fanotify.h in readahead-collect.c, remove #ifdef
+
+-----------------------------
+
+secure_getenv() ->
+	src/core/dbus.c
+	src/libudev/libudev.c
+	src/shared/dbus-common.c
+	src/shared/missing.h
+	src/shared/log.c
+	configure.ac
+
+GLOB_BRACE ->
+	src/shared/util.c
+	src/tmpfiles/tmpfiles.c
+
+printf.h ->
+	src/shared/printf.h (NEW)
+	src/shared/macro.h
+	src/shared/log.c
+	src/journal/journal-send.c
+	Makefile.am
+
+__compar_fn_t ->
+	src/shared/strbuf.c
+	src/systemctl/systemctl.c
+	(solved by adding a typedef in src/shared/util.h)
+
+_PATH_UTMPX, _PATH_WTMPX ->
+	src/shared/utmp-wtmp.c
+
+FILE type not found ->
+	src/shared/label.c
+	src/shared/label.h
+
+parse_printf_format() ->
+	src/journal/journal-send.c (removed use of VA_FORMAT_ADVANCE macro, using
+		http://cgit.freedesktop.org/systemd/systemd/commit/src/journal/journal-send.c?id=72f1d5a2880d103dc1c1746f5c02e192e054705e
+		as reference)
+	src/shared/log.c (reverted to hacky solution, see: https://bugs.freedesktop.org/show_bug.cgi?id=55213)
+
+strndupa() ->
+	src/shared/cgroup-util.c
+	src/shared/mkdir.c
+	src/systemctl/systemctl.c
+
+_bswap_{16, 32, 64} ->
+	src/shared/sparse-endian.h
+
+FTW_CONTINUE, FTW_SKIP_SUBTREE, FTW_ACTIONRETVAL ->
+	src/core/mount-setup.c
+	src/core/mount-setup.h
+
+canonicalize_file_name() ->
+	src/delta/delta.c
+	src/journal/journalctl.c
+	src/shared/path-util.c
+	src/shared/util.c
+
+utmpxname() ->
+	src/shared/utmp-wtmp.c
+
+ssize_t ->
+	src/shared/strbuf.h
+
+<error.h> ->
+	src/notify/notify.c
+
+qsort_r() ->
+	src/udev/udevadm-hwdb.c
+
+duplicate fanotify.h ->
+	src/readahead/readahead-collect.c
+
+------------------------------
+
+FILES CHANGED (total):
+	src/core/dbus.c
+	src/core/mount-setup.c
+	src/core/mount-setup.h
+	src/delta/delta.c
+	src/libudev/libudev.c
+	src/shared/dbus-common.c
+	src/shared/missing.h
+	src/shared/log.c
+	src/shared/util.c
+	src/shared/util.h
+	src/shared/printf.h (NEW)
+	src/shared/macro.h
+	src/shared/path-util.c
+	src/shared/log.c
+	src/shared/label.c
+	src/shared/label.h
+	src/shared/strbuf.c
+	src/shared/strbuf.h
+	src/shared/sparse-endian.h
+	src/shared/utmp-wtmp.c
+	src/shared/utmp-wtmp.h
+	src/journal/journal-send.c
+	src/journal/journalctl.c
+	src/systemctl/systemctl.c
+	src/tmpfiles/tmpfiles.c
+	src/udev/udevadm-hwdb.c
+	src/readahead/readahead-collect.c
+	src/notify/notify.c
+	configure.ac
+	Makefile.am
