@@ -24,6 +24,7 @@
 #include <stdarg.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <sys/types.h>
 
 struct strbuf {
         char *buf;
