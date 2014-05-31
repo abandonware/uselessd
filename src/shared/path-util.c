@@ -190,7 +190,7 @@ char **path_strv_canonicalize(char **l) {
                 }
 
                 errno = 0;
-                u = canonicalize_file_name(t);
+                u = realpath(t, NULL);
                 if (!u) {
                         if (errno == ENOENT)
                                 u = t;

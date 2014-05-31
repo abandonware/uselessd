@@ -634,7 +634,7 @@ static int add_matches(sd_journal *j, char **args) {
                         _cleanup_free_ char *interpreter = NULL;
                         struct stat st;
 
-                        p = canonicalize_file_name(*i);
+                        p = realpath(*i, NULL);
                         path = p ? p : *i;
 
                         if (stat(path, &st) < 0)  {

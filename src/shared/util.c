@@ -870,7 +870,7 @@ int readlink_and_canonicalize(const char *p, char **r) {
         if (j < 0)
                 return j;
 
-        s = canonicalize_file_name(t);
+        s = realpath(t, NULL);
         if (s) {
                 free(t);
                 *r = s;
@@ -1459,7 +1459,7 @@ bool ignore_file(const char *filename) {
         assert(filename);
 
         if (endswith(filename, "~"))
-                return true;
+                return false;
 
         return ignore_file_allow_backup(filename);
 }
@@ -4373,7 +4373,7 @@ int glob_exists(const char *path) {
         assert(path);
 
         errno = 0;
-        k = glob(path, GLOB_NOSORT|GLOB_BRACE, NULL, &g);
+        k = glob(path, GLOB_NOSORT, NULL, &g);
 
         if (k == GLOB_NOMATCH)
                 return 0;
@@ -4391,7 +4391,7 @@ int glob_extend(char ***strv, const char *path) {
         char **p;
 
         errno = 0;
-        k = glob(optarg, GLOB_NOSORT|GLOB_BRACE, NULL, &g);
+        k = glob(optarg, GLOB_NOSORT, NULL, &g);
 
         if (k == GLOB_NOMATCH)
                 return -ENOENT;

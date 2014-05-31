@@ -51,11 +51,11 @@ static enum {
 static int equivalent(const char *a, const char *b) {
         _cleanup_free_ char *x = NULL, *y = NULL;
 
-        x = canonicalize_file_name(a);
+        x = realpath(a, NULL);
         if (!x)
                 return -errno;
 
-        y = canonicalize_file_name(b);
+        y = realpath(b, NULL);
         if (!y)
                 return -errno;
 
