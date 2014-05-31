@@ -21,6 +21,7 @@
   along with systemd; If not, see <http://www.gnu.org/licenses/>.
 ***/
 
+#include <stdio.h>
 #include <sys/types.h>
 #include <stdbool.h>
 #include <sys/socket.h>

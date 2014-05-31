@@ -19,6 +19,7 @@
   along with systemd; If not, see <http://www.gnu.org/licenses/>.
 ***/
 
+#include <stdio.h>
 #include <errno.h>
 #include <sys/stat.h>
 #include <unistd.h>
