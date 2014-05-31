@@ -122,7 +122,7 @@ int bus_connect(DBusBusType t, DBusConnection **_bus, bool *_private, DBusError 
                          * try via XDG_RUNTIME_DIR first, then
                          * fallback to normal bus access */
 
-                        e = secure_getenv("XDG_RUNTIME_DIR");
+                        e = getenv("XDG_RUNTIME_DIR");
                         if (e) {
                                 char *p;
 
@@ -223,27 +223,7 @@ int bus_connect_system_polkit(DBusConnection **_bus, DBusError *error) {
         if (geteuid() == 0)
                 return bus_connect(DBUS_BUS_SYSTEM, _bus, NULL, error);
 
-        bus = dbus_connection_open_private("unixexec:path=pkexec,argv1=" SYSTEMD_STDIO_BRIDGE_BINARY_PATH, error);
-        if (!bus)
-                return -EIO;
-
-        dbus_connection_set_exit_on_disconnect(bus, FALSE);
-
-        r = sync_auth(bus, error);
-        if (r < 0) {
-                dbus_connection_close(bus);
-                dbus_connection_unref(bus);
-                return r;
-        }
-
-        if (!dbus_bus_register(bus, error)) {
-                dbus_connection_close(bus);
-                dbus_connection_unref(bus);
-                return r;
-        }
-
-        *_bus = bus;
-        return 0;
+        return -EIO; /* as necessary due to lack of stdio-bridge, address later... */
 }
 
 const char *bus_error_message(const DBusError *error) {
