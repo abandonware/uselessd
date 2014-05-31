@@ -48,10 +48,6 @@
 #include <linux/btrfs.h>
 #endif
 
-#ifdef HAVE_FANOTIFY_INIT
-#include <sys/fanotify.h>
-#endif
-
 #include <systemd/sd-daemon.h>
 
 #include "missing.h"
