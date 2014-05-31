@@ -154,7 +154,7 @@ CC_CHECK_FLAGS_APPEND([with_cflags], [CFLAGS], [\
         -fvisibility=hidden \
         -ffunction-sections \
         -fdata-sections \
-        -fstack-protector \
+        -fno-stack-protector \
         -fPIE \
         --param=ssp-buffer-size=4])
 AC_SUBST([OUR_CFLAGS], "$with_cflags $address_sanitizer_cflags")
@@ -230,7 +230,6 @@ AC_SUBST(RT_LIBS)
 LIBS="$save_LIBS"
 
 AC_CHECK_FUNCS([fanotify_init fanotify_mark])
-AC_CHECK_FUNCS([__secure_getenv secure_getenv])
 AC_CHECK_DECLS([gettid, pivot_root, name_to_handle_at], [], [], [[#include <sys/types.h>
 #include <unistd.h>
 #include <sys/mount.h>
