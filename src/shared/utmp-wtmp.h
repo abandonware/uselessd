@@ -23,6 +23,10 @@
 
 #include "util.h"
 
+/* taken from <paths.h>, here for compatibility */
+#define _PATH_UTMPX	"/var/run/utmp"
+#define _PATH_WTMPX	"/var/log/wtmp"
+
 int utmp_get_runlevel(int *runlevel, int *previous);
 
 int utmp_put_shutdown(void);

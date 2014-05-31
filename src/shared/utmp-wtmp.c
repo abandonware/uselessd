@@ -20,6 +20,7 @@
 ***/
 
 #include <utmpx.h>
+#include <utmp.h>
 #include <errno.h>
 #include <assert.h>
 #include <string.h>
@@ -31,6 +32,11 @@
 #include "macro.h"
 #include "path-util.h"
 #include "utmp-wtmp.h"
+
+/* here for forwards compatibility and stricter libcs */
+int utmpxname(const char *file) {
+        return utmpname(file);
+}
 
 int utmp_get_runlevel(int *runlevel, int *previous) {
         struct utmpx *found, lookup = { .ut_type = RUN_LVL };
