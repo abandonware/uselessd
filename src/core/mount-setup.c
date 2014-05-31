@@ -339,13 +339,6 @@ static int nftw_cb(
 
         label_fix(fpath, false, false);
 
-        /* /run/initramfs is static data and big, no need to
-         * dynamically relabel its contents at boot... */
-        if (_unlikely_(ftwbuf->level == 1 &&
-                      tflag == FTW_D &&
-                      streq(fpath, "/run/initramfs")))
-                return FTW_SKIP_SUBTREE;
-
         return FTW_CONTINUE;
 };
 
@@ -370,8 +363,8 @@ int mount_setup(bool loaded_policy) {
 
                 before_relabel = now(CLOCK_MONOTONIC);
 
-                nftw("/dev", nftw_cb, 64, FTW_MOUNT|FTW_PHYS|FTW_ACTIONRETVAL);
-                nftw("/run", nftw_cb, 64, FTW_MOUNT|FTW_PHYS|FTW_ACTIONRETVAL);
+                nftw("/dev", nftw_cb, 64, FTW_MOUNT|FTW_PHYS);
+                nftw("/run", nftw_cb, 64, FTW_MOUNT|FTW_PHYS);
 
                 after_relabel = now(CLOCK_MONOTONIC);
 

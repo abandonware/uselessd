@@ -23,6 +23,8 @@
 
 #include <stdbool.h>
 
+#define FTW_CONTINUE 0 /* zero meaning keep traversing, for non-glibc compat */
+
 int mount_setup_early(void);
 
 int mount_setup(bool loaded_policy);
