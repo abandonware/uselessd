@@ -86,6 +86,8 @@ bool streq_ptr(const char *a, const char *b) _pure_;
 
 #define malloc0(n) (calloc((n), 1))
 
+typedef int(* __compar_fn_t)(const void *, const void *); /* here for non-glibc compatibility */
+
 static inline const char* yes_no(bool b) {
         return b ? "yes" : "no";
 }
@@ -140,7 +142,6 @@ int safe_atolli(const char *s, long long int *ret_i);
 
 int safe_atod(const char *s, double *ret_d);
 
-#if __WORDSIZE == 32
 static inline int safe_atolu(const char *s, unsigned long *ret_u) {
         assert_cc(sizeof(unsigned long) == sizeof(unsigned));
         return safe_atou(s, (unsigned*) ret_u);
@@ -149,16 +150,6 @@ static inline int safe_atoli(const char *s, long int *ret_u) {
         assert_cc(sizeof(long int) == sizeof(int));
         return safe_atoi(s, (int*) ret_u);
 }
-#else
-static inline int safe_atolu(const char *s, unsigned long *ret_u) {
-        assert_cc(sizeof(unsigned long) == sizeof(unsigned long long));
-        return safe_atollu(s, (unsigned long long*) ret_u);
-}
-static inline int safe_atoli(const char *s, long int *ret_u) {
-        assert_cc(sizeof(long int) == sizeof(long long int));
-        return safe_atolli(s, (long long int*) ret_u);
-}
-#endif
 
 static inline int safe_atou32(const char *s, uint32_t *ret_u) {
         assert_cc(sizeof(uint32_t) == sizeof(unsigned));
