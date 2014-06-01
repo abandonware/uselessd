@@ -27,8 +27,8 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <stddef.h>
-#include <printf.h>
 
+#include "printf.h" // glibc-specific, provided as a third-party header for other libcs
 #include "log.h"
 #include "util.h"
 #include "missing.h"
@@ -713,6 +713,70 @@ int log_oom_internal(const char *file, int line, const char *func) {
         return -ENOMEM;
 }
 
+/* This is a hacky solution to a post-vasprintf() va_arg() call-induced segfault,
+ * which led to the integration of VA_FORMAT_ADVANCE, a macro dependent
+ * on parse_printf_format(), thus nastily locking log.c to glibc-specific printf() dynamics
+ * See here: https://bugs.freedesktop.org/show_bug.cgi?id=55213
+ */
+const char *next_format(
+                 const char *format,
+                 va_list *ap) {
+
+         char lm, *cs, *fc, *format_copy, *format_ptr;
+
+         if ((fc = strchr(format, '%')) ) {
+                 format_copy = strndup(fc, LINE_MAX);
+
+                 // remove any non-format spec % chars
+                 while ((fc = strstr(format_copy, "%%")) )
+                         *(fc+1) = *fc = ' ';
+                 cs = strtok_r(format_copy, "%", &format_ptr);
+                 // no need to worry about 'h' or 'hh' length modifiers as these will promoted to ints
+                 do {
+                         lm = 0;
+                         while (*cs) {
+                                 switch(*cs++) {
+                                    case 'l':
+                                            lm = (lm == 'l') ? 'L' : 'l';
+                                            break;
+                                    case 'L':
+                                            lm = 'l';
+                                            break;
+                                    case 's':
+                                            va_arg(*ap, char *);
+                                            *cs = 0;
+                                            break;
+                                    case 'u': case 'd': case 'i': case 'x': case 'X': case 'c': case 'o':
+                                            if (!lm)
+                                                    va_arg(*ap, int);
+                                            else if (lm == 'l')
+                                                    va_arg(*ap, long);
+                                            else if (lm == 'L')
+                                                    va_arg(*ap, long long);
+                                            else
+                                                    va_arg(*ap, int);
+                                            *cs = 0;
+                                            break;
+                                    case 'e': case 'f': case 'g': case 'E': case 'F': case 'G':
+                                            if (lm != 'l')
+                                                    va_arg(*ap, double);
+                                            else
+                                                    va_arg(*ap, long double);
+                                            *cs = 0;
+                                            break;
+                                    case 'p':
+                                            va_arg(*ap, void *);
+                                            *cs = 0;
+                                             break;
+                                 }
+                         }
+                 } while((cs = strtok_r(NULL, "%", &format_ptr)));
+
+                 free(format_copy);
+         }
+         return va_arg(*ap, char *);
+}
+
 int log_struct_internal(
                 int level,
                 const char *file,
@@ -721,7 +785,7 @@ int log_struct_internal(
                 const char *format, ...) {
 
         PROTECT_ERRNO;
-        va_list ap;
+        va_list ap, app;
         int r;
 
         if (_likely_(LOG_PRI(level) > log_max_level))
@@ -749,28 +813,18 @@ int log_struct_internal(
                 /* If the journal is available do structured logging */
                 log_do_header(header, sizeof(header), level,
                               file, line, func, NULL, NULL);
+                zero(iovec);
                 IOVEC_SET_STRING(iovec[n++], header);
 
                 va_start(ap, format);
                 while (format && n + 1 < ELEMENTSOF(iovec)) {
                         char *buf;
-                        va_list aq;
 
-                        /* We need to copy the va_list structure,
-                         * since vasprintf() leaves it afterwards at
-                         * an undefined location */
-
-                        va_copy(aq, ap);
-                        if (vasprintf(&buf, format, aq) < 0) {
-                                va_end(aq);
+                        va_copy(app, ap);
+                        if (vasprintf(&buf, format, app) < 0) {
                                 r = -ENOMEM;
                                 goto finish;
                         }
-                        va_end(aq);
-
-                        /* Now, jump enough ahead, so that we point to
-                         * the next format string */
-                        VA_FORMAT_ADVANCE(format, ap);
 
                         IOVEC_SET_STRING(iovec[n++], buf);
 
@@ -778,9 +832,11 @@ int log_struct_internal(
                         iovec[n].iov_len = 1;
                         n++;
 
-                        format = va_arg(ap, char *);
+                        format = next_format(format, &ap);
                 }
 
+                zero(mh);
+                mh.msg_iov = iovec;
                 mh.msg_iovlen = n;
 
                 if (sendmsg(journal_fd, &mh, MSG_NOSIGNAL) < 0)
@@ -801,11 +857,9 @@ int log_struct_internal(
 
                 va_start(ap, format);
                 while (format) {
-                        va_list aq;
 
-                        va_copy(aq, ap);
-                        vsnprintf(buf, sizeof(buf), format, aq);
-                        va_end(aq);
+                        va_copy(app, ap);
+                        vsnprintf(buf, sizeof(buf), format, app);
                         char_array_0(buf);
 
                         if (startswith(buf, "MESSAGE=")) {
@@ -813,9 +867,7 @@ int log_struct_internal(
                                 break;
                         }
 
-                        VA_FORMAT_ADVANCE(format, ap);
-
-                        format = va_arg(ap, char *);
+                        format = next_format(format, &ap);
                 }
                 va_end(ap);
 
@@ -854,19 +906,19 @@ int log_set_max_level_from_string(const char *e) {
 void log_parse_environment(void) {
         const char *e;
 
-        e = secure_getenv("SYSTEMD_LOG_TARGET");
+        e = getenv("SYSTEMD_LOG_TARGET");
         if (e && log_set_target_from_string(e) < 0)
                 log_warning("Failed to parse log target %s. Ignoring.", e);
 
-        e = secure_getenv("SYSTEMD_LOG_LEVEL");
+        e = getenv("SYSTEMD_LOG_LEVEL");
         if (e && log_set_max_level_from_string(e) < 0)
                 log_warning("Failed to parse log level %s. Ignoring.", e);
 
-        e = secure_getenv("SYSTEMD_LOG_COLOR");
+        e = getenv("SYSTEMD_LOG_COLOR");
         if (e && log_show_color_from_string(e) < 0)
                 log_warning("Failed to parse bool %s. Ignoring.", e);
 
-        e = secure_getenv("SYSTEMD_LOG_LOCATION");
+        e = getenv("SYSTEMD_LOG_LOCATION");
         if (e && log_show_location_from_string(e) < 0)
                 log_warning("Failed to parse bool %s. Ignoring.", e);
 }

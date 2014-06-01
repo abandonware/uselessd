@@ -25,13 +25,13 @@
 #include <stddef.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <printf.h>
 
 #define SD_JOURNAL_SUPPRESS_LOCATION
 
 #include "sd-journal.h"
 #include "util.h"
 #include "socket-util.h"
+#include "printf.h" // glibc-specific, provided as a third-party header for other libcs
 
 #define SNDBUF_SIZE (8*1024*1024)
 
@@ -132,7 +132,6 @@ _printf_attr_(1, 0) static int fill_iovec_sprintf(const char *format, va_list ap
         while (format) {
                 struct iovec *c;
                 char *buffer;
-                va_list aq;
 
                 if (i >= n) {
                         n = MAX(i*2, 4);
@@ -145,15 +144,10 @@ _printf_attr_(1, 0) static int fill_iovec_sprintf(const char *format, va_list ap
                         iov = c;
                 }
 
-                va_copy(aq, ap);
-                if (vasprintf(&buffer, format, aq) < 0) {
-                        va_end(aq);
+                if (vasprintf(&buffer, format, ap) < 0) {
                         r = -ENOMEM;
                         goto fail;
                 }
-                va_end(aq);
-
-                VA_FORMAT_ADVANCE(format, ap);
 
                 IOVEC_SET_STRING(iov[i++], buffer);
 
