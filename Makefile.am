@@ -646,6 +646,7 @@ libsystemd_shared_la_SOURCES = \
 	src/shared/fdset.h \
 	src/shared/prioq.c \
 	src/shared/prioq.h \
+        src/shared/printf.h \
 	src/shared/sleep-config.c \
 	src/shared/sleep-config.h \
 	src/shared/strv.c \
