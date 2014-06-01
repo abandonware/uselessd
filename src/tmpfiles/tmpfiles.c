@@ -615,7 +615,7 @@ static int glob_item(Item *i, int (*action)(Item *, const char *)) {
         char **fn;
 
         errno = 0;
-        k = glob(i->path, GLOB_NOSORT|GLOB_BRACE, NULL, &g);
+        k = glob(i->path, GLOB_NOSORT, NULL, &g);
         if (k != 0)
                 if (k != GLOB_NOMATCH) {
                         if (errno > 0)
