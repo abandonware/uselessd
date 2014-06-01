@@ -82,7 +82,9 @@ int mkdir_parents_internal(const char *prefix, const char *path, mode_t mode, mk
         if (e == path)
                 return 0;
 
-        p = strndupa(path, e - path);
+        p = strndup(path, e - path);
+        if (!p)
+                return -ENOMEM;
         r = is_dir(p);
         if (r > 0)
                 return 0;

@@ -1237,7 +1237,9 @@ int cg_path_decode_unit(const char *cgroup, char **unit){
         assert(unit);
 
         e = strchrnul(cgroup, '/');
-        c = strndupa(cgroup, e - cgroup);
+        c = strndup(cgroup, e - cgroup);
+        if (!c)
+                return -ENOMEM;
         c = cg_unescape(c);
 
         if (!unit_name_is_valid(c, false))
@@ -1360,7 +1362,9 @@ int cg_path_get_machine_name(const char *path, char **machine) {
         if (e == n)
                 return -ENOENT;
 
-        s = strndupa(e, n - e);
+        s = strndup(e, n - e);
+        if (!s)
+                return -ENOMEM;
         s = cg_unescape(s);
 
         x = startswith(s, "machine-");
@@ -1409,7 +1413,9 @@ int cg_path_get_session(const char *path, char **session) {
         if (e == n)
                 return -ENOENT;
 
-        s = strndupa(e, n - e);
+        s = strndup(e, n - e);
+        if (!s)
+                return -ENOMEM;
         s = cg_unescape(s);
 
         x = startswith(s, "session-");
@@ -1462,7 +1468,7 @@ int cg_path_get_owner_uid(const char *path, uid_t *uid) {
         if (!endswith(slice, ".slice"))
                 return -ENOENT;
 
-        s = strndupa(e, strlen(e) - 6);
+        s = strndup(e, strlen(e) - 6);
         if (!s)
                 return -ENOMEM;
 
@@ -1589,7 +1595,9 @@ char *cg_escape(const char *p) {
                         else {
                                 char *n;
 
-                                n = strndupa(p, dot - p);
+                                n = strndup(p, dot - p);
+                                if (!n)
+                                        return -ENOMEM;
 
                                 if (check_hierarchy(n) >= 0)
                                         need_prefix = true;

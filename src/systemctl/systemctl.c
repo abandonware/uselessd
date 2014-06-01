@@ -465,7 +465,7 @@ static int list_units(DBusConnection *bus, char **args) {
         unsigned c = 0;
         int r;
 
-        pager_open_if_enabled();
+        pager_open_if_enabled();
 
         r = get_unit_list(bus, &reply, &unit_infos, &c);
         if (r < 0)
@@ -3636,7 +3636,9 @@ static int append_assignment(DBusMessageIter *iter, const char *assignment) {
                 return -EINVAL;
         }
 
-        field = strndupa(assignment, eq - assignment);
+        field = strndup(assignment, eq - assignment);
+        if (!field)
+                return -ENOMEM;
         eq ++;
 
         if (!dbus_message_iter_append_basic(iter, DBUS_TYPE_STRING, &field))
@@ -3706,7 +3708,9 @@ static int append_assignment(DBusMessageIter *iter, const char *assignment) {
 
                         e = strchr(eq, ' ');
                         if (e) {
-                                path = strndupa(eq, e - eq);
+                                path = strndup(eq, e - eq);
+                                if (!path)
+                                       return -ENOMEM;
                                 rwm = e+1;
                         } else {
                                 path = eq;
@@ -3744,7 +3748,9 @@ static int append_assignment(DBusMessageIter *iter, const char *assignment) {
 
                         e = strchr(eq, ' ');
                         if (e) {
-                                path = strndupa(eq, e - eq);
+                                path = strndup(eq, e - eq);
+                                if (!path)
+                                       return -ENOMEM;
                                 bandwidth = e+1;
                         } else {
                                 log_error("Failed to parse %s value %s.", field, eq);
@@ -3789,7 +3795,9 @@ static int append_assignment(DBusMessageIter *iter, const char *assignment) {
 
                         e = strchr(eq, ' ');
                         if (e) {
-                                path = strndupa(eq, e - eq);
+                                path = strndup(eq, e - eq);
+                                if (!path)
+                                       return -ENOMEM;
                                 weight = e+1;
                         } else {
                                 log_error("Failed to parse %s value %s.", field, eq);
