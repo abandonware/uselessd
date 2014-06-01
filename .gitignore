@@ -9,7 +9,6 @@
 *.stamp
 *.pyc
 __pycache__/
-*~
 .deps/
 .dirstamp
 .libs/
