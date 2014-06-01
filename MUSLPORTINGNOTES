@@ -112,7 +112,6 @@ duplicate fanotify.h ->
 	src/readahead/readahead-collect.c
 
 ------------------------------
-
 FILES CHANGED (total):
 	src/core/dbus.c
 	src/core/mount-setup.c
