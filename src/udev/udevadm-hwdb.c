@@ -167,7 +167,7 @@ static int trie_node_add_value(struct trie *trie, struct trie_node *node,
         node->values[node->values_count].key_off = k;
         node->values[node->values_count].value_off = v;
         node->values_count++;
-        qsort_r(node->values, node->values_count, sizeof(struct trie_value_entry), trie_values_cmp, trie);
+        qsort(node->values, node->values_count, sizeof(struct trie_value_entry), trie_values_cmp);
         return 0;
 }
 
