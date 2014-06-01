@@ -120,6 +120,8 @@ FILES CHANGED (total):
 	src/delta/delta.c
 	src/libudev/libudev.c
 	src/shared/dbus-common.c
+	src/shared/cgroup-util.c
+	src/shared/mkdir.c
 	src/shared/missing.h
 	src/shared/log.c
 	src/shared/util.c
@@ -130,7 +132,6 @@ FILES CHANGED (total):
 	src/shared/log.c
 	src/shared/label.c
 	src/shared/label.h
-	src/shared/strbuf.c
 	src/shared/strbuf.h
 	src/shared/sparse-endian.h
 	src/shared/utmp-wtmp.c
