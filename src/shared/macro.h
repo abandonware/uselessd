@@ -236,15 +236,12 @@ do {                                                                    \
                                                                         \
                 switch (_argtypes[_i]) {                                \
                 case PA_INT:                                            \
-                case PA_INT|PA_FLAG_SHORT:                              \
+                case PA_FLAG_SHORT:                              \
                 case PA_CHAR:                                           \
                         (void) va_arg(ap, int);                         \
-                        break;                                          \
-                case PA_INT|PA_FLAG_LONG:                               \
+                        break;                                               \
+                case PA_FLAG_LONG:                              \
                         (void) va_arg(ap, long int);                    \
-                        break;                                          \
-                case PA_INT|PA_FLAG_LONG_LONG:                          \
-                        (void) va_arg(ap, long long int);               \
                         break;                                          \
                 case PA_WCHAR:                                          \
                         (void) va_arg(ap, wchar_t);                     \
@@ -257,8 +254,8 @@ do {                                                                    \
                 case PA_FLOAT:                                          \
                 case PA_DOUBLE:                                         \
                         (void) va_arg(ap, double);                      \
-                        break;                                          \
-                case PA_DOUBLE|PA_FLAG_LONG_DOUBLE:                     \
+                        break;                                                     \
+                case PA_FLAG_LONG_DOUBLE:                     \
                         (void) va_arg(ap, long double);                 \
                         break;                                          \
                 default:                                                \
