@@ -72,7 +72,7 @@ typedef struct __locale_struct
 /* POSIX 2008 makes locale_t official.  */
 typedef __locale_t locale_t;
 
-#define LC_NUMERIC_MASK (1 << 14)
+#define LC_NUMERIC_MASK (1 << 4)
 
 /* Free the data associated with a locale dataset previously returned
    by a call to `setlocale_r'.  */
