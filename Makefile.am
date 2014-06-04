@@ -38,10 +38,6 @@ LIBUDEV_CURRENT=5
 LIBUDEV_REVISION=0
 LIBUDEV_AGE=4
 
-LIBSYSTEMD_LOGIN_CURRENT=9
-LIBSYSTEMD_LOGIN_REVISION=1
-LIBSYSTEMD_LOGIN_AGE=9
-
 LIBSYSTEMD_DAEMON_CURRENT=0
 LIBSYSTEMD_DAEMON_REVISION=10
 LIBSYSTEMD_DAEMON_AGE=0
@@ -168,7 +164,6 @@ AM_CPPFLAGS = \
 	-DKEXEC=\"$(KEXEC)\" \
 	-I $(top_srcdir)/src \
 	-I $(top_srcdir)/src/shared \
-	-I $(top_srcdir)/src/login \
 	-I $(top_srcdir)/src/journal \
 	-I $(top_srcdir)/src/systemd \
 	-I $(top_builddir)/src/core \
@@ -2096,12 +2091,7 @@ endif
 
 if HAVE_ACL
 libudev_core_la_SOURCES += \
-	src/udev/udev-builtin-uaccess.c \
-	src/login/logind-acl.c \
-	src/login/sd-login.c \
-	src/systemd/sd-login.h \
-	src/login/login-shared.c \
-	src/login/login-shared.h
+	src/udev/udev-builtin-uaccess.c
 
 libudev_core_la_LIBADD += \
 	libsystemd-acl.la
@@ -2548,11 +2538,6 @@ libsystemd_journal_internal_la_LIBADD = \
 nodist_libsystemd_journal_internal_la_SOURCES = \
 	src/journal/journald-gperf.c
 
-if ENABLE_LOGIND
-libsystemd_journal_internal_la_LIBADD += \
-	libsystemd-login-internal.la
-endif
-
 if HAVE_ACL
 libsystemd_journal_internal_la_LIBADD += \
 	libsystemd-acl.la
@@ -2868,312 +2853,12 @@ SYSINIT_TARGET_WANTS += \
 endif
 
 # ------------------------------------------------------------------------------
-if ENABLE_LOGIND
-systemd_logind_SOURCES = \
-	src/login/logind.c \
-	src/login/logind.h
-
-nodist_systemd_logind_SOURCES = \
-	src/login/logind-gperf.c
-
-systemd_logind_CFLAGS = \
-	$(libsystemd_logind_core_la_CFLAGS)
-
-systemd_logind_LDADD = \
-	libsystemd-logind-core.la \
-	$(libsystemd_logind_core_la_LIBADD)
-
-libsystemd_logind_core_la_SOURCES = \
-	src/login/logind-core.c \
-	src/login/logind-dbus.c \
-	src/login/logind-device.c \
-	src/login/logind-device.h \
-	src/login/logind-button.c \
-	src/login/logind-button.h \
-	src/login/logind-action.c \
-	src/login/logind-action.h \
-	src/login/logind-seat.c \
-	src/login/logind-seat.h \
-	src/login/logind-session.c \
-	src/login/logind-session.h \
-	src/login/logind-session-device.c \
-	src/login/logind-session-device.h \
-	src/login/logind-user.c \
-	src/login/logind-user.h \
-	src/login/logind-inhibit.c \
-	src/login/logind-inhibit.h \
-	src/login/logind-session-dbus.c \
-	src/login/logind-seat-dbus.c \
-	src/login/logind-user-dbus.c \
-	src/login/logind-acl.h \
-	src/login/login-shared.c \
-	src/login/login-shared.h
-
-libsystemd_logind_core_la_CFLAGS = \
-	$(AM_CFLAGS) \
-        $(DBUS_CFLAGS)
-
-libsystemd_logind_core_la_LIBADD = \
-	libsystemd-label.la \
-	libsystemd-audit.la \
-	libsystemd-shared.la \
-	libsystemd-daemon.la \
-	libsystemd-dbus.la \
-	libsystemd-id128-internal.la \
-	libudev.la
-
-if HAVE_ACL
-libsystemd_logind_core_la_SOURCES += \
-	src/login/logind-acl.c
-
-libsystemd_logind_core_la_LIBADD += \
-	libsystemd-acl.la
-endif
-
-noinst_LTLIBRARIES += \
-	libsystemd-logind-core.la
-
-systemd_user_sessions_SOURCES = \
-	src/login/user-sessions.c
-
-systemd_user_sessions_LDADD = \
-	libsystemd-shared.la
-
-rootlibexec_PROGRAMS += \
-	systemd-logind \
-	systemd-user-sessions
-
-loginctl_SOURCES = \
-	src/login/loginctl.c \
-	src/login/sysfs-show.c
-
-loginctl_CFLAGS = \
-	$(AM_CFLAGS) \
-	$(DBUS_CFLAGS)
-
-loginctl_LDADD = \
-	libsystemd-shared.la \
-	libsystemd-dbus.la \
-	libudev.la
-
-rootbin_PROGRAMS += \
-	loginctl
-
-dist_bashcompletion_DATA += \
-	shell-completion/bash/loginctl
-
-dist_zshcompletion_DATA += \
-	shell-completion/zsh/_loginctl \
-	shell-completion/zsh/_systemd-inhibit
-
-systemd_inhibit_SOURCES = \
-	src/login/inhibit.c
-
-systemd_inhibit_CFLAGS = \
-	$(AM_CFLAGS) \
-	$(DBUS_CFLAGS)
-
-systemd_inhibit_LDADD = \
-	libsystemd-shared.la \
-	libsystemd-dbus.la
-
-rootbin_PROGRAMS += \
-	systemd-inhibit
-
-test_login_SOURCES = \
-	src/login/test-login.c
-
-test_login_LDADD = \
-	libsystemd-login-internal.la \
-	libsystemd-shared.la
-
-test_login_shared_SOURCES = \
-	src/login/test-login-shared.c
-
-test_login_shared_LDADD = \
-	libsystemd-login-internal.la \
-	libsystemd-shared.la
-
-test_inhibit_SOURCES = \
-	src/login/test-inhibit.c
-
-test_inhibit_LDADD = \
-	libsystemd-shared.la \
-	libsystemd-dbus.la
-
-test_inhibit_CFLAGS = \
-	$(AM_CFLAGS) \
-	$(DBUS_CFLAGS)
-
-test_login_tables_SOURCES = \
-	src/login/test-login-tables.c
-
-test_login_tables_CFLAGS = \
-	$(AM_CFLAGS) \
-	$(DBUS_CFLAGS)
-
-test_login_tables_LDADD = \
-	libsystemd-logind-core.la
-
-manual_tests += \
-	test-login \
-	test-inhibit
-
-tests += \
-	test-login-tables \
-	test-login-shared
-
-libsystemd_login_la_SOURCES = \
-	src/login/sd-login.c \
-	src/systemd/sd-login.h \
-	src/login/login-shared.c \
-	src/login/login-shared.h
-
-libsystemd_login_la_CFLAGS = \
-	$(AM_CFLAGS) \
-	-fvisibility=hidden
-
-libsystemd_login_la_LDFLAGS = \
-	$(AM_LDFLAGS) \
-	-version-info $(LIBSYSTEMD_LOGIN_CURRENT):$(LIBSYSTEMD_LOGIN_REVISION):$(LIBSYSTEMD_LOGIN_AGE) \
-	-Wl,--version-script=$(top_srcdir)/src/login/libsystemd-login.sym
-
-libsystemd_login_la_LIBADD = \
-	libsystemd-shared.la \
-	libsystemd-daemon-internal.la \
-	$(RT_LIBS)
-
-libsystemd_login_internal_la_SOURCES = \
-	$(libsystemd_login_la_SOURCES)
-
-if HAVE_PAM
-pam_systemd_la_SOURCES = \
-	src/login/pam-module.c
-
-pam_systemd_la_CFLAGS = \
-	$(AM_CFLAGS) \
-	$(PAM_CFLAGS) \
-	$(DBUS_CFLAGS) \
-	-fvisibility=hidden
-
-pam_systemd_la_LDFLAGS = \
-	$(AM_LDFLAGS) \
-	-module \
-	-export-dynamic \
-	-avoid-version \
-	-shared \
-	-export-symbols-regex '^pam_sm_.*'
-
-pam_systemd_la_LIBADD = \
-	libsystemd-audit.la \
-	libsystemd-dbus.la \
-	libsystemd-shared.la \
-	libsystemd-daemon-internal.la \
-	$(RT_LIBS) \
-	$(PAM_LIBS)
-
-pamlib_LTLIBRARIES = \
-	pam_systemd.la
-
-dist_pamconf_DATA = \
-	src/login/systemd-user
-endif
-
-# move lib from $(libdir) to $(rootlibdir) and update devel link, if needed
-libsystemd-login-install-hook:
-	libname=libsystemd-login.so && $(move-to-rootlibdir)
-
-libsystemd-login-uninstall-hook:
-	rm -f $(DESTDIR)$(rootlibdir)/libsystemd-login.so*
-
-INSTALL_EXEC_HOOKS += libsystemd-login-install-hook
-UNINSTALL_EXEC_HOOKS += libsystemd-login-uninstall-hook
-
-nodist_systemunit_DATA += \
-	units/systemd-logind.service \
-	units/systemd-user-sessions.service
-
-dist_systemunit_DATA += \
-	units/user.slice
-
-dist_dbussystemservice_DATA += \
-	src/login/org.freedesktop.login1.service
-
-dist_dbuspolicy_DATA += \
-	src/login/org.freedesktop.login1.conf
-
-dist_pkgsysconf_DATA += \
-	src/login/logind.conf
-
-pkginclude_HEADERS += \
-	src/systemd/sd-login.h
-
-lib_LTLIBRARIES += \
-	libsystemd-login.la
-
-noinst_LTLIBRARIES += \
-	libsystemd-login-internal.la
-
-pkgconfiglib_DATA += \
-	src/login/libsystemd-login.pc
-
-polkitpolicy_files += \
-	src/login/org.freedesktop.login1.policy
-
-INSTALL_DIRS += \
-	$(systemdstatedir)
-
-MULTI_USER_TARGET_WANTS += \
-	systemd-logind.service \
-	systemd-user-sessions.service
-
-SYSTEM_UNIT_ALIASES += \
-	systemd-logind.service dbus-org.freedesktop.login1.service
-
-systemd_multi_seat_x_SOURCES = \
-	src/login/multi-seat-x.c
-
-systemd_multi_seat_x_LDADD = \
-	libsystemd-label.la \
-	libsystemd-shared.la
-
-rootlibexec_PROGRAMS += \
-	systemd-multi-seat-x
-
-dist_udevrules_DATA += \
-	src/login/70-uaccess.rules \
-	src/login/70-power-switch.rules
-
-nodist_udevrules_DATA += \
-	src/login/71-seat.rules \
-	src/login/73-seat-late.rules
-
-CLEANFILES += \
-	src/login/logind-gperf.c \
-	src/login/71-seat.rules \
-	src/login/73-seat-late.rules
-endif
-
-polkitpolicy_in_files += \
-	src/login/org.freedesktop.login1.policy.in
-
-EXTRA_DIST += \
-	src/login/logind-gperf.gperf \
-	src/login/libsystemd-login.pc.in \
-	src/login/libsystemd-login.sym \
-	src/login/71-seat.rules.in \
-	src/login/73-seat-late.rules.in \
-	units/systemd-logind.service.in \
-	units/systemd-user-sessions.service.in
-
-# ------------------------------------------------------------------------------
 if HAVE_PYTHON_DEVEL
 pkgpyexec_LTLIBRARIES = \
 	_journal.la \
 	id128.la \
 	_daemon.la \
-	_reader.la \
-	login.la
+	_reader.la
 
 _journal_la_SOURCES = \
 	src/python-systemd/_journal.c
@@ -3260,30 +2945,6 @@ _reader_la_LIBADD = \
 	libsystemd-daemon-internal.la \
 	$(RT_LIBS)
 
-login_la_SOURCES = \
-	src/python-systemd/login.c \
-	src/python-systemd/pyutil.c \
-	src/python-systemd/pyutil.h
-
-login_la_CFLAGS = \
-	$(AM_CFLAGS) \
-	-fvisibility=default \
-	$(PYTHON_DEVEL_CFLAGS)
-
-login_la_LDFLAGS = \
-	$(AM_LDFLAGS) \
-	-shared \
-	-module \
-	-avoid-version
-
-login_la_LIBADD = \
-	$(PYTHON_DEVEL_LIBS) \
-	libsystemd-journal.la \
-	libsystemd-login.la \
-	libsystemd-shared.la \
-	libsystemd-daemon-internal.la \
-	$(RT_LIBS)
-
 dist_pkgpyexec_PYTHON = \
 	src/python-systemd/journal.py \
 	src/python-systemd/daemon.py \
@@ -3322,7 +2983,7 @@ clean-sphinx:
 # Remove Python stuff, e.g. to force rebuilding for a different Python version.
 clean-python:
 	-rm -rf src/python-systemd/.libs src/python-systemd/*.l[ao]
-	-rm -f _daemon.la id128.la _journal.la login.la _reader.la
+	-rm -f _daemon.la id128.la _journal.la _reader.la
 
 # ------------------------------------------------------------------------------
 substitutions = \
