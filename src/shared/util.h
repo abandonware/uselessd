@@ -43,6 +43,57 @@
 #include "macro.h"
 #include "time-util.h"
 
+/* These are excerpts from uClibc's xlocale.h and locale.h headers.
+ * They're included here for uClibc systems that are compiled without
+ * extended locale support or are deficient for whatever reason.
+ */
+
+#ifdef __UCLIBC__
+#include <bits/uClibc_locale.h>
+/* Structure for reentrant locale using functions.  This is an
+   (almost) opaque type for the user level programs.  The file and
+   this data structure is not standardized.  Don't rely on it.  It can
+   go away without warning.  */
+
+typedef struct __locale_struct
+{
+  /* Note: LC_ALL is not a valid index into this array.  */
+  struct locale_data *__locales[13]; /* 13 = __LC_LAST. */
+
+  /* To increase the speed of this solution we add some special members.  */
+  const unsigned short int *__ctype_b;
+  const int *__ctype_tolower;
+  const int *__ctype_toupper;
+
+  /* Note: LC_ALL is not a valid index into this array.  */
+  const char *__names[13];
+} *__locale_t;
+
+/* POSIX 2008 makes locale_t official.  */
+typedef __locale_t locale_t;
+
+#define LC_NUMERIC_MASK (1 << 14)
+
+/* Free the data associated with a locale dataset previously returned
+   by a call to `setlocale_r'.  */
+extern void freelocale (__locale_t __dataset) __THROW;
+
+/* Switch the current thread's locale to DATASET.
+   If DATASET is null, instead just return the current setting.
+   The special value LC_GLOBAL_LOCALE is the initial setting
+   for all threads and can also be installed any time, meaning
+   the thread uses the global settings controlled by `setlocale'.  */
+extern __locale_t uselocale (__locale_t __dataset) __THROW;
+
+/* Return a reference to a data structure representing a set of locale
+   datasets.  Unlike for the CATEGORY parameter for `setlocale' the
+   CATEGORY_MASK parameter here uses a single bit for each category,
+   made by OR'ing together LC_*_MASK bits above.  */
+extern __locale_t newlocale (int __category_mask, __const char *__locale,
+			     __locale_t __base) __THROW;
+
+#endif
+
 union dirent_storage {
         struct dirent de;
         uint8_t storage[offsetof(struct dirent, d_name) +
@@ -143,11 +194,15 @@ int safe_atolli(const char *s, long long int *ret_i);
 int safe_atod(const char *s, double *ret_d);
 
 static inline int safe_atolu(const char *s, unsigned long *ret_u) {
+        #ifndef __UCLIBC__
         assert_cc(sizeof(unsigned long) == sizeof(unsigned));
+	#endif
         return safe_atou(s, (unsigned*) ret_u);
 }
 static inline int safe_atoli(const char *s, long int *ret_u) {
+	#ifndef __UCLIBC__
         assert_cc(sizeof(long int) == sizeof(int));
+	#endif
         return safe_atoi(s, (int*) ret_u);
 }
 
@@ -739,6 +794,8 @@ static inline void _reset_locale_(struct _locale_struct_ *s) {
                 freelocale(s->new_locale);
 }
 
+/* RUN_WITH_LOCALE patch for safe_atod() in util.c, as used in Gentoo */
+#ifndef __UCLIBC__
 #define RUN_WITH_LOCALE(mask, loc) \
         for (_cleanup_(_reset_locale_) struct _locale_struct_ _saved_locale_ = { (locale_t) 0, (locale_t) 0, false }; \
              ({                                                         \
@@ -750,6 +807,9 @@ static inline void _reset_locale_(struct _locale_struct_ *s) {
                      }                                                  \
                      !_saved_locale_.quit; }) ;                         \
              _saved_locale_.quit = true)
+#else
+#define RUN_WITH_LOCALE(mask, loc)
+#endif
 
 bool id128_is_valid(const char *s) _pure_;
 void parse_user_at_host(char *arg, char **user, char **host);

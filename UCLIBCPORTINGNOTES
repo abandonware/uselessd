@@ -1,0 +1,5 @@
+util.h ->
+
+added partial xlocale.h excerpts to satisfy locale_t dependency
+added #ifdefs to assertions in safe_atolu() and safe_atoiu() to satisfy compiler
+added #ifdef for RUN_WITH_LOCALE to exclude it from uClibc ports, as seen in Gentoo
