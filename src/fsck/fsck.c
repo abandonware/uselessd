@@ -27,7 +27,6 @@
 #include <fcntl.h>
 #include <sys/file.h>
 
-#include <libudev.h>
 #include <dbus/dbus.h>
 
 #include "util.h"
@@ -251,8 +250,6 @@ int main(int argc, char *argv[]) {
         int i = 0, r = EXIT_FAILURE, q;
         pid_t pid;
         siginfo_t status;
-        struct udev *udev = NULL;
-        struct udev_device *udev_device = NULL;
         const char *device;
         bool root_directory;
         int progress_pipe[2] = { -1, -1 };
@@ -299,21 +296,6 @@ int main(int argc, char *argv[]) {
                 if (utimensat(AT_FDCWD, "/", times, 0) == 0) {
                         log_info("Root directory is writable, skipping check.");
                         return 0;
-                }
-
-                if (!(udev = udev_new())) {
-                        log_oom();
-                        goto finish;
-                }
-
-                if (!(udev_device = udev_device_new_from_devnum(udev, 'b', st.st_dev))) {
-                        log_error("Failed to detect root device.");
-                        goto finish;
-                }
-
-                if (!(device = udev_device_get_devnode(udev_device))) {
-                        log_error("Failed to detect device node of root directory.");
-                        goto finish;
                 }
 
                 root_directory = true;
@@ -400,12 +382,6 @@ int main(int argc, char *argv[]) {
                 touch("/run/systemd/quotacheck");
 
 finish:
-        if (udev_device)
-                udev_device_unref(udev_device);
-
-        if (udev)
-                udev_unref(udev);
-
         close_pipe(progress_pipe);
 
         return r;
