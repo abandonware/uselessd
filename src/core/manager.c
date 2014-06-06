@@ -508,7 +508,6 @@ int manager_new(SystemdRunningAs running_as, bool reexecuting, Manager **_m) {
         watch_init(&m->signal_watch);
         watch_init(&m->mount_watch);
         watch_init(&m->swap_watch);
-        watch_init(&m->udev_watch);
         watch_init(&m->time_change_watch);
         watch_init(&m->jobs_in_progress_watch);
 
@@ -1711,11 +1710,6 @@ static int process_event(Manager *m, struct epoll_event *ev) {
         case WATCH_SWAP:
                 /* Some swap table change, intended for the swap subsystem */
                 swap_fd_event(m, ev->events);
-                break;
-
-        case WATCH_UDEV:
-                /* Some notification from udev, intended for the device subsystem */
-                device_fd_event(m, ev->events);
                 break;
 
         case WATCH_DBUS_WATCH:

@@ -59,7 +59,6 @@ enum WatchType {
         WATCH_JOB_TIMER,
         WATCH_MOUNT,
         WATCH_SWAP,
-        WATCH_UDEV,
         WATCH_DBUS_WATCH,
         WATCH_DBUS_TIMEOUT,
         WATCH_TIME_CHANGE,
@@ -163,9 +162,6 @@ struct Manager {
         char *generator_unit_path_late;
 
         /* Data specific to the device subsystem */
-        struct udev* udev;
-        struct udev_monitor* udev_monitor;
-        Watch udev_watch;
         Hashmap *devices_by_sysfs;
 
         /* Data specific to the mount subsystem */
