@@ -34,10 +34,6 @@ SUBDIRS = . po
 # Keep the test-suite.log
 .PRECIOUS: $(TEST_SUITE_LOG) Makefile
 
-LIBUDEV_CURRENT=5
-LIBUDEV_REVISION=0
-LIBUDEV_AGE=4
-
 LIBSYSTEMD_DAEMON_CURRENT=0
 LIBSYSTEMD_DAEMON_REVISION=10
 LIBSYSTEMD_DAEMON_AGE=0
@@ -82,12 +78,7 @@ systemshutdowndir=$(rootlibexecdir)/system-shutdown
 systemsleepdir=$(rootlibexecdir)/system-sleep
 systemunitdir=$(rootprefix)/lib/systemd/system
 systempresetdir=$(rootprefix)/lib/systemd/system-preset
-udevlibexecdir=$(rootprefix)/lib/udev
-udevhomedir=$(udevlibexecdir)
-udevrulesdir=$(udevlibexecdir)/rules.d
-udevhwdbdir=$(udevlibexecdir)/hwdb.d
 catalogdir=$(prefix)/lib/systemd/catalog
-kernelinstalldir = $(prefix)/lib/kernel/install.d
 
 # And these are the special ones for /
 rootprefix=@rootprefix@
@@ -113,8 +104,6 @@ pkgconfiglib_DATA =
 polkitpolicy_in_in_files =
 polkitpolicy_in_files =
 polkitpolicy_files =
-dist_udevrules_DATA =
-nodist_udevrules_DATA =
 dist_pkgsysconf_DATA =
 dist_pkgdata_DATA =
 dist_dbuspolicy_DATA =
@@ -131,7 +120,6 @@ else
 noinst_PROGRAMS =
 TESTS =
 endif
-udevlibexec_PROGRAMS =
 
 AM_CPPFLAGS = \
 	-include $(top_builddir)/config.h \
@@ -158,7 +146,6 @@ AM_CPPFLAGS = \
 	-DSYSTEM_SLEEP_PATH=\"$(systemsleepdir)\" \
 	-DSYSTEMD_KBD_MODEL_MAP=\"$(pkgdatadir)/kbd-model-map\" \
 	-DX_SERVER=\"$(bindir)/X\" \
-	-DUDEVLIBEXECDIR=\"$(udevlibexecdir)\" \
 	-DPOLKIT_AGENT_BINARY_PATH=\"$(bindir)/pkttyagent\" \
 	-DQUOTACHECK=\"$(QUOTACHECK)\" \
 	-DKEXEC=\"$(KEXEC)\" \
@@ -168,9 +155,6 @@ AM_CPPFLAGS = \
 	-I $(top_srcdir)/src/systemd \
 	-I $(top_builddir)/src/core \
 	-I $(top_srcdir)/src/core \
-	-I $(top_srcdir)/src/libudev \
-	-I $(top_srcdir)/src/udev \
-	-I $(top_builddir)/src/udev \
 	$(OUR_CPPFLAGS)
 
 AM_CFLAGS = $(OUR_CFLAGS)
@@ -319,15 +303,11 @@ systemd_analyze_LDADD = \
 dist_bashcompletion_DATA = \
 	shell-completion/bash/journalctl \
 	shell-completion/bash/systemctl \
-	shell-completion/bash/systemd-analyze \
-	shell-completion/bash/systemd-run \
-	shell-completion/bash/udevadm
+	shell-completion/bash/systemd-analyze
 
 dist_zshcompletion_DATA = \
 	shell-completion/zsh/_systemctl \
 	shell-completion/zsh/_journalctl \
-	shell-completion/zsh/_udevadm \
-	shell-completion/zsh/_systemd-nspawn \
 	shell-completion/zsh/_systemd-analyze \
 	shell-completion/zsh/_sd_hosts_or_user_at_host \
 	shell-completion/zsh/_systemd-delta \
@@ -392,8 +372,6 @@ dist_systemunit_DATA = \
 	units/smartcard.target \
 	units/systemd-ask-password-wall.path \
 	units/systemd-ask-password-console.path \
-	units/systemd-udevd-control.socket \
-	units/systemd-udevd-kernel.socket \
 	units/system-update.target \
 	units/initrd-switch-root.target
 
@@ -422,15 +400,10 @@ nodist_systemunit_DATA = \
 	units/systemd-kexec.service \
 	units/systemd-fsck@.service \
 	units/systemd-fsck-root.service \
-	units/systemd-udevd.service \
-	units/systemd-udev-trigger.service \
-	units/systemd-udev-settle.service \
 	units/debug-shell.service \
 	units/initrd-parse-etc.service \
 	units/initrd-cleanup.service \
-	units/initrd-udevadm-cleanup-db.service \
-	units/initrd-switch-root.service \
-	units/systemd-nspawn@.service
+	units/initrd-switch-root.service
 
 dist_userunit_DATA = \
 	units/user/default.target \
@@ -462,9 +435,6 @@ EXTRA_DIST += \
 	units/systemd-fsck@.service.in \
 	units/systemd-fsck-root.service.in \
 	units/user@.service.in \
-	units/systemd-udevd.service \
-	units/systemd-udev-trigger.service \
-	units/systemd-udev-settle.service \
 	units/debug-shell.service.in \
 	units/systemd-hibernate.service.in \
 	units/systemd-hybrid-sleep.service.in \
@@ -472,9 +442,7 @@ EXTRA_DIST += \
 	units/quotaon.service.in \
 	units/initrd-parse-etc.service.in \
 	units/initrd-cleanup.service.in \
-	units/initrd-udevadm-cleanup-db.service.in \
 	units/initrd-switch-root.service.in \
-	units/systemd-nspawn@.service.in \
 	introspect.awk
 
 CLEANFILES += \
@@ -981,7 +949,6 @@ libsystemd_core_la_LIBADD = \
 	libsystemd-audit.la \
 	libsystemd-id128-internal.la \
 	libsystemd-daemon.la \
-	libudev.la \
 	$(PAM_LIBS) \
 	$(AUDIT_LIBS) \
 	$(CAP_LIBS) \
@@ -1498,8 +1465,7 @@ systemd_shutdown_SOURCES = \
 
 systemd_shutdown_LDADD = \
 	libsystemd-label.la \
-	libsystemd-shared.la \
-	libudev.la
+	libsystemd-shared.la
 
 # ------------------------------------------------------------------------------
 if HAVE_KMOD
@@ -1625,16 +1591,14 @@ systemd_fsck_CFLAGS = \
 
 systemd_fsck_LDADD = \
 	libsystemd-shared.la \
-	libsystemd-dbus.la \
-	libudev.la
+	libsystemd-dbus.la
 
 # ------------------------------------------------------------------------------
 systemd_ac_power_SOURCES = \
 	src/ac-power/ac-power.c
 
 systemd_ac_power_LDADD = \
-	libsystemd-shared.la \
-	libudev.la
+	libsystemd-shared.la
 
 # ------------------------------------------------------------------------------
 systemd_detect_virt_SOURCES = \
@@ -1695,26 +1659,6 @@ systemd_efi_boot_generator_LDADD = \
 endif
 
 # ------------------------------------------------------------------------------
-if HAVE_BLKID
-systemgenerator_PROGRAMS +=  \
-	systemd-gpt-auto-generator
-
-systemd_gpt_auto_generator_SOURCES = \
-	src/gpt-auto-generator/gpt-auto-generator.c
-
-systemd_gpt_auto_generator_LDADD = \
-	libsystemd-label.la \
-	libsystemd-shared.la \
-	libsystemd-id128-internal.la \
-	libudev-private.la \
-	$(BLKID_LIBS)
-
-systemd_gpt_auto_generator_CFLAGS = \
-	$(AM_CFLAGS) \
-	$(BLKID_CFLAGS)
-endif
-
-# ------------------------------------------------------------------------------
 systemd_rc_local_generator_SOURCES = \
 	src/rc-local-generator/rc-local-generator.c
 
@@ -1762,8 +1706,7 @@ systemctl_LDADD = \
 
 # ------------------------------------------------------------------------------
 systemd_notify_SOURCES = \
-	src/notify/notify.c \
-	src/readahead/sd-readahead.c
+	src/notify/notify.c
 
 systemd_notify_LDADD = \
 	libsystemd-shared.la \
@@ -1851,427 +1794,6 @@ pkgconfiglib_DATA += \
 EXTRA_DIST += \
 	src/libsystemd-daemon/libsystemd-daemon.pc.in \
 	src/libsystemd-daemon/libsystemd-daemon.sym
-
-# ------------------------------------------------------------------------------
-if ENABLE_GTK_DOC
-SUBDIRS += \
-	docs/libudev
-
-noinst_DATA += \
-	docs/html/libudev
-endif
-
-include_HEADERS += \
-	src/libudev/libudev.h
-
-lib_LTLIBRARIES += \
-	libudev.la
-
-libudev_la_SOURCES =\
-	src/libudev/libudev-private.h \
-	src/libudev/libudev.c \
-	src/libudev/libudev-list.c \
-	src/libudev/libudev-util.c \
-	src/libudev/libudev-device.c \
-	src/libudev/libudev-enumerate.c \
-	src/libudev/libudev-monitor.c \
-	src/libudev/libudev-queue.c \
-	src/libudev/libudev-hwdb-def.h \
-	src/libudev/libudev-hwdb.c
-
-libudev_la_CFLAGS = \
-	$(AM_CFLAGS) \
-	-fvisibility=hidden
-
-libudev_la_LDFLAGS = \
-	$(AM_LDFLAGS) \
-	-version-info $(LIBUDEV_CURRENT):$(LIBUDEV_REVISION):$(LIBUDEV_AGE) \
-	-Wl,--version-script=$(top_srcdir)/src/libudev/libudev.sym
-
-libudev_la_LIBADD = \
-	libsystemd-shared.la \
-	libsystemd-label.la \
-	libsystemd-daemon-internal.la \
-	$(RT_LIBS) \
-	libsystemd-id128-internal.la
-
-pkgconfiglib_DATA += \
-	src/libudev/libudev.pc
-
-EXTRA_DIST += \
-	src/libudev/libudev.pc.in \
-	src/libudev/libudev.sym
-
-CLEANFILES += \
-	src/libudev/libudev.pc \
-	docs/html/libudev
-
-docs/html/libudev:
-	$(AM_V_at)$(MKDIR_P) $(dir $@)
-	$(AM_V_LN)$(LN_S) -f ../libudev/html $@
-
-# move lib from $(libdir) to $(rootlibdir) and update devel link, if needed
-libudev-install-hook:
-	libname=libudev.so && $(move-to-rootlibdir)
-
-libudev-uninstall-hook:
-	rm -f $(DESTDIR)$(rootlibdir)/libudev.so*
-
-INSTALL_EXEC_HOOKS += libudev-install-hook
-UNINSTALL_EXEC_HOOKS += libudev-uninstall-hook
-
-# ------------------------------------------------------------------------------
-noinst_LTLIBRARIES += \
-	libudev-private.la
-
-libudev_private_la_SOURCES =\
-	$(libudev_la_SOURCES) \
-	src/libudev/libudev-device-private.c \
-	src/libudev/libudev-queue-private.c
-
-libudev_private_la_CFLAGS = \
-	$(AM_CFLAGS) \
-	-fvisibility=default
-
-libudev_private_la_LIBADD = \
-	libsystemd-shared.la
-
-# ------------------------------------------------------------------------------
-INSTALL_DIRS += \
-	$(sysconfdir)/udev/rules.d \
-	$(sysconfdir)/udev/hwdb.d
-
-dist_udevrules_DATA += \
-	rules/99-systemd.rules \
-	rules/42-usb-hid-pm.rules \
-	rules/50-udev-default.rules \
-	rules/60-keyboard.rules \
-	rules/60-persistent-storage-tape.rules \
-	rules/60-persistent-serial.rules \
-	rules/60-persistent-input.rules \
-	rules/60-persistent-alsa.rules \
-	rules/60-persistent-storage.rules \
-	rules/64-btrfs.rules \
-	rules/75-net-description.rules \
-	rules/75-tty-description.rules \
-	rules/78-sound-card.rules \
-	rules/80-net-name-slot.rules \
-	rules/95-udev-late.rules
-
-dist_udevhwdb_DATA = \
-	hwdb/20-pci-vendor-model.hwdb \
-	hwdb/20-pci-classes.hwdb \
-	hwdb/20-usb-vendor-model.hwdb \
-	hwdb/20-usb-classes.hwdb \
-	hwdb/20-bluetooth-vendor-product.hwdb \
-	hwdb/20-acpi-vendor.hwdb \
-	hwdb/20-OUI.hwdb \
-	hwdb/60-keyboard.hwdb
-
-udevconfdir = $(sysconfdir)/udev
-dist_udevconf_DATA = \
-	src/udev/udev.conf
-
-sharepkgconfigdir = $(datadir)/pkgconfig
-sharepkgconfig_DATA = \
-	src/udev/udev.pc
-
-EXTRA_DIST += \
-	rules/99-systemd.rules.in \
-	src/udev/udev.pc.in
-
-CLEANFILES += \
-	rules/99-systemd.rules \
-	src/udev/udev.pc
-
-EXTRA_DIST += \
-	units/systemd-udevd.service.in \
-	units/systemd-udev-trigger.service.in \
-	units/systemd-udev-settle.service.in
-
-CLEANFILES += \
-	units/systemd-udevd.service \
-	units/systemd-udev-trigger.service \
-	units/systemd-udev-settle.service
-
-SOCKETS_TARGET_WANTS += \
-	systemd-udevd-control.socket \
-	systemd-udevd-kernel.socket
-SYSINIT_TARGET_WANTS += \
-	systemd-udevd.service \
-	systemd-udev-trigger.service
-
-rootbin_PROGRAMS += \
-	udevadm
-
-rootlibexec_PROGRAMS += \
-	systemd-udevd
-
-noinst_LTLIBRARIES += \
-	libudev-core.la
-
-src/udev/keyboard-keys.txt: Makefile
-	$(AM_V_at)$(MKDIR_P) $(dir $@)
-	$(AM_V_GEN)$(CPP) $(CFLAGS) $(AM_CPPFLAGS) $(CPPFLAGS) -dM -include linux/input.h - < /dev/null | $(AWK) '/^#define[ \t]+KEY_[^ ]+[ \t]+[0-9]/ { if ($$2 != "KEY_MAX") { print $$2 } }' | sed 's/^KEY_COFFEE$$/KEY_SCREENLOCK/' > $@
-
-src/udev/keyboard-keys-from-name.gperf: src/udev/keyboard-keys.txt Makefile
-	$(AM_V_GEN)$(AWK) 'BEGIN{ print "struct key { const char* name; unsigned short id; };"; print "%null-strings"; print "%%";} { print tolower(substr($$1 ,5)) ", " $$1 }' < $< > $@
-
-src/udev/keyboard-keys-from-name.h: src/udev/keyboard-keys-from-name.gperf Makefile
-	$(AM_V_GPERF)$(GPERF) -L ANSI-C -t -N keyboard_lookup_key -H hash_key_name -p -C < $< > $@
-
-src/udev/keyboard-keys-to-name.h: src/udev/keyboard-keys.txt Makefile
-	$(AM_V_GEN)$(AWK) 'BEGIN{ print "const char* const key_names[KEY_CNT] = { "} { print "[" $$1 "] = \"" $$1 "\"," } END{print "};"}' < $< > $@
-
-libudev_core_la_SOURCES = \
-	src/udev/udev.h \
-	src/udev/udev-event.c \
-	src/udev/udev-watch.c \
-	src/udev/udev-node.c \
-	src/udev/udev-rules.c \
-	src/udev/udev-ctrl.c \
-	src/udev/udev-builtin.c \
-	src/udev/udev-builtin-btrfs.c \
-	src/udev/udev-builtin-hwdb.c \
-	src/udev/udev-builtin-input_id.c \
-	src/udev/udev-builtin-keyboard.c \
-	src/udev/udev-builtin-net_id.c \
-	src/udev/udev-builtin-path_id.c \
-	src/udev/udev-builtin-usb_id.c
-
-nodist_libudev_core_la_SOURCES = \
-	src/udev/keyboard-keys-from-name.h \
-	src/udev/keyboard-keys-to-name.h
-
-BUILT_SOURCES += \
-	$(nodist_libudev_core_la_SOURCES)
-
-CLEANFILES += \
-	src/udev/keyboard-keys-from-name.gperf \
-	src/udev/keyboard-keys.txt
-
-libudev_core_la_CFLAGS = \
-	$(AM_CFLAGS) \
-	$(BLKID_CFLAGS) \
-	$(KMOD_CFLAGS)
-
-libudev_core_la_LIBADD = \
-	libudev-private.la \
-	libsystemd-label.la \
-	libsystemd-daemon-internal.la \
-	$(RT_LIBS) \
-	libsystemd-shared.la \
-	$(BLKID_LIBS) \
-	$(KMOD_LIBS)
-
-libudev_core_la_CPPFLAGS = \
-	$(AM_CPPFLAGS) \
-	-DFIRMWARE_PATH="$(FIRMWARE_PATH)"
-
-if ENABLE_FIRMWARE
-libudev_core_la_SOURCES += \
-	src/udev/udev-builtin-firmware.c
-
-dist_udevrules_DATA += \
-	rules/50-firmware.rules
-endif
-
-if HAVE_KMOD
-libudev_core_la_SOURCES += \
-	src/udev/udev-builtin-kmod.c
-
-dist_udevrules_DATA += \
-	rules/80-drivers.rules
-endif
-
-if HAVE_BLKID
-libudev_core_la_SOURCES += \
-	src/udev/udev-builtin-blkid.c
-endif
-
-if HAVE_ACL
-libudev_core_la_SOURCES += \
-	src/udev/udev-builtin-uaccess.c
-
-libudev_core_la_LIBADD += \
-	libsystemd-acl.la
-endif
-
-systemd_udevd_SOURCES = \
-	src/udev/udevd.c
-
-systemd_udevd_LDADD = \
-	libudev-core.la
-
-udevadm_SOURCES = \
-	src/udev/udevadm.c \
-	src/udev/udevadm-info.c \
-	src/udev/udevadm-control.c \
-	src/udev/udevadm-monitor.c \
-	src/udev/udevadm-hwdb.c \
-	src/udev/udevadm-settle.c \
-	src/udev/udevadm-trigger.c \
-	src/udev/udevadm-test.c \
-	src/udev/udevadm-test-builtin.c
-
-udevadm_LDADD = \
-	libudev-core.la \
-	libsystemd-shared.la
-
-# Update hwdb on installation. Do not bother if installing
-# in DESTDIR, since this is likely for packaging purposes.
-hwdb-update-hook:
-	-test -n "$(DESTDIR)" || $(rootbindir)/udevadm hwdb --update
-
-INSTALL_DATA_HOOKS += \
-	hwdb-update-hook
-
-hwdb-remove-hook:
-	-test -n "$(DESTDIR)" || rm -f /etc/udev/hwdb.bin
-
-# ------------------------------------------------------------------------------
-TESTS += \
-	test/udev-test.pl \
-	test/rules-test.sh
-
-manual_tests += \
-	test-libudev \
-	test-udev
-
-test_libudev_SOURCES = \
-	src/test/test-libudev.c
-
-test_libudev_LDADD = \
-	libsystemd-label.la \
-	libsystemd-shared.la \
-	libudev.la
-
-test_udev_SOURCES = \
-	src/test/test-udev.c
-
-test_udev_LDADD = \
-	libudev-core.la \
-	libsystemd-shared.la \
-	$(BLKID_LIBS) \
-	$(KMOD_LIBS) \
-	$(SELINUX_LIBS)
-
-if HAVE_ACL
-test_udev_LDADD += \
-	libsystemd-acl.la
-endif
-
-check_DATA += \
-	test/sys
-
-# packed sysfs test tree
-test/sys:
-	$(AM_V_at)$(MKDIR_P) $(dir $@)
-	$(AM_V_GEN)tar -C test/ -xJf $(top_srcdir)/test/sys.tar.xz
-
-test-sys-distclean:
-	-rm -rf test/sys
-DISTCLEAN_LOCAL_HOOKS += test-sys-distclean
-
-EXTRA_DIST += \
-	test/sys.tar.xz \
-	test/udev-test.pl \
-	test/rules-test.sh \
-	test/rule-syntax-check.py
-
-# ------------------------------------------------------------------------------
-ata_id_SOURCES = \
-	src/udev/ata_id/ata_id.c
-
-ata_id_LDADD = \
-	libudev-private.la \
-	libsystemd-shared.la
-
-udevlibexec_PROGRAMS += \
-	ata_id
-
-# ------------------------------------------------------------------------------
-cdrom_id_SOURCES = \
-	src/udev/cdrom_id/cdrom_id.c
-
-cdrom_id_LDADD = \
-	libudev.la \
-	libsystemd-shared.la
-
-udevlibexec_PROGRAMS += \
-	cdrom_id
-
-dist_udevrules_DATA += \
-	rules/60-cdrom_id.rules
-
-# ------------------------------------------------------------------------------
-collect_SOURCES = \
-	src/udev/collect/collect.c
-
-collect_LDADD = \
-	libudev-private.la
-
-udevlibexec_PROGRAMS += \
-	collect
-
-# ------------------------------------------------------------------------------
-scsi_id_SOURCES =\
-	src/udev/scsi_id/scsi_id.c \
-	src/udev/scsi_id/scsi_serial.c \
-	src/udev/scsi_id/scsi.h \
-	src/udev/scsi_id/scsi_id.h
-
-scsi_id_LDADD = \
-	libudev-private.la \
-	libsystemd-shared.la
-
-udevlibexec_PROGRAMS += \
-	scsi_id
-
-EXTRA_DIST += \
-	src/udev/scsi_id/README
-
-# ------------------------------------------------------------------------------
-v4l_id_SOURCES = \
-	src/udev/v4l_id/v4l_id.c
-
-v4l_id_LDADD = \
-	libudev.la
-
-udevlibexec_PROGRAMS += \
-	v4l_id
-
-dist_udevrules_DATA += \
-	rules/60-persistent-v4l.rules
-
-# ------------------------------------------------------------------------------
-accelerometer_SOURCES = \
-	src/udev/accelerometer/accelerometer.c
-
-accelerometer_LDADD = \
-	libudev.la -lm \
-	libsystemd-shared.la
-
-udevlibexec_PROGRAMS += \
-	accelerometer
-
-dist_udevrules_DATA += \
-	rules/61-accelerometer.rules
-
-# ------------------------------------------------------------------------------
-mtd_probe_SOURCES =  \
-	src/udev/mtd_probe/mtd_probe.c \
-	src/udev/mtd_probe/mtd_probe.h \
-	src/udev/mtd_probe/probe_smartmedia.c
-
-mtd_probe_CPPFLAGS = \
-	$(AM_CPPFLAGS)
-
-dist_udevrules_DATA += \
-	rules/75-probe_mtd.rules
-
-udevlibexec_PROGRAMS += \
-	mtd_probe
 
 # ------------------------------------------------------------------------------
 libsystemd_id128_la_SOURCES = \
@@ -2531,7 +2053,6 @@ libsystemd_journal_internal_la_LIBADD = \
 	libsystemd-label.la \
 	libsystemd-audit.la \
 	libsystemd-daemon.la \
-	libudev.la \
 	libsystemd-shared.la \
 	libsystemd-label.la
 
@@ -2735,44 +2256,6 @@ EXTRA_DIST += \
 	units/systemd-vconsole-setup.service.in
 
 # ------------------------------------------------------------------------------
-if ENABLE_READAHEAD
-systemd_readahead_SOURCES = \
-	src/readahead/readahead.c \
-	src/readahead/readahead-collect.c \
-	src/readahead/readahead-replay.c \
-	src/readahead/readahead-analyze.c \
-	src/readahead/readahead-common.c \
-	src/readahead/readahead-common.h
-
-systemd_readahead_LDADD = \
-	libsystemd-shared.la \
-	libsystemd-daemon.la \
-	libudev.la
-
-dist_doc_DATA += \
-	src/readahead/sd-readahead.c \
-	src/systemd/sd-readahead.h
-
-rootlibexec_PROGRAMS += \
-	systemd-readahead
-
-dist_systemunit_DATA += \
-	units/systemd-readahead-drop.service \
-	units/systemd-readahead-done.timer
-
-nodist_systemunit_DATA += \
-	units/systemd-readahead-collect.service \
-	units/systemd-readahead-replay.service \
-	units/systemd-readahead-done.service
-
-endif
-
-EXTRA_DIST += \
-	units/systemd-readahead-collect.service.in \
-	units/systemd-readahead-replay.service.in \
-	units/systemd-readahead-done.service.in
-
-# ------------------------------------------------------------------------------
 if ENABLE_QUOTACHECK
 rootlibexec_PROGRAMS += \
 	systemd-quotacheck
@@ -2815,176 +2298,7 @@ endif
 
 EXTRA_DIST += \
 	units/systemd-random-seed.service.in
-
-# ------------------------------------------------------------------------------
-if HAVE_LIBCRYPTSETUP
-rootlibexec_PROGRAMS += \
-	systemd-cryptsetup
-
-systemgenerator_PROGRAMS += \
-	systemd-cryptsetup-generator
-
-dist_systemunit_DATA += \
-	units/cryptsetup.target
-
-systemd_cryptsetup_SOURCES = \
-	src/cryptsetup/cryptsetup.c
-
-systemd_cryptsetup_CFLAGS = \
-	$(AM_CFLAGS) \
-	$(LIBCRYPTSETUP_CFLAGS)
-
-systemd_cryptsetup_LDADD = \
-	libsystemd-label.la \
-	libsystemd-shared.la \
-	libudev.la \
-	$(LIBCRYPTSETUP_LIBS)
-
-systemd_cryptsetup_generator_SOURCES = \
-	src/cryptsetup/cryptsetup-generator.c
-
-systemd_cryptsetup_generator_LDADD = \
-	libsystemd-label.la \
-	libsystemd-shared.la
-
-SYSINIT_TARGET_WANTS += \
-	cryptsetup.target
-
-endif
-
-# ------------------------------------------------------------------------------
-if HAVE_PYTHON_DEVEL
-pkgpyexec_LTLIBRARIES = \
-	_journal.la \
-	id128.la \
-	_daemon.la \
-	_reader.la
-
-_journal_la_SOURCES = \
-	src/python-systemd/_journal.c
-
-_journal_la_CFLAGS = \
-	$(AM_CFLAGS) \
-	-fvisibility=default \
-	$(PYTHON_DEVEL_CFLAGS)
-
-_journal_la_LDFLAGS = \
-	$(AM_LDFLAGS) \
-	-shared \
-	-module \
-	-avoid-version
-
-_journal_la_LIBADD = \
-	$(PYTHON_DEVEL_LIBS) \
-	libsystemd-journal.la
-
-id128_la_SOURCES = \
-	src/python-systemd/id128.c \
-	src/python-systemd/id128-constants.h \
-	src/python-systemd/pyutil.c \
-	src/python-systemd/pyutil.h
-
-id128_la_CFLAGS = \
-	$(AM_CFLAGS) \
-	-fvisibility=default \
-	$(PYTHON_DEVEL_CFLAGS) \
-	-I$(top_builddir)/src/python-systemd
-
-id128_la_LDFLAGS = \
-	$(AM_LDFLAGS) \
-	-shared \
-	-module \
-	-avoid-version
-
-id128_la_LIBADD = \
-	$(PYTHON_DEVEL_LIBS) \
-	libsystemd-id128.la
-
-_daemon_la_SOURCES = \
-	src/python-systemd/_daemon.c \
-	src/python-systemd/pyutil.c \
-	src/python-systemd/pyutil.h
-
-_daemon_la_CFLAGS = \
-	$(AM_CFLAGS) \
-	-fvisibility=default \
-	$(PYTHON_DEVEL_CFLAGS) \
-	-I$(top_builddir)/src/python-systemd
-
-_daemon_la_LDFLAGS = \
-	$(AM_LDFLAGS) \
-	-shared \
-	-module \
-	-avoid-version
-
-_daemon_la_LIBADD = \
-	$(PYTHON_DEVEL_LIBS) \
-	libsystemd-daemon.la
-
-_reader_la_SOURCES = \
-	src/python-systemd/_reader.c \
-	src/python-systemd/pyutil.c \
-	src/python-systemd/pyutil.h
-
-_reader_la_CFLAGS = \
-	$(AM_CFLAGS) \
-	-fvisibility=default \
-	$(PYTHON_DEVEL_CFLAGS)
-
-_reader_la_LDFLAGS = \
-	$(AM_LDFLAGS) \
-	-shared \
-	-module \
-	-avoid-version
-
-_reader_la_LIBADD = \
-	$(PYTHON_DEVEL_LIBS) \
-	libsystemd-journal.la \
-	libsystemd-id128.la \
-	libsystemd-shared.la \
-	libsystemd-daemon-internal.la \
-	$(RT_LIBS)
-
-dist_pkgpyexec_PYTHON = \
-	src/python-systemd/journal.py \
-	src/python-systemd/daemon.py \
-	src/python-systemd/__init__.py
-
-src/python-systemd/id128-constants.h: src/systemd/sd-messages.h Makefile
-	$(AM_V_at)$(MKDIR_P) $(dir $@)
-	$(AM_V_GEN)$(SED) -n -r 's/,//g; s/#define (SD_MESSAGE_[A-Z0-9_]+)\s.*/add_id(m, "\1", \1) JOINER/p' <$< >$@
-
-BUILT_SOURCES += \
-	src/python-systemd/id128-constants.h
-
-SPHINXOPTS = -D version=$(VERSION) -D release=$(VERSION)
-sphinx-%:
-	$(AM_V_at)test -n "$(SPHINX_BUILD)" || { echo " *** sphinx-build is not available"; exit 1; }
-	$(AM_V_GEN)PYTHONPATH=$(DESTDIR)$(pyexecdir) LD_LIBRARY_PATH=$(DESTDIR)$(libdir) $(SPHINX_BUILD) -b $* $(SPHINXOPTS) $(top_srcdir)/src/python-systemd/docs $(top_builddir)/docs/html/python-systemd/
-	$(AM_V_at)echo Output has been generated in $(abs_top_builddir)/docs/html/python-systemd/
-
-python-shell:
-	$(AM_V_at)echo "Starting python with $(DESTDIR)$(pyexecdir)"
-	$(AM_V_at)PYTHONPATH=$(DESTDIR)$(pyexecdir) LD_LIBRARY_PATH=$(DESTDIR)$(libdir) $(PYTHON)
-
-destdir-sphinx: all
-	dir="$$(mktemp -d /tmp/systemd-install.XXXXXX)" && \
-		$(MAKE) DESTDIR="$$dir" install && \
-		$(MAKE) DESTDIR="$$dir" sphinx-html && \
-		rm -rf "$$dir"
-
-endif
-
-CLEAN_LOCAL_HOOKS += clean-sphinx
-
-clean-sphinx:
-	-rm -rf docs/html/python-systemd/
-
-# Remove Python stuff, e.g. to force rebuilding for a different Python version.
-clean-python:
-	-rm -rf src/python-systemd/.libs src/python-systemd/*.l[ao]
-	-rm -f _daemon.la id128.la _journal.la _reader.la
-
+	
 # ------------------------------------------------------------------------------
 substitutions = \
        '|rootlibexecdir=$(rootlibexecdir)|' \
@@ -3000,8 +2314,6 @@ substitutions = \
        '|userunitdir=$(userunitdir)|' \
        '|systempresetdir=$(systempresetdir)|' \
        '|userpresetdir=$(userpresetdir)|' \
-       '|udevhwdbdir=$(udevhwdbdir)|' \
-       '|udevrulesdir=$(udevrulesdir)|' \
        '|catalogdir=$(catalogdir)|' \
        '|tmpfilesdir=$(tmpfilesdir)|' \
        '|sysctldir=$(sysctldir)|' \
@@ -3017,7 +2329,6 @@ substitutions = \
        '|includedir=$(includedir)|' \
        '|VERSION=$(VERSION)|' \
        '|rootprefix=$(rootprefix)|' \
-       '|udevlibexecdir=$(udevlibexecdir)|' \
        '|SUSHELL=$(SUSHELL)|' \
        '|DEBUGTTY=$(DEBUGTTY)|' \
        '|KILL=$(KILL)|' \
@@ -3312,14 +2623,6 @@ DISTCHECK_CONFIGURE_FLAGS += \
 	--enable-gtk-doc
 endif
 
-hwdb-update:
-	( cd $(top_srcdir)/hwdb && \
-	wget -N http://www.linux-usb.org/usb.ids \
-	        http://pci-ids.ucw.cz/v2.2/pci.ids \
-	        http://standards.ieee.org/develop/regauth/oui/oui.txt \
-	        http://standards.ieee.org/develop/regauth/iab/iab.txt && \
-	./ids-update.pl )
-
 upload: all distcheck
 	cp -v systemd-$(VERSION).tar.xz /home/lennart/git.fedora/systemd/
 	scp systemd-$(VERSION).tar.xz fdo:/srv/www.freedesktop.org/www/software/systemd/
@@ -3327,8 +2630,6 @@ upload: all distcheck
 
 www_target = www.freedesktop.org:/srv/www.freedesktop.org/www/software/systemd
 doc-sync: all destdir-sphinx
-	gtkdoc-rebase --html-dir=docs/libudev/html --online
-	rsync -rlv --delete docs/libudev/html/ --omit-dir-times $(www_target)/libudev/
 	rsync -rlv --delete-excluded --include="*.html" --exclude="*" --omit-dir-times man/ $(www_target)/man/
 	rsync -rlv --delete --omit-dir-times docs/html/python-systemd/ $(www_target)/python-systemd/
 

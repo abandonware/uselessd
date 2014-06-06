@@ -575,18 +575,6 @@ fi
 AC_SUBST(AUDIT_LIBS)
 
 # ------------------------------------------------------------------------------
-have_libcryptsetup=no
-AC_ARG_ENABLE(libcryptsetup, AS_HELP_STRING([--disable-libcryptsetup], [disable libcryptsetup tools]))
-if test "x$enable_libcryptsetup" != "xno"; then
-        PKG_CHECK_MODULES(LIBCRYPTSETUP, [ libcryptsetup >= 1.6.0 ],
-                [AC_DEFINE(HAVE_LIBCRYPTSETUP, 1, [Define if libcryptsetup is available]) have_libcryptsetup=yes], have_libcryptsetup=no)
-        if test "x$have_libcryptsetup" = xno -a "x$enable_libcryptsetup" = xyes; then
-                AC_MSG_ERROR([*** libcryptsetup support requested but libraries not found])
-        fi
-fi
-AM_CONDITIONAL(HAVE_LIBCRYPTSETUP, [test "$have_libcryptsetup" = "yes"])
-
-# ------------------------------------------------------------------------------
 have_binfmt=no
 AC_ARG_ENABLE(binfmt, AS_HELP_STRING([--disable-binfmt], [disable binfmt tool]))
 if test "x$enable_binfmt" != "xno"; then
@@ -601,14 +589,6 @@ if test "x$enable_vconsole" != "xno"; then
         have_vconsole=yes
 fi
 AM_CONDITIONAL(ENABLE_VCONSOLE, [test "$have_vconsole" = "yes"])
-
-# ------------------------------------------------------------------------------
-have_readahead=no
-AC_ARG_ENABLE(readahead, AS_HELP_STRING([--disable-readahead], [disable readahead tools]))
-if test "x$enable_readahead" != "xno"; then
-        have_readahead=yes
-fi
-AM_CONDITIONAL(ENABLE_READAHEAD, [test "$have_readahead" = "yes"])
 
 # ------------------------------------------------------------------------------
 have_quotacheck=no
@@ -863,15 +843,12 @@ AC_SUBST([rootlibdir], [$with_rootlibdir])
 
 AC_CONFIG_FILES([
         Makefile po/Makefile.in
-        docs/libudev/Makefile
-        docs/libudev/version.xml
 ])
 
 AC_OUTPUT
 AC_MSG_RESULT([
         $PACKAGE_NAME $VERSION
 
-        libcryptsetup:           ${have_libcryptsetup}
         PAM:                     ${have_pam}
         AUDIT:                   ${have_audit}
         IMA:                     ${have_ima}
@@ -884,7 +861,6 @@ AC_MSG_RESULT([
         CHKCONFIG:               ${have_chkconfig}
         binfmt:                  ${have_binfmt}
         vconsole:                ${have_vconsole}
-        readahead:               ${have_readahead}
         quotacheck:              ${have_quotacheck}
         tmpfiles:                ${have_tmpfiles}
         randomseed:              ${have_randomseed}
