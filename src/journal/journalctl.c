@@ -54,7 +54,6 @@
 #include "journal-def.h"
 #include "journal-verify.h"
 #include "journal-authenticate.h"
-#include "journal-qrcode.h"
 #include "fsprg.h"
 #include "unit-name.h"
 #include "catalog.h"
