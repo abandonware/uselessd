@@ -26,7 +26,6 @@
 #include <sys/epoll.h>
 #include <sys/stat.h>
 #include <sys/swap.h>
-#include <libudev.h>
 
 #include "unit.h"
 #include "swap.h"
@@ -393,60 +392,6 @@ fail:
 
         if (delete && u)
                 unit_free(u);
-
-        return r;
-}
-
-static int swap_process_new_swap(Manager *m, const char *device, int prio, bool set_flags) {
-        struct stat st;
-        int r = 0, k;
-
-        assert(m);
-
-        if (stat(device, &st) >= 0 && S_ISBLK(st.st_mode)) {
-                struct udev_device *d;
-                const char *dn;
-                struct udev_list_entry *item = NULL, *first = NULL;
-
-                /* So this is a proper swap device. Create swap units
-                 * for all names this swap device is known under */
-
-                d = udev_device_new_from_devnum(m->udev, 'b', st.st_rdev);
-                if (!d)
-                        return log_oom();
-
-                dn = udev_device_get_devnode(d);
-                /* Skip dn==device, since that case will be handled below */
-                if (dn && !streq(dn, device))
-                        r = swap_add_one(m, dn, device, prio, false, false, set_flags);
-
-                /* Add additional units for all symlinks */
-                first = udev_device_get_devlinks_list_entry(d);
-                udev_list_entry_foreach(item, first) {
-                        const char *p;
-
-                        /* Don't bother with the /dev/block links */
-                        p = udev_list_entry_get_name(item);
-
-                        if (path_startswith(p, "/dev/block/"))
-                                continue;
-
-                        if (stat(p, &st) >= 0)
-                                if ((!S_ISBLK(st.st_mode)) ||
-                                    st.st_rdev != udev_device_get_devnum(d))
-                                        continue;
-
-                        k = swap_add_one(m, p, device, prio, false, false, set_flags);
-                        if (k < 0)
-                                r = k;
-                }
-
-                udev_device_unref(d);
-        }
-
-        k = swap_add_one(m, device, device, prio, false, false, set_flags);
-        if (k < 0)
-                r = k;
 
         return r;
 }
@@ -1060,9 +1005,7 @@ static int swap_load_proc_swaps(Manager *m, bool set_flags) {
                 if (!d)
                         return -ENOMEM;
 
-                k = swap_process_new_swap(m, d, prio, set_flags);
-                if (k < 0)
-                        r = k;
+                r = k;
         }
 
         return r;
