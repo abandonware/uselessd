@@ -26,7 +26,6 @@
 #include <sys/socket.h>
 
 #include <systemd/sd-messages.h>
-#include <libudev.h>
 
 #include "journald-server.h"
 #include "journald-kmsg.h"
@@ -215,57 +214,7 @@ static void dev_kmsg_record(Server *s, char *p, size_t l) {
                 l -= (e - k) + 1;
                 k = e + 1;
         }
-
-        if (kernel_device) {
-                struct udev_device *ud;
-
-                ud = udev_device_new_from_device_id(s->udev, kernel_device);
-                if (ud) {
-                        const char *g;
-                        struct udev_list_entry *ll;
-                        char *b;
-
-                        g = udev_device_get_devnode(ud);
-                        if (g) {
-                                b = strappend("_UDEV_DEVNODE=", g);
-                                if (b) {
-                                        IOVEC_SET_STRING(iovec[n++], b);
-                                        z++;
-                                }
-                        }
-
-                        g = udev_device_get_sysname(ud);
-                        if (g) {
-                                b = strappend("_UDEV_SYSNAME=", g);
-                                if (b) {
-                                        IOVEC_SET_STRING(iovec[n++], b);
-                                        z++;
-                                }
-                        }
-
-                        j = 0;
-                        ll = udev_device_get_devlinks_list_entry(ud);
-                        udev_list_entry_foreach(ll, ll) {
-
-                                if (j > N_IOVEC_UDEV_FIELDS)
-                                        break;
-
-                                g = udev_list_entry_get_name(ll);
-                                if (g) {
-                                        b = strappend("_UDEV_DEVLINK=", g);
-                                        if (b) {
-                                                IOVEC_SET_STRING(iovec[n++], b);
-                                                z++;
-                                        }
-                                }
-
-                                j++;
-                        }
-
-                        udev_device_unref(ud);
-                }
-        }
-
+        
         if (asprintf(&source_time, "_SOURCE_MONOTONIC_TIMESTAMP=%llu", usec) >= 0)
                 IOVEC_SET_STRING(iovec[n++], source_time);
 

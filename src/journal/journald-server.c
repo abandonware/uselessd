@@ -26,7 +26,6 @@
 #include <sys/mman.h>
 #include <sys/timerfd.h>
 
-#include <libudev.h>
 #include <systemd/sd-journal.h>
 #include <systemd/sd-messages.h>
 #include <systemd/sd-daemon.h>
@@ -1564,10 +1563,6 @@ int server_init(Server *s) {
         if (r < 0)
                 return r;
 
-        s->udev = udev_new();
-        if (!s->udev)
-                return -ENOMEM;
-
         s->rate_limit = journal_rate_limit_new(s->rate_limit_interval,
                                                s->rate_limit_burst);
         if (!s->rate_limit)
@@ -1646,7 +1641,4 @@ void server_done(Server *s) {
 
         if (s->mmap)
                 mmap_cache_unref(s->mmap);
-
-        if (s->udev)
-                udev_unref(s->udev);
 }
