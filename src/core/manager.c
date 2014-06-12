@@ -434,7 +434,6 @@ static int manager_setup_signals(Manager *m) {
                         SIGRTMIN+22, /* systemd: set log level to LOG_DEBUG */
                         SIGRTMIN+23, /* systemd: set log level to LOG_INFO */
                         SIGRTMIN+24, /* systemd: Immediate exit (--user only) */
-                        SIGRTMIN+26, /* systemd: set log target to journal-or-kmsg */
                         SIGRTMIN+27, /* systemd: set log target to console */
                         SIGRTMIN+28, /* systemd: set log target to kmsg */
                         SIGRTMIN+29, /* systemd: set log target to syslog-or-kmsg */
@@ -1604,11 +1603,6 @@ static int manager_process_signal_fd(Manager *m) {
                                 /* This is a nop on init */
                                 break;
 
-                        case 26:
-                                log_set_target(LOG_TARGET_JOURNAL_OR_KMSG);
-                                log_notice("Setting log target to journal-or-kmsg.");
-                                break;
-
                         case 27:
                                 log_set_target(LOG_TARGET_CONSOLE);
                                 log_notice("Setting log target to console.");
@@ -2687,31 +2681,6 @@ int manager_set_default_rlimits(Manager *m, struct rlimit **default_rlimit) {
         }
 
         return 0;
-}
-
-void manager_recheck_journal(Manager *m) {
-        Unit *u;
-
-        assert(m);
-
-        if (m->running_as != SYSTEMD_SYSTEM)
-                return;
-
-        u = manager_get_unit(m, SPECIAL_JOURNALD_SOCKET);
-        if (u && SOCKET(u)->state != SOCKET_RUNNING) {
-                log_close_journal();
-                return;
-        }
-
-        u = manager_get_unit(m, SPECIAL_JOURNALD_SERVICE);
-        if (u && SERVICE(u)->state != SERVICE_RUNNING) {
-                log_close_journal();
-                return;
-        }
-
-        /* Hmm, OK, so the socket is fully up and the service is up
-         * too, then let's make use of the thing. */
-        log_open();
 }
 
 void manager_set_show_status(Manager *m, bool b) {
