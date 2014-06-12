@@ -44,7 +44,6 @@ static int log_facility = LOG_DAEMON;
 static int console_fd = STDERR_FILENO;
 static int syslog_fd = -1;
 static int kmsg_fd = -1;
-static int journal_fd = -1;
 
 static bool syslog_is_stream = false;
 
@@ -176,43 +175,6 @@ fail:
         return r;
 }
 
-void log_close_journal(void) {
-
-        if (journal_fd < 0)
-                return;
-
-        close_nointr_nofail(journal_fd);
-        journal_fd = -1;
-}
-
-static int log_open_journal(void) {
-        union sockaddr_union sa = {
-                .un.sun_family = AF_UNIX,
-                .un.sun_path = "/run/systemd/journal/socket",
-        };
-        int r;
-
-        if (journal_fd >= 0)
-                return 0;
-
-        journal_fd = create_log_socket(SOCK_DGRAM);
-        if (journal_fd < 0) {
-                r = journal_fd;
-                goto fail;
-        }
-
-        if (connect(journal_fd, &sa.sa, offsetof(struct sockaddr_un, sun_path) + strlen(sa.un.sun_path)) < 0) {
-                r = -errno;
-                goto fail;
-        }
-
-        return 0;
-
-fail:
-        log_close_journal();
-        return r;
-}
-
 int log_open(void) {
         int r;
 
@@ -223,53 +185,32 @@ int log_open(void) {
          * because there is no reason to close it. */
 
         if (log_target == LOG_TARGET_NULL) {
-                log_close_journal();
                 log_close_syslog();
                 log_close_console();
                 return 0;
         }
 
-        if ((log_target != LOG_TARGET_AUTO && log_target != LOG_TARGET_SAFE) ||
-            getpid() == 1 ||
-            isatty(STDERR_FILENO) <= 0) {
-
-                if (log_target == LOG_TARGET_AUTO ||
-                    log_target == LOG_TARGET_JOURNAL_OR_KMSG ||
-                    log_target == LOG_TARGET_JOURNAL) {
-                        r = log_open_journal();
-                        if (r >= 0) {
-                                log_close_syslog();
-                                log_close_console();
-                                return r;
-                        }
-                }
-
                 if (log_target == LOG_TARGET_SYSLOG_OR_KMSG ||
                     log_target == LOG_TARGET_SYSLOG) {
                         r = log_open_syslog();
                         if (r >= 0) {
-                                log_close_journal();
                                 log_close_console();
                                 return r;
                         }
                 }
 
-                if (log_target == LOG_TARGET_AUTO ||
-                    log_target == LOG_TARGET_SAFE ||
-                    log_target == LOG_TARGET_JOURNAL_OR_KMSG ||
+                if (log_target == LOG_TARGET_SAFE ||
                     log_target == LOG_TARGET_SYSLOG_OR_KMSG ||
                     log_target == LOG_TARGET_KMSG) {
                         r = log_open_kmsg();
                         if (r >= 0) {
-                                log_close_journal();
                                 log_close_syslog();
                                 log_close_console();
                                 return r;
                         }
                 }
         }
-
-        log_close_journal();
+        
         log_close_syslog();
 
         /* Get the real /dev/console if we are PID=1, hence reopen */
@@ -285,14 +226,13 @@ void log_set_target(LogTarget target) {
 }
 
 void log_close(void) {
-        log_close_journal();
         log_close_syslog();
         log_close_kmsg();
         log_close_console();
 }
 
 void log_forget_fds(void) {
-        console_fd = kmsg_fd = syslog_fd = journal_fd = -1;
+        console_fd = kmsg_fd = syslog_fd = -1;
 }
 
 void log_set_max_level(int level) {
@@ -469,39 +409,6 @@ static int log_do_header(char *header, size_t size,
         return 0;
 }
 
-static int write_to_journal(
-        int level,
-        const char*file,
-        int line,
-        const char *func,
-        const char *object_name,
-        const char *object,
-        const char *buffer) {
-
-        char header[LINE_MAX];
-        struct iovec iovec[4] = {};
-        struct msghdr mh = {};
-
-        if (journal_fd < 0)
-                return 0;
-
-        log_do_header(header, sizeof(header), level,
-                      file, line, func, object_name, object);
-
-        IOVEC_SET_STRING(iovec[0], header);
-        IOVEC_SET_STRING(iovec[1], "MESSAGE=");
-        IOVEC_SET_STRING(iovec[2], buffer);
-        IOVEC_SET_STRING(iovec[3], "\n");
-
-        mh.msg_iov = iovec;
-        mh.msg_iovlen = ELEMENTSOF(iovec);
-
-        if (sendmsg(journal_fd, &mh, MSG_NOSIGNAL) < 0)
-                return -errno;
-
-        return 1;
-}
-
 static int log_dispatch(
         int level,
         const char*file,
@@ -532,20 +439,6 @@ static int log_dispatch(
                 if ((e = strpbrk(buffer, NEWLINE)))
                         *(e++) = 0;
 
-                if (log_target == LOG_TARGET_AUTO ||
-                    log_target == LOG_TARGET_JOURNAL_OR_KMSG ||
-                    log_target == LOG_TARGET_JOURNAL) {
-
-                        k = write_to_journal(level, file, line, func,
-                                             object_name, object, buffer);
-                        if (k < 0) {
-                                if (k != -EAGAIN)
-                                        log_close_journal();
-                                log_open_kmsg();
-                        } else if (k > 0)
-                                r++;
-                }
-
                 if (log_target == LOG_TARGET_SYSLOG_OR_KMSG ||
                     log_target == LOG_TARGET_SYSLOG) {
 
@@ -560,10 +453,8 @@ static int log_dispatch(
                 }
 
                 if (k <= 0 &&
-                    (log_target == LOG_TARGET_AUTO ||
-                     log_target == LOG_TARGET_SAFE ||
+                    (log_target == LOG_TARGET_SAFE ||
                      log_target == LOG_TARGET_SYSLOG_OR_KMSG ||
-                     log_target == LOG_TARGET_JOURNAL_OR_KMSG ||
                      log_target == LOG_TARGET_KMSG)) {
 
                         k = write_to_kmsg(level, file, line, func,
@@ -796,61 +687,8 @@ int log_struct_internal(
 
         if ((level & LOG_FACMASK) == 0)
                 level = log_facility | LOG_PRI(level);
-
-        if ((log_target == LOG_TARGET_AUTO ||
-             log_target == LOG_TARGET_JOURNAL_OR_KMSG ||
-             log_target == LOG_TARGET_JOURNAL) &&
-            journal_fd >= 0) {
-
-                char header[LINE_MAX];
-                struct iovec iovec[17] = {};
-                unsigned n = 0, i;
-                struct msghdr mh = {
-                        .msg_iov = iovec,
-                };
-                static const char nl = '\n';
-
-                /* If the journal is available do structured logging */
-                log_do_header(header, sizeof(header), level,
-                              file, line, func, NULL, NULL);
-                zero(iovec);
-                IOVEC_SET_STRING(iovec[n++], header);
-
-                va_start(ap, format);
-                while (format && n + 1 < ELEMENTSOF(iovec)) {
-                        char *buf;
-
-                        va_copy(app, ap);
-                        if (vasprintf(&buf, format, app) < 0) {
-                                r = -ENOMEM;
-                                goto finish;
-                        }
-
-                        IOVEC_SET_STRING(iovec[n++], buf);
-
-                        iovec[n].iov_base = (char*) &nl;
-                        iovec[n].iov_len = 1;
-                        n++;
-
-                        format = next_format(format, &ap);
-                }
-
-                zero(mh);
-                mh.msg_iov = iovec;
-                mh.msg_iovlen = n;
-
-                if (sendmsg(journal_fd, &mh, MSG_NOSIGNAL) < 0)
-                        r = -errno;
-                else
-                        r = 1;
-
-        finish:
-                va_end(ap);
-                for (i = 1; i < n; i += 2)
-                        free(iovec[i].iov_base);
-
-        } else {
-                char buf[LINE_MAX];
+                
+         char buf[LINE_MAX];
                 bool found = false;
 
                 /* Fallback if journal logging is not available */
@@ -871,10 +709,10 @@ int log_struct_internal(
                 }
                 va_end(ap);
 
-                if (found)
+                if (found) {
                         r = log_dispatch(level, file, line, func,
                                          NULL, NULL, buf + 8);
-                else
+                } else {
                         r = -EINVAL;
         }
 
@@ -965,17 +803,14 @@ bool log_on_console(void) {
         if (log_target == LOG_TARGET_CONSOLE)
                 return true;
 
-        return syslog_fd < 0 && kmsg_fd < 0 && journal_fd < 0;
+        return syslog_fd < 0 && kmsg_fd < 0;
 }
 
 static const char *const log_target_table[] = {
         [LOG_TARGET_CONSOLE] = "console",
         [LOG_TARGET_KMSG] = "kmsg",
-        [LOG_TARGET_JOURNAL] = "journal",
-        [LOG_TARGET_JOURNAL_OR_KMSG] = "journal-or-kmsg",
         [LOG_TARGET_SYSLOG] = "syslog",
         [LOG_TARGET_SYSLOG_OR_KMSG] = "syslog-or-kmsg",
-        [LOG_TARGET_AUTO] = "auto",
         [LOG_TARGET_SAFE] = "safe",
         [LOG_TARGET_NULL] = "null"
 };
