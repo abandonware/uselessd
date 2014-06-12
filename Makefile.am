@@ -736,22 +736,6 @@ libsystemd_label_la_LIBADD = \
 
 # ------------------------------------------------------------------------------
 noinst_LTLIBRARIES += \
-	libsystemd-logs.la
-
-libsystemd_logs_la_SOURCES = \
-	src/shared/logs-show.c \
-	src/shared/logs-show.h
-
-libsystemd_logs_la_CFLAGS = \
-	$(AM_CFLAGS)
-
-libsystemd_logs_la_LIBADD = \
-	libsystemd-journal-internal.la \
-	libsystemd-id128-internal.la \
-	libsystemd-shared.la
-
-# ------------------------------------------------------------------------------
-noinst_LTLIBRARIES += \
 	libsystemd-capability.la
 
 libsystemd_capability_la_SOURCES = \
