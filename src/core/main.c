@@ -1334,7 +1334,7 @@ int main(int argc, char *argv[]) {
         } else {
                 /* Running as user instance */
                 arg_running_as = SYSTEMD_USER;
-                log_set_target(LOG_TARGET_AUTO);
+                log_set_target(LOG_TARGET_SYSLOG_OR_KMSG);
                 log_open();
 
                 /* clear the kernel timestamp,
