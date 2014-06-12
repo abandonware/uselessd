@@ -1,0 +1,19 @@
+sd-journal.h is included in:
+	src/shared/logs-show.c
+	src/shared/logs-show.h
+
+Journal references are used in:
+	src/core/execute.c
+	src/core/execute.h
+	src/core/main.c
+	src/core/manager.c
+	src/core/macros.systemd.in
+	src/core/unit.c
+	src/core/special.h
+	src/core/system.conf
+	src/shared/log.c
+	src/shared/log.h
+	src/systemd/sd-messages.h
+	src/tmpfiles/tmpfiles.c
+
+plus tests, unit files, shell-completion, manpages, etc.
