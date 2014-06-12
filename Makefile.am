@@ -256,7 +256,6 @@ rootbin_PROGRAMS = \
 	systemd-machine-id-setup
 
 bin_PROGRAMS = \
-	systemd-cgls \
 	systemd-cgtop \
 	systemd-detect-virt \
 	systemd-delta \
@@ -629,8 +628,6 @@ libsystemd_shared_la_SOURCES = \
 	src/shared/conf-files.h \
 	src/shared/cgroup-util.c \
 	src/shared/cgroup-util.h \
-	src/shared/cgroup-show.c \
-	src/shared/cgroup-show.h \
 	src/shared/unit-name.c \
 	src/shared/unit-name.h \
 	src/shared/utmp-wtmp.c \
@@ -1699,13 +1696,6 @@ systemd_reply_password_SOURCES = \
 	src/reply-password/reply-password.c
 
 systemd_reply_password_LDADD = \
-	libsystemd-shared.la
-
-# ------------------------------------------------------------------------------
-systemd_cgls_SOURCES = \
-	src/cgls/cgls.c
-
-systemd_cgls_LDADD = \
 	libsystemd-shared.la
 
 # ------------------------------------------------------------------------------
