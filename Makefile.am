@@ -1196,8 +1196,7 @@ test_tables_CFLAGS = \
 	$(DBUS_CFLAGS)
 
 test_tables_LDADD = \
-	libsystemd-core.la \
-	libsystemd-logs.la
+	libsystemd-core.la
 
 test_prioq_SOURCES = \
 	src/test/test-prioq.c

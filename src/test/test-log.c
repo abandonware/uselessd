@@ -34,9 +34,6 @@ int main(int argc, char* argv[]) {
                    "SERVICE=piepapo",
                    NULL);
 
-        log_set_target(LOG_TARGET_JOURNAL);
-        log_open();
-
         log_struct(LOG_INFO,
                    "MESSAGE=Foobar PID=%lu", (unsigned long) getpid(),
                    "SERVICE=foobar",
