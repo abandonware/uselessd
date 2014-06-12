@@ -209,7 +209,6 @@ int log_open(void) {
                                 return r;
                         }
                 }
-        }
         
         log_close_syslog();
 
