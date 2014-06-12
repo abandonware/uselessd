@@ -1672,7 +1672,7 @@ systemctl_LDADD = \
 	libsystemd-shared.la \
 	libsystemd-daemon.la \
 	libsystemd-dbus.la \
-	libsystemd-logs.la
+	libsystemd-id128-internal.la
 
 # ------------------------------------------------------------------------------
 systemd_notify_SOURCES = \

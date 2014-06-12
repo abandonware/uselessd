@@ -88,6 +88,7 @@ static bool arg_confirm_spawn = false;
 static bool arg_show_status = true;
 static bool arg_switched_root = false;
 static char ***arg_join_controllers = NULL;
+static ExecOutput arg_default_std_output = EXEC_OUTPUT_SYSLOG;
 static ExecOutput arg_default_std_error = EXEC_OUTPUT_INHERIT;
 static usec_t arg_runtime_watchdog = 0;
 static usec_t arg_shutdown_watchdog = 10 * USEC_PER_MINUTE;
