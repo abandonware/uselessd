@@ -1,19 +1,45 @@
 sd-journal.h is included in:
-	src/shared/logs-show.c
-	src/shared/logs-show.h
+	src/shared/logs-show.c [x]
+	src/shared/logs-show.h [x]
+can be rm'd safely
+	
+src/shared/cgroup-show.h and src/test/test-tables.c use it
+cgroup-show.h is only used in cgls, rm'd
 
 Journal references are used in:
-	src/core/execute.c
-	src/core/execute.h
-	src/core/main.c
-	src/core/manager.c
-	src/core/macros.systemd.in
-	src/core/unit.c
-	src/core/special.h
-	src/core/system.conf
-	src/shared/log.c
-	src/shared/log.h
-	src/systemd/sd-messages.h
-	src/tmpfiles/tmpfiles.c
+	src/core/execute.c [x]
+	src/core/execute.h [x]
+	src/core/main.c [x]
+	src/core/manager.c [x]
+	src/core/manager.h [x]
+	src/core/macros.systemd.in [x]
+	src/core/unit.c [x]
+	src/core/special.h [x]
+	src/core/system.conf [x]
+	src/shared/log.c [x]
+	src/shared/log.h [x]
+	src/systemd/sd-messages.h [x]
+	src/tmpfiles/tmpfiles.c [x]
 
 plus tests, unit files, shell-completion, manpages, etc.
+
+tons of utils log to LOG_TARGET_AUTO (journal), reverse those
+
+SUCCESS
+
+fucking tired right now, fatigued
+apologies for the vagueness
+
+removed logs-show.[ch] due to inclusion of sd-journal.h
+removed cgroup-show.[ch], as well as cgls due to codependencies
+refactored test-tables.c
+
+Edited all files above with journal references
+
+edited systemctl.c
+
+added libsystemd-id128-internal.la to LIBADD section for systemctl in Makefile.am,
+so that specifier.c will properly resolve sd_i28_* functions
+
+removed all journald-related log targets, replaced all instances of LOG_TARGET_AUTO
+with LOG_TARGET_SYSLOG_OR_KMSG (in 17 files, almost all tools besides generators)
