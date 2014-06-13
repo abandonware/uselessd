@@ -38,7 +38,6 @@
 
 #include <systemd/sd-daemon.h>
 #include <systemd/sd-shutdown.h>
-#include <systemd/sd-login.h>
 
 #include "log.h"
 #include "util.h"
@@ -50,7 +49,6 @@
 #include "path-util.h"
 #include "strv.h"
 #include "dbus-common.h"
-#include "cgroup-show.h"
 #include "cgroup-util.h"
 #include "list.h"
 #include "path-lookup.h"
@@ -63,7 +61,6 @@
 #include "spawn-ask-password-agent.h"
 #include "spawn-polkit-agent.h"
 #include "install.h"
-#include "logs-show.h"
 #include "path-util.h"
 #include "socket-util.h"
 #include "fileio.h"
@@ -132,7 +129,6 @@ static enum transport {
 static char *arg_host = NULL;
 static char *arg_user = NULL;
 static unsigned arg_lines = 10;
-static OutputMode arg_output = OUTPUT_SHORT;
 static bool arg_plain = false;
 
 static bool private_bus = false;
@@ -160,21 +156,6 @@ static void ask_password_agent_open_if_enabled(void) {
 
         ask_password_agent_open();
 }
-
-#ifdef HAVE_LOGIND
-static void polkit_agent_open_if_enabled(void) {
-
-        /* Open the polkit agent as a child process if necessary */
-
-        if (!arg_ask_password)
-                return;
-
-        if (arg_scope != UNIT_FILE_SYSTEM)
-                return;
-
-        polkit_agent_open();
-}
-#endif
 
 static int translate_bus_error_to_exit_status(int r, const DBusError *error) {
         assert(error);
@@ -465,7 +446,7 @@ static int list_units(DBusConnection *bus, char **args) {
         unsigned c = 0;
         int r;
 
-        pager_open_if_enabled();
+        pager_open_if_enabled();
 
         r = get_unit_list(bus, &reply, &unit_infos, &c);
         if (r < 0)
@@ -2026,184 +2007,11 @@ static int start_unit(DBusConnection *bus, char **args) {
 /* Ask systemd-logind, which might grant access to unprivileged users
  * through PolicyKit */
 static int reboot_with_logind(DBusConnection *bus, enum action a) {
-#ifdef HAVE_LOGIND
-        const char *method;
-        dbus_bool_t interactive = true;
-
-        if (!bus)
-                return -EIO;
-
-        polkit_agent_open_if_enabled();
-
-        switch (a) {
-
-        case ACTION_REBOOT:
-                method = "Reboot";
-                break;
-
-        case ACTION_POWEROFF:
-                method = "PowerOff";
-                break;
-
-        case ACTION_SUSPEND:
-                method = "Suspend";
-                break;
-
-        case ACTION_HIBERNATE:
-                method = "Hibernate";
-                break;
-
-        case ACTION_HYBRID_SLEEP:
-                method = "HybridSleep";
-                break;
-
-        default:
-                return -EINVAL;
-        }
-
-        return bus_method_call_with_reply(
-                        bus,
-                        "org.freedesktop.login1",
-                        "/org/freedesktop/login1",
-                        "org.freedesktop.login1.Manager",
-                        method,
-                        NULL,
-                        NULL,
-                        DBUS_TYPE_BOOLEAN, &interactive,
-                        DBUS_TYPE_INVALID);
-#else
         return -ENOSYS;
-#endif
 }
 
 static int check_inhibitors(DBusConnection *bus, enum action a) {
-#ifdef HAVE_LOGIND
-        _cleanup_dbus_message_unref_ DBusMessage *reply = NULL;
-        DBusMessageIter iter, sub, sub2;
-        int r;
-        unsigned c = 0;
-        _cleanup_strv_free_ char **sessions = NULL;
-        char **s;
-
-        if (!bus)
-                return 0;
-
-        if (arg_ignore_inhibitors || arg_force > 0)
-                return 0;
-
-        if (arg_when > 0)
-                return 0;
-
-        if (geteuid() == 0)
-                return 0;
-
-        if (!on_tty())
-                return 0;
-
-        r = bus_method_call_with_reply(
-                        bus,
-                        "org.freedesktop.login1",
-                        "/org/freedesktop/login1",
-                        "org.freedesktop.login1.Manager",
-                        "ListInhibitors",
-                        &reply,
-                        NULL,
-                        DBUS_TYPE_INVALID);
-        if (r < 0)
-                /* If logind is not around, then there are no inhibitors... */
-                return 0;
-
-        if (!dbus_message_iter_init(reply, &iter) ||
-            dbus_message_iter_get_arg_type(&iter) != DBUS_TYPE_ARRAY ||
-            dbus_message_iter_get_element_type(&iter) != DBUS_TYPE_STRUCT) {
-                log_error("Failed to parse reply.");
-                return -EIO;
-        }
-
-        dbus_message_iter_recurse(&iter, &sub);
-        while (dbus_message_iter_get_arg_type(&sub) != DBUS_TYPE_INVALID) {
-                const char *what, *who, *why, *mode;
-                uint32_t uid, pid;
-                _cleanup_strv_free_ char **sv = NULL;
-                _cleanup_free_ char *comm = NULL, *user = NULL;
-
-                if (dbus_message_iter_get_arg_type(&sub) != DBUS_TYPE_STRUCT) {
-                        log_error("Failed to parse reply.");
-                        return -EIO;
-                }
-
-                dbus_message_iter_recurse(&sub, &sub2);
-
-                if (bus_iter_get_basic_and_next(&sub2, DBUS_TYPE_STRING, &what, true) < 0 ||
-                    bus_iter_get_basic_and_next(&sub2, DBUS_TYPE_STRING, &who, true) < 0 ||
-                    bus_iter_get_basic_and_next(&sub2, DBUS_TYPE_STRING, &why, true) < 0 ||
-                    bus_iter_get_basic_and_next(&sub2, DBUS_TYPE_STRING, &mode, true) < 0 ||
-                    bus_iter_get_basic_and_next(&sub2, DBUS_TYPE_UINT32, &uid, true) < 0 ||
-                    bus_iter_get_basic_and_next(&sub2, DBUS_TYPE_UINT32, &pid, false) < 0) {
-                        log_error("Failed to parse reply.");
-                        return -EIO;
-                }
-
-                if (!streq(mode, "block"))
-                        goto next;
-
-                sv = strv_split(what, ":");
-                if (!sv)
-                        return log_oom();
-
-                if (!strv_contains(sv,
-                                  a == ACTION_HALT ||
-                                  a == ACTION_POWEROFF ||
-                                  a == ACTION_REBOOT ||
-                                  a == ACTION_KEXEC ? "shutdown" : "sleep"))
-                        goto next;
-
-                get_process_comm(pid, &comm);
-                user = uid_to_name(uid);
-                log_warning("Operation inhibited by \"%s\" (PID %lu \"%s\", user %s), reason is \"%s\".",
-                            who, (unsigned long) pid, strna(comm), strna(user), why);
-                c++;
-
-        next:
-                dbus_message_iter_next(&sub);
-        }
-
-        dbus_message_iter_recurse(&iter, &sub);
-
-        /* Check for current sessions */
-        sd_get_sessions(&sessions);
-        STRV_FOREACH(s, sessions) {
-                uid_t uid;
-                _cleanup_free_ char *type = NULL, *tty = NULL, *seat = NULL, *user = NULL, *service = NULL, *class = NULL;
-
-                if (sd_session_get_uid(*s, &uid) < 0 || uid == getuid())
-                        continue;
-
-                if (sd_session_get_class(*s, &class) < 0 || !streq(class, "user"))
-                        continue;
-
-                if (sd_session_get_type(*s, &type) < 0 || (!streq(type, "x11") && !streq(type, "tty")))
-                        continue;
-
-                sd_session_get_tty(*s, &tty);
-                sd_session_get_seat(*s, &seat);
-                sd_session_get_service(*s, &service);
-                user = uid_to_name(uid);
-
-                log_warning("User %s is logged in on %s.", strna(user), isempty(tty) ? (isempty(seat) ? strna(service) : seat) : tty);
-                c++;
-        }
-
-        if (c <= 0)
-                return 0;
-
-        log_error("Please retry operation after closing inhibitors and logging out other users.\nAlternatively, ignore inhibitors and users with 'systemctl %s -i'.",
-                  action_table[a].verb);
-
-        return -EPERM;
-#else
         return 0;
-#endif
 }
 
 static int start_special(DBusConnection *bus, char **args) {
@@ -2521,12 +2329,6 @@ static void print_status_info(UnitStatusInfo *i,
         char since1[FORMAT_TIMESTAMP_RELATIVE_MAX], *s1;
         char since2[FORMAT_TIMESTAMP_MAX], *s2;
         const char *path;
-        int flags =
-                arg_all * OUTPUT_SHOW_ALL |
-                (!on_tty() || pager_have()) * OUTPUT_FULL_WIDTH |
-                on_tty() * OUTPUT_COLOR |
-                !arg_quiet * OUTPUT_WARN_CUTOFF |
-                arg_full * OUTPUT_FULL_WIDTH;
         char **t, **t2;
 
         assert(i);
@@ -2774,24 +2576,7 @@ static void print_status_info(UnitStatusInfo *i,
 
                         if (i->control_pid > 0)
                                 extra[k++] = i->control_pid;
-
-                        show_cgroup_and_extra(SYSTEMD_CGROUP_CONTROLLER, i->control_group, prefix,
-                                                      c, false, extra, k, flags);
                 }
-        }
-
-        if (i->id && arg_transport != TRANSPORT_SSH) {
-                printf("\n");
-                show_journal_by_unit(stdout,
-                                     i->id,
-                                     arg_output,
-                                     0,
-                                     i->inactive_exit_timestamp_monotonic,
-                                     arg_lines,
-                                     getuid(),
-                                     flags,
-                                     arg_scope == UNIT_FILE_SYSTEM,
-                                     ellipsized);
         }
 
         if (i->need_daemon_reload)
@@ -3710,7 +3495,7 @@ static int append_assignment(DBusMessageIter *iter, const char *assignment) {
                         if (e) {
                                 path = strndup(eq, e - eq);
                                 if (!path)
-                                       return -ENOMEM;
+                                        return -ENOMEM;
                                 rwm = e+1;
                         } else {
                                 path = eq;
@@ -5197,14 +4982,6 @@ static int systemctl_parse_argv(int argc, char *argv[]) {
                 case 'n':
                         if (safe_atou(optarg, &arg_lines) < 0) {
                                 log_error("Failed to parse lines '%s'", optarg);
-                                return -EINVAL;
-                        }
-                        break;
-
-                case 'o':
-                        arg_output = output_mode_from_string(optarg);
-                        if (arg_output < 0) {
-                                log_error("Unknown output '%s'.", optarg);
                                 return -EINVAL;
                         }
                         break;

@@ -171,8 +171,7 @@ static bool is_terminal_output(ExecOutput o) {
         return
                 o == EXEC_OUTPUT_TTY ||
                 o == EXEC_OUTPUT_SYSLOG_AND_CONSOLE ||
-                o == EXEC_OUTPUT_KMSG_AND_CONSOLE ||
-                o == EXEC_OUTPUT_JOURNAL_AND_CONSOLE;
+                o == EXEC_OUTPUT_KMSG_AND_CONSOLE;
 }
 
 void exec_context_serialize(const ExecContext *context, Unit *u, FILE *f) {
@@ -406,8 +405,6 @@ static int setup_output(const ExecContext *context, int fileno, int socket_fd, c
         case EXEC_OUTPUT_SYSLOG_AND_CONSOLE:
         case EXEC_OUTPUT_KMSG:
         case EXEC_OUTPUT_KMSG_AND_CONSOLE:
-        case EXEC_OUTPUT_JOURNAL:
-        case EXEC_OUTPUT_JOURNAL_AND_CONSOLE:
                 r = connect_logger_as(context, o, ident, unit_id, fileno);
                 if (r < 0) {
                         log_struct_unit(LOG_CRIT, unit_id,
@@ -1938,10 +1935,10 @@ void exec_context_dump(ExecContext *c, FILE* f, const char *prefix) {
                         prefix, yes_no(c->tty_vhangup),
                         prefix, yes_no(c->tty_vt_disallocate));
 
-        if (c->std_output == EXEC_OUTPUT_SYSLOG || c->std_output == EXEC_OUTPUT_KMSG || c->std_output == EXEC_OUTPUT_JOURNAL ||
-            c->std_output == EXEC_OUTPUT_SYSLOG_AND_CONSOLE || c->std_output == EXEC_OUTPUT_KMSG_AND_CONSOLE || c->std_output == EXEC_OUTPUT_JOURNAL_AND_CONSOLE ||
-            c->std_error == EXEC_OUTPUT_SYSLOG || c->std_error == EXEC_OUTPUT_KMSG || c->std_error == EXEC_OUTPUT_JOURNAL ||
-            c->std_error == EXEC_OUTPUT_SYSLOG_AND_CONSOLE || c->std_error == EXEC_OUTPUT_KMSG_AND_CONSOLE || c->std_error == EXEC_OUTPUT_JOURNAL_AND_CONSOLE) {
+        if (c->std_output == EXEC_OUTPUT_SYSLOG || c->std_output == EXEC_OUTPUT_KMSG ||
+            c->std_output == EXEC_OUTPUT_SYSLOG_AND_CONSOLE || c->std_output == EXEC_OUTPUT_KMSG_AND_CONSOLE ||
+            c->std_error == EXEC_OUTPUT_SYSLOG || c->std_error == EXEC_OUTPUT_KMSG ||
+            c->std_error == EXEC_OUTPUT_SYSLOG_AND_CONSOLE || c->std_error == EXEC_OUTPUT_KMSG_AND_CONSOLE) {
                 char *fac_str, *lvl_str;
                 int r;
 
@@ -2231,8 +2228,6 @@ static const char* const exec_output_table[_EXEC_OUTPUT_MAX] = {
         [EXEC_OUTPUT_SYSLOG_AND_CONSOLE] = "syslog+console",
         [EXEC_OUTPUT_KMSG] = "kmsg",
         [EXEC_OUTPUT_KMSG_AND_CONSOLE] = "kmsg+console",
-        [EXEC_OUTPUT_JOURNAL] = "journal",
-        [EXEC_OUTPUT_JOURNAL_AND_CONSOLE] = "journal+console",
         [EXEC_OUTPUT_SOCKET] = "socket"
 };
 

@@ -35,14 +35,6 @@ extern "C" {
  * with journalctl --new-id128. Do not use any other IDs, and do not
  * count them up manually. */
 
-#define SD_MESSAGE_JOURNAL_START    SD_ID128_MAKE(f7,73,79,a8,49,0b,40,8b,be,5f,69,40,50,5a,77,7b)
-#define SD_MESSAGE_JOURNAL_STOP     SD_ID128_MAKE(d9,3f,b3,c9,c2,4d,45,1a,97,ce,a6,15,ce,59,c0,0b)
-#define SD_MESSAGE_JOURNAL_DROPPED  SD_ID128_MAKE(a5,96,d6,fe,7b,fa,49,94,82,8e,72,30,9e,95,d6,1e)
-#define SD_MESSAGE_JOURNAL_MISSED   SD_ID128_MAKE(e9,bf,28,e6,e8,34,48,1b,b6,f4,8f,54,8a,d1,36,06)
-#define SD_MESSAGE_JOURNAL_USAGE    SD_ID128_MAKE(ec,38,7f,57,7b,84,4b,8f,a9,48,f3,3c,ad,9a,75,e6)
-
-#define SD_MESSAGE_COREDUMP         SD_ID128_MAKE(fc,2e,22,bc,6e,e6,47,b6,b9,07,29,ab,34,a2,50,b1)
-
 #define SD_MESSAGE_SESSION_START    SD_ID128_MAKE(8d,45,62,0c,1a,43,48,db,b1,74,10,da,57,c6,0c,66)
 #define SD_MESSAGE_SESSION_STOP     SD_ID128_MAKE(33,54,93,94,24,b4,45,6d,98,02,ca,83,33,ed,42,4a)
 #define SD_MESSAGE_SEAT_START       SD_ID128_MAKE(fc,be,fc,5d,a2,3d,42,80,93,f9,7c,82,a9,29,0f,7b)
@@ -81,8 +73,6 @@ extern "C" {
 #define SD_MESSAGE_HIBERNATE_KEY    SD_ID128_MAKE(b7,2e,a4,a2,88,15,45,a0,b5,0e,20,0e,55,b9,b0,73)
 
 #define SD_MESSAGE_CONFIG_ERROR     SD_ID128_MAKE(c7,72,d2,4e,9a,88,4c,be,b9,ea,12,62,5c,30,6c,01)
-
-#define SD_MESSAGE_BOOTCHART        SD_ID128_MAKE(9f,26,aa,56,2c,f4,40,c2,b1,6c,77,3d,04,79,b5,18)
 
 #ifdef __cplusplus
 }

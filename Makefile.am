@@ -42,10 +42,6 @@ LIBSYSTEMD_ID128_CURRENT=0
 LIBSYSTEMD_ID128_REVISION=26
 LIBSYSTEMD_ID128_AGE=0
 
-LIBSYSTEMD_JOURNAL_CURRENT=11
-LIBSYSTEMD_JOURNAL_REVISION=3
-LIBSYSTEMD_JOURNAL_AGE=11
-
 # Dirs of external packages
 dbuspolicydir=@dbuspolicydir@
 dbussessionservicedir=@dbussessionservicedir@
@@ -63,7 +59,6 @@ sysvinitdir=$(SYSTEM_SYSVINIT_PATH)
 sysvrcnddir=$(SYSTEM_SYSVRCND_PATH)
 varlogdir=$(localstatedir)/log
 systemdstatedir=$(localstatedir)/lib/systemd
-catalogstatedir=$(systemdstatedir)/catalog
 
 # Our own, non-special dirs
 pkgsysconfdir=$(sysconfdir)/systemd
@@ -78,7 +73,6 @@ systemshutdowndir=$(rootlibexecdir)/system-shutdown
 systemsleepdir=$(rootlibexecdir)/system-sleep
 systemunitdir=$(rootprefix)/lib/systemd/system
 systempresetdir=$(rootprefix)/lib/systemd/system-preset
-catalogdir=$(prefix)/lib/systemd/catalog
 
 # And these are the special ones for /
 rootprefix=@rootprefix@
@@ -130,7 +124,6 @@ AM_CPPFLAGS = \
 	-DSYSTEM_SYSVRCND_PATH=\"$(SYSTEM_SYSVRCND_PATH)\" \
 	-DUSER_CONFIG_UNIT_PATH=\"$(pkgsysconfdir)/user\" \
 	-DUSER_DATA_UNIT_PATH=\"$(userunitdir)\" \
-	-DCATALOG_DATABASE=\"$(catalogstatedir)/database\" \
 	-DSYSTEMD_CGROUP_AGENT_PATH=\"$(rootlibexecdir)/systemd-cgroups-agent\" \
 	-DSYSTEMD_BINARY_PATH=\"$(rootlibexecdir)/systemd\" \
 	-DSYSTEMD_SHUTDOWN_BINARY_PATH=\"$(rootlibexecdir)/systemd-shutdown\" \
@@ -151,7 +144,6 @@ AM_CPPFLAGS = \
 	-DKEXEC=\"$(KEXEC)\" \
 	-I $(top_srcdir)/src \
 	-I $(top_srcdir)/src/shared \
-	-I $(top_srcdir)/src/journal \
 	-I $(top_srcdir)/src/systemd \
 	-I $(top_builddir)/src/core \
 	-I $(top_srcdir)/src/core \
@@ -264,7 +256,6 @@ rootbin_PROGRAMS = \
 	systemd-machine-id-setup
 
 bin_PROGRAMS = \
-	systemd-cgls \
 	systemd-cgtop \
 	systemd-detect-virt \
 	systemd-delta \
@@ -301,13 +292,11 @@ systemd_analyze_LDADD = \
 	libsystemd-dbus.la
 
 dist_bashcompletion_DATA = \
-	shell-completion/bash/journalctl \
 	shell-completion/bash/systemctl \
 	shell-completion/bash/systemd-analyze
 
 dist_zshcompletion_DATA = \
 	shell-completion/zsh/_systemctl \
-	shell-completion/zsh/_journalctl \
 	shell-completion/zsh/_systemd-analyze \
 	shell-completion/zsh/_sd_hosts_or_user_at_host \
 	shell-completion/zsh/_systemd-delta \
@@ -639,8 +628,6 @@ libsystemd_shared_la_SOURCES = \
 	src/shared/conf-files.h \
 	src/shared/cgroup-util.c \
 	src/shared/cgroup-util.h \
-	src/shared/cgroup-show.c \
-	src/shared/cgroup-show.h \
 	src/shared/unit-name.c \
 	src/shared/unit-name.h \
 	src/shared/utmp-wtmp.c \
@@ -733,22 +720,6 @@ libsystemd_label_la_CFLAGS = \
 
 libsystemd_label_la_LIBADD = \
 	$(SELINUX_LIBS)
-
-# ------------------------------------------------------------------------------
-noinst_LTLIBRARIES += \
-	libsystemd-logs.la
-
-libsystemd_logs_la_SOURCES = \
-	src/shared/logs-show.c \
-	src/shared/logs-show.h
-
-libsystemd_logs_la_CFLAGS = \
-	$(AM_CFLAGS)
-
-libsystemd_logs_la_LIBADD = \
-	libsystemd-journal-internal.la \
-	libsystemd-id128-internal.la \
-	libsystemd-shared.la
 
 # ------------------------------------------------------------------------------
 noinst_LTLIBRARIES += \
@@ -1225,8 +1196,7 @@ test_tables_CFLAGS = \
 	$(DBUS_CFLAGS)
 
 test_tables_LDADD = \
-	libsystemd-core.la \
-	libsystemd-logs.la
+	libsystemd-core.la
 
 test_prioq_SOURCES = \
 	src/test/test-prioq.c
@@ -1702,7 +1672,7 @@ systemctl_LDADD = \
 	libsystemd-shared.la \
 	libsystemd-daemon.la \
 	libsystemd-dbus.la \
-	libsystemd-logs.la
+	libsystemd-id128-internal.la
 
 # ------------------------------------------------------------------------------
 systemd_notify_SOURCES = \
@@ -1725,13 +1695,6 @@ systemd_reply_password_SOURCES = \
 	src/reply-password/reply-password.c
 
 systemd_reply_password_LDADD = \
-	libsystemd-shared.la
-
-# ------------------------------------------------------------------------------
-systemd_cgls_SOURCES = \
-	src/cgls/cgls.c
-
-systemd_cgls_LDADD = \
 	libsystemd-shared.la
 
 # ------------------------------------------------------------------------------
@@ -1867,343 +1830,6 @@ systemd_activate_LDADD = \
 	libsystemd-daemon.la
 
 # ------------------------------------------------------------------------------
-systemd_journald_SOURCES = \
-	src/journal/journald.c \
-	src/journal/journald-server.h
-
-systemd_journald_LDADD = \
-	libsystemd-journal-internal.la \
-	libsystemd-shared.la \
-	libsystemd-id128-internal.la
-
-systemd_cat_SOURCES = \
-	src/journal/cat.c
-
-systemd_cat_LDADD = \
-	libsystemd-shared.la \
-	libsystemd-journal-internal.la
-
-journalctl_SOURCES = \
-	src/journal/journalctl.c
-
-journalctl_CFLAGS = \
-	$(AM_CFLAGS)
-
-journalctl_LDADD = \
-	libsystemd-shared.la \
-	libsystemd-journal-internal.la \
-	libsystemd-id128-internal.la \
-	libsystemd-logs.la
-
-if HAVE_ACL
-journalctl_LDADD += \
-	libsystemd-acl.la
-endif
-
-test_journal_SOURCES = \
-	src/journal/test-journal.c
-
-test_journal_LDADD = \
-	libsystemd-shared.la \
-	libsystemd-journal-internal.la \
-	libsystemd-id128-internal.la
-
-test_journal_send_SOURCES = \
-	src/journal/test-journal-send.c
-
-test_journal_send_LDADD = \
-	libsystemd-shared.la \
-	libsystemd-journal-internal.la \
-	libsystemd-id128-internal.la
-
-test_journal_syslog_SOURCES = \
-	src/journal/test-journal-syslog.c
-
-test_journal_syslog_LDADD = \
-	libsystemd-journal-internal.la \
-	libsystemd-shared.la \
-	libsystemd-id128-internal.la
-
-test_journal_match_SOURCES = \
-	src/journal/test-journal-match.c
-
-test_journal_match_LDADD = \
-	libsystemd-shared.la \
-	libsystemd-journal-internal.la \
-	libsystemd-id128-internal.la
-
-test_journal_enum_SOURCES = \
-	src/journal/test-journal-enum.c
-
-test_journal_enum_LDADD = \
-	libsystemd-shared.la \
-	libsystemd-journal-internal.la \
-	libsystemd-id128-internal.la
-
-test_journal_stream_SOURCES = \
-	src/journal/test-journal-stream.c
-
-test_journal_stream_LDADD = \
-	libsystemd-shared.la \
-	libsystemd-journal-internal.la \
-	libsystemd-id128-internal.la
-
-test_journal_init_SOURCES = \
-	src/journal/test-journal-init.c
-
-test_journal_init_LDADD = \
-	libsystemd-shared.la \
-	libsystemd-daemon-internal.la \
-	$(RT_LIBS) \
-	libsystemd-journal.la
-
-test_journal_verify_SOURCES = \
-	src/journal/test-journal-verify.c
-
-test_journal_verify_LDADD = \
-	libsystemd-shared.la \
-	libsystemd-journal-internal.la \
-	libsystemd-id128-internal.la
-
-test_journal_interleaving_SOURCES = \
-	src/journal/test-journal-interleaving.c
-
-test_journal_interleaving_LDADD = \
-	libsystemd-shared.la \
-	libsystemd-journal-internal.la \
-	libsystemd-id128-internal.la
-
-test_mmap_cache_SOURCES = \
-	src/journal/test-mmap-cache.c
-
-test_mmap_cache_LDADD = \
-	libsystemd-shared.la \
-	libsystemd-journal-internal.la
-
-test_catalog_SOURCES = \
-	src/journal/test-catalog.c
-
-test_catalog_CFLAGS = \
-	$(AM_CFLAGS) \
-	-DCATALOG_DIR=\"$(abs_top_srcdir)/catalog\"
-
-test_catalog_LDADD = \
-	libsystemd-shared.la \
-	libsystemd-label.la \
-	libsystemd-journal-internal.la \
-	libsystemd-id128-internal.la
-
-libsystemd_journal_la_SOURCES = \
-	src/journal/sd-journal.c \
-	src/systemd/sd-journal.h \
-	src/journal/journal-file.c \
-	src/journal/journal-file.h \
-	src/journal/journal-vacuum.c \
-	src/journal/journal-vacuum.h \
-	src/journal/journal-verify.c \
-	src/journal/journal-verify.h \
-	src/journal/lookup3.c \
-	src/journal/lookup3.h \
-	src/journal/journal-send.c \
-	src/journal/journal-def.h \
-	src/journal/compress.h \
-	src/journal/catalog.c \
-	src/journal/catalog.h \
-	src/journal/mmap-cache.c \
-	src/journal/mmap-cache.h
-
-libsystemd_journal_la_CFLAGS = \
-	$(AM_CFLAGS) \
-	-fvisibility=hidden
-
-libsystemd_journal_la_LDFLAGS = \
-	$(AM_LDFLAGS) \
-	-version-info $(LIBSYSTEMD_JOURNAL_CURRENT):$(LIBSYSTEMD_JOURNAL_REVISION):$(LIBSYSTEMD_JOURNAL_AGE) \
-	-Wl,--version-script=$(top_srcdir)/src/journal/libsystemd-journal.sym
-
-libsystemd_journal_la_LIBADD = \
-	libsystemd-shared.la \
-	libsystemd-label.la \
-	libsystemd-daemon-internal.la \
-	$(RT_LIBS) \
-	libsystemd-id128-internal.la
-
-libsystemd_journal_internal_la_SOURCES = \
-	$(libsystemd_journal_la_SOURCES) \
-	src/journal/journald-kmsg.c \
-	src/journal/journald-kmsg.h \
-	src/journal/journald-syslog.c \
-	src/journal/journald-syslog.h \
-	src/journal/journald-stream.c \
-	src/journal/journald-stream.h \
-	src/journal/journald-server.c \
-	src/journal/journald-server.h \
-	src/journal/journald-console.c \
-	src/journal/journald-console.h \
-	src/journal/journald-native.c \
-	src/journal/journald-native.h \
-	src/journal/journald-rate-limit.c \
-	src/journal/journald-rate-limit.h \
-	src/journal/journal-internal.h
-
-libsystemd_journal_internal_la_CFLAGS = \
-	$(AM_CFLAGS)
-
-libsystemd_journal_internal_la_LIBADD = \
-	libsystemd-label.la \
-	libsystemd-audit.la \
-	libsystemd-daemon.la \
-	libsystemd-shared.la \
-	libsystemd-label.la
-
-nodist_libsystemd_journal_internal_la_SOURCES = \
-	src/journal/journald-gperf.c
-
-if HAVE_ACL
-libsystemd_journal_internal_la_LIBADD += \
-	libsystemd-acl.la
-endif
-
-if HAVE_XZ
-libsystemd_journal_la_SOURCES += \
-	src/journal/compress.c
-
-libsystemd_journal_la_CFLAGS += \
-	$(XZ_CFLAGS)
-
-libsystemd_journal_la_LIBADD += \
-	$(XZ_LIBS)
-
-libsystemd_journal_internal_la_CFLAGS += \
-	$(XZ_CFLAGS)
-
-libsystemd_journal_internal_la_LIBADD += \
-	$(XZ_LIBS)
-
-endif
-
-if HAVE_GCRYPT
-libsystemd_journal_la_SOURCES += \
-	src/journal/journal-authenticate.c \
-	src/journal/journal-authenticate.h \
-	src/journal/fsprg.c \
-	src/journal/fsprg.h
-
-libsystemd_journal_la_CFLAGS += \
-	$(GCRYPT_CFLAGS) \
-	-Wno-pointer-arith
-
-libsystemd_journal_la_LIBADD += \
-	$(GCRYPT_LIBS)
-
-libsystemd_journal_internal_la_CFLAGS += \
-	$(GCRYPT_CFLAGS) \
-	-Wno-pointer-arith
-
-libsystemd_journal_internal_la_LIBADD += \
-	$(GCRYPT_LIBS)
-endif
-
-# move lib from $(libdir) to $(rootlibdir) and update devel link, if
-# needed. Also, grant read access to new journal files to members of
-# "adm" and "wheel".
-libsystemd-journal-install-hook:
-	libname=libsystemd-journal.so && $(move-to-rootlibdir)
-	-$(MKDIR_P) $(DESTDIR)/var/log/journal
-	-chown 0:0 $(DESTDIR)/var/log/journal
-	-chmod 755 $(DESTDIR)/var/log/journal
-	-setfacl -nm g:adm:rx,d:g:adm:rx $(DESTDIR)/var/log/journal/
-	-setfacl -nm g:wheel:rx,d:g:wheel:rx $(DESTDIR)/var/log/journal/
-
-libsystemd-journal-uninstall-hook:
-	rm -f $(DESTDIR)$(rootlibdir)/libsystemd-journal.so*
-
-INSTALL_EXEC_HOOKS += libsystemd-journal-install-hook
-UNINSTALL_EXEC_HOOKS += libsystemd-journal-uninstall-hook
-
-# ------------------------------------------------------------------------------
-
-# Update catalog on installation. Do not bother if installing
-# in DESTDIR, since this is likely for packaging purposes.
-catalog-update-hook:
-	-test -n "$(DESTDIR)" || $(rootbindir)/journalctl --update-catalog
-
-INSTALL_DATA_HOOKS += \
-	catalog-update-hook
-
-catalog-remove-hook:
-	-test -n "$(DESTDIR)" || rm -f $(catalogstatedir)/database
-
-UNINSTALL_DATA_HOOKS += \
-	catalog-remove-hook
-
-manual_tests += \
-	test-journal-enum
-
-tests += \
-	test-journal \
-	test-journal-send \
-	test-journal-syslog \
-	test-journal-match \
-	test-journal-stream \
-	test-journal-init \
-	test-journal-verify \
-	test-journal-interleaving \
-	test-mmap-cache \
-	test-catalog
-
-pkginclude_HEADERS += \
-	src/systemd/sd-journal.h \
-	src/systemd/sd-messages.h
-
-lib_LTLIBRARIES += \
-	libsystemd-journal.la
-
-noinst_LTLIBRARIES += \
-	libsystemd-journal-internal.la
-
-rootlibexec_PROGRAMS += \
-	systemd-journald
-
-rootbin_PROGRAMS += \
-	journalctl
-
-bin_PROGRAMS += \
-	systemd-cat
-
-dist_systemunit_DATA += \
-	units/systemd-journald.socket
-
-nodist_systemunit_DATA += \
-	units/systemd-journald.service \
-	units/systemd-journal-flush.service
-
-dist_pkgsysconf_DATA += \
-	src/journal/journald.conf
-
-pkgconfiglib_DATA += \
-	src/journal/libsystemd-journal.pc
-
-dist_catalog_DATA = \
-	catalog/systemd.catalog
-
-SOCKETS_TARGET_WANTS += \
-	systemd-journald.socket
-SYSINIT_TARGET_WANTS += \
-	systemd-journald.service \
-	systemd-journal-flush.service
-
-EXTRA_DIST += \
-	src/journal/libsystemd-journal.pc.in \
-	src/journal/libsystemd-journal.sym \
-	units/systemd-journald.service.in \
-	units/systemd-journal-flush.service.in \
-	src/journal/journald-gperf.gperf
-
-CLEANFILES += \
-	src/journal/journald-gperf.c
-
-# ------------------------------------------------------------------------------
 if ENABLE_BINFMT
 systemd_binfmt_SOURCES = \
 	src/binfmt/binfmt.c
@@ -2314,7 +1940,6 @@ substitutions = \
        '|userunitdir=$(userunitdir)|' \
        '|systempresetdir=$(systempresetdir)|' \
        '|userpresetdir=$(userpresetdir)|' \
-       '|catalogdir=$(catalogdir)|' \
        '|tmpfilesdir=$(tmpfilesdir)|' \
        '|sysctldir=$(sysctldir)|' \
        '|systemgeneratordir=$(systemgeneratordir)|' \

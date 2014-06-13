@@ -88,7 +88,7 @@ static bool arg_confirm_spawn = false;
 static bool arg_show_status = true;
 static bool arg_switched_root = false;
 static char ***arg_join_controllers = NULL;
-static ExecOutput arg_default_std_output = EXEC_OUTPUT_JOURNAL;
+static ExecOutput arg_default_std_output = EXEC_OUTPUT_SYSLOG;
 static ExecOutput arg_default_std_error = EXEC_OUTPUT_INHERIT;
 static usec_t arg_runtime_watchdog = 0;
 static usec_t arg_shutdown_watchdog = 10 * USEC_PER_MINUTE;
@@ -387,14 +387,14 @@ static int parse_proc_cmdline_word(const char *word) {
                                  "systemd.crash_chvt=N                     Change to VT #N on crash\n"
                                  "systemd.confirm_spawn=0|1                Confirm every process spawn\n"
                                  "systemd.show_status=0|1                  Show status updates on the console during bootup\n"
-                                 "systemd.log_target=console|kmsg|journal|journal-or-kmsg|syslog|syslog-or-kmsg|null\n"
+                                 "systemd.log_target=console|kmsg|syslog|syslog-or-kmsg|null\n"
                                  "                                         Log target\n"
                                  "systemd.log_level=LEVEL                  Log level\n"
                                  "systemd.log_color=0|1                    Highlight important log messages\n"
                                  "systemd.log_location=0|1                 Include code location in log messages\n"
-                                 "systemd.default_standard_output=null|tty|syslog|syslog+console|kmsg|kmsg+console|journal|journal+console\n"
+                                 "systemd.default_standard_output=null|tty|syslog|syslog+console|kmsg|kmsg+console\n"
                                  "                                         Set default log output for services\n"
-                                 "systemd.default_standard_error=null|tty|syslog|syslog+console|kmsg|kmsg+console|journal|journal+console\n"
+                                 "systemd.default_standard_error=null|tty|syslog|syslog+console|kmsg|kmsg+console\n"
                                  "                                         Set default log error output for services\n"
                                  "systemd.setenv=ASSIGNMENT                Set an environment variable for all spawned processes\n");
                 }
@@ -1021,7 +1021,7 @@ static int help(void) {
                "     --crash-shell[=0|1]         Run shell on crash\n"
                "     --confirm-spawn[=0|1]       Ask for confirmation when spawning processes\n"
                "     --show-status[=0|1]         Show status updates on the console during bootup\n"
-               "     --log-target=TARGET         Set log target (console, journal, syslog, kmsg, journal-or-kmsg, syslog-or-kmsg, null)\n"
+               "     --log-target=TARGET         Set log target (console, syslog, kmsg, syslog-or-kmsg, null)\n"
                "     --log-level=LEVEL           Set log level (debug, info, notice, warning, err, crit, alert, emerg)\n"
                "     --log-color[=0|1]           Highlight important log messages\n"
                "     --log-location[=0|1]        Include code location in log messages\n"
@@ -1321,22 +1321,11 @@ int main(int argc, char *argv[]) {
                         }
                 }
 
-                /* Set the default for later on, but don't actually
-                 * open the logs like this for now. Note that if we
-                 * are transitioning from the initrd there might still
-                 * be journal fd open, and we shouldn't attempt
-                 * opening that before we parsed /proc/cmdline which
-                 * might redirect output elsewhere. */
-                log_set_target(LOG_TARGET_JOURNAL_OR_KMSG);
-
         } else if (getpid() == 1) {
                 /* Running inside a container, as PID 1 */
                 arg_running_as = SYSTEMD_SYSTEM;
                 log_set_target(LOG_TARGET_CONSOLE);
                 log_open();
-
-                /* For the later on, see above... */
-                log_set_target(LOG_TARGET_JOURNAL);
 
                 /* clear the kernel timestamp,
                  * because we are in a container */
@@ -1346,7 +1335,7 @@ int main(int argc, char *argv[]) {
         } else {
                 /* Running as user instance */
                 arg_running_as = SYSTEMD_USER;
-                log_set_target(LOG_TARGET_AUTO);
+                log_set_target(LOG_TARGET_SYSLOG_OR_KMSG);
                 log_open();
 
                 /* clear the kernel timestamp,

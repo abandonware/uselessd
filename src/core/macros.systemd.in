@@ -22,7 +22,6 @@
 %_unitdir @systemunitdir@
 %_userunitdir @userunitdir@
 %_presetdir @systempresetdir@
-%_journalcatalogdir @catalogdir@
 %_tmpfilesdir @tmpfilesdir@
 %_sysctldir @sysctldir@
 
@@ -57,10 +56,6 @@ if [ $1 -ge 1 ] ; then \
         # Package upgrade, not uninstall \
         @rootbindir@/systemctl try-restart %{?*} >/dev/null 2>&1 || : \
 fi \
-%{nil}
-
-%journal_catalog_update() \
-@rootbindir@/journalctl --update-catalog >/dev/null 2>&1 || : \
 %{nil}
 
 %tmpfiles_create() \

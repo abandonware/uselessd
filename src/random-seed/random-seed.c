@@ -44,7 +44,7 @@ int main(int argc, char *argv[]) {
                 return EXIT_FAILURE;
         }
 
-        log_set_target(LOG_TARGET_AUTO);
+        log_set_target(LOG_TARGET_SYSLOG_OR_KMSG);
         log_parse_environment();
         log_open();
 
