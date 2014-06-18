@@ -27,7 +27,6 @@
 #include <unistd.h>
 #include <linux/loop.h>
 #include <linux/dm-ioctl.h>
-#include <libudev.h>
 
 #include "list.h"
 #include "mount-setup.h"
