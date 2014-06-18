@@ -570,7 +570,6 @@ int main(int argc, char *argv[]) {
                 "systemd/user\0"
                 "systemd/system-preset\0"
                 "systemd/user-preset\0"
-                "udev/rules.d\0"
                 "modprobe.d\0";
 
         const char have_dropins[] =
