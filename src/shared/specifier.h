@@ -21,6 +21,8 @@
   along with systemd; If not, see <http://www.gnu.org/licenses/>.
 ***/
 
+#include "sd-id128.h"
+
 typedef int (*SpecifierCallback)(char specifier, void *data, void *userdata, char **ret);
 
 typedef struct Specifier {

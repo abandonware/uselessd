@@ -21,7 +21,11 @@
 
 #include <string.h>
 #include <sys/utsname.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <unistd.h>
 
+#include "sd-id128.h"
 #include "macro.h"
 #include "util.h"
 #include "specifier.h"
