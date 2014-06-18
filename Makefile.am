@@ -124,7 +124,6 @@ AM_CPPFLAGS = \
 	-DSYSTEM_SYSVRCND_PATH=\"$(SYSTEM_SYSVRCND_PATH)\" \
 	-DUSER_CONFIG_UNIT_PATH=\"$(pkgsysconfdir)/user\" \
 	-DUSER_DATA_UNIT_PATH=\"$(userunitdir)\" \
-	-DSYSTEMD_CGROUP_AGENT_PATH=\"$(rootlibexecdir)/systemd-cgroups-agent\" \
 	-DSYSTEMD_BINARY_PATH=\"$(rootlibexecdir)/systemd\" \
 	-DSYSTEMD_SHUTDOWN_BINARY_PATH=\"$(rootlibexecdir)/systemd-shutdown\" \
 	-DSYSTEMD_SLEEP_BINARY_PATH=\"$(rootlibexecdir)/systemd-sleep\" \
@@ -263,7 +262,6 @@ bin_PROGRAMS = \
 
 rootlibexec_PROGRAMS = \
 	systemd \
-	systemd-cgroups-agent \
 	systemd-initctl \
 	systemd-update-utmp \
 	systemd-shutdownd \
@@ -1645,18 +1643,6 @@ systemd_remount_fs_SOURCES = \
 systemd_remount_fs_LDADD = \
 	libsystemd-label.la \
 	libsystemd-shared.la
-
-# ------------------------------------------------------------------------------
-systemd_cgroups_agent_SOURCES = \
-	src/cgroups-agent/cgroups-agent.c
-
-systemd_cgroups_agent_CFLAGS = \
-	$(AM_CFLAGS) \
-	$(DBUS_CFLAGS)
-
-systemd_cgroups_agent_LDADD = \
-	libsystemd-shared.la \
-	libsystemd-dbus.la
 
 # ------------------------------------------------------------------------------
 systemctl_SOURCES = \
