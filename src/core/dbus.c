@@ -36,7 +36,6 @@
 #include "dbus-service.h"
 #include "dbus-socket.h"
 #include "dbus-target.h"
-#include "dbus-device.h"
 #include "dbus-mount.h"
 #include "dbus-automount.h"
 #include "dbus-snapshot.h"
@@ -66,7 +65,6 @@ const char *const bus_interface_table[] = {
         "org.freedesktop.systemd1.Service",    bus_service_interface,
         "org.freedesktop.systemd1.Socket",     bus_socket_interface,
         "org.freedesktop.systemd1.Target",     bus_target_interface,
-        "org.freedesktop.systemd1.Device",     bus_device_interface,
         "org.freedesktop.systemd1.Mount",      bus_mount_interface,
         "org.freedesktop.systemd1.Automount",  bus_automount_interface,
         "org.freedesktop.systemd1.Snapshot",   bus_snapshot_interface,
