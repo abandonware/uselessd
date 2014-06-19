@@ -506,7 +506,6 @@ int manager_new(SystemdRunningAs running_as, bool reexecuting, Manager **_m) {
 
         watch_init(&m->signal_watch);
         watch_init(&m->mount_watch);
-        watch_init(&m->swap_watch);
         watch_init(&m->time_change_watch);
         watch_init(&m->jobs_in_progress_watch);
 
@@ -1702,8 +1701,6 @@ static int process_event(Manager *m, struct epoll_event *ev) {
                 break;
 
         case WATCH_SWAP:
-                /* Some swap table change, intended for the swap subsystem */
-                swap_fd_event(m, ev->events);
                 break;
 
         case WATCH_DBUS_WATCH:
@@ -1818,9 +1815,6 @@ int manager_loop(Manager *m) {
                         continue;
 
                 if (manager_dispatch_dbus_queue(m) > 0)
-                        continue;
-
-                if (swap_dispatch_reload(m) > 0)
                         continue;
 
                 /* Sleep for half the watchdog time */
@@ -1955,8 +1949,7 @@ void manager_send_unit_plymouth(Manager *m, Unit *u) {
                 return;
 
         if (u->type != UNIT_SERVICE &&
-            u->type != UNIT_MOUNT &&
-            u->type != UNIT_SWAP)
+            u->type != UNIT_MOUNT)
                 return;
 
         /* We set SOCK_NONBLOCK here so that we rather drop the
