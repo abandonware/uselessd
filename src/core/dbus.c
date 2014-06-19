@@ -40,7 +40,6 @@
 #include "dbus-automount.h"
 #include "dbus-snapshot.h"
 #include "dbus-swap.h"
-#include "dbus-timer.h"
 #include "dbus-path.h"
 #include "bus-errors.h"
 #include "special.h"
@@ -69,7 +68,6 @@ const char *const bus_interface_table[] = {
         "org.freedesktop.systemd1.Automount",  bus_automount_interface,
         "org.freedesktop.systemd1.Snapshot",   bus_snapshot_interface,
         "org.freedesktop.systemd1.Swap",       bus_swap_interface,
-        "org.freedesktop.systemd1.Timer",      bus_timer_interface,
         "org.freedesktop.systemd1.Path",       bus_path_interface,
         NULL
 };
