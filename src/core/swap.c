@@ -136,29 +136,6 @@ static void swap_done(Unit *u) {
         unit_unwatch_timer(u, &s->timer_watch);
 }
 
-static int swap_add_device_links(Swap *s) {
-        SwapParameters *p;
-
-        assert(s);
-
-        if (!s->what)
-                return 0;
-
-        if (s->from_fragment)
-                p = &s->parameters_fragment;
-        else
-                return 0;
-
-        if (is_device_path(s->what))
-                return unit_add_node_link(UNIT(s), s->what, !p->noauto &&
-                                          UNIT(s)->manager->running_as == SYSTEMD_SYSTEM);
-        else
-                /* File based swap devices need to be ordered after
-                 * systemd-remount-fs.service, since they might need a
-                 * writable file system. */
-                return unit_add_dependency_by_name(UNIT(s), UNIT_AFTER, SPECIAL_REMOUNT_FS_SERVICE, NULL, true);
-}
-
 static int swap_add_default_dependencies(Swap *s) {
         bool nofail = false, noauto = false;
         int r;
@@ -264,10 +241,6 @@ static int swap_load(Unit *u) {
                                 return r;
 
                 r = unit_require_mounts_for(UNIT(s), s->what);
-                if (r < 0)
-                        return r;
-
-                r = swap_add_device_links(s);
                 if (r < 0)
                         return r;
 
