@@ -274,7 +274,6 @@ typedef enum UnitSetPropertiesMode {
 #include "timer.h"
 #include "socket.h"
 #include "target.h"
-#include "device.h"
 #include "mount.h"
 #include "automount.h"
 #include "snapshot.h"
@@ -457,7 +456,6 @@ DEFINE_CAST(SOCKET, Socket);
 DEFINE_CAST(TIMER, Timer);
 DEFINE_CAST(SERVICE, Service);
 DEFINE_CAST(TARGET, Target);
-DEFINE_CAST(DEVICE, Device);
 DEFINE_CAST(MOUNT, Mount);
 DEFINE_CAST(AUTOMOUNT, Automount);
 DEFINE_CAST(SNAPSHOT, Snapshot);
@@ -552,8 +550,6 @@ int unit_serialize(Unit *u, FILE *f, FDSet *fds, bool serialize_jobs);
 void unit_serialize_item_format(Unit *u, FILE *f, const char *key, const char *value, ...) _printf_attr_(4,5);
 void unit_serialize_item(Unit *u, FILE *f, const char *key, const char *value);
 int unit_deserialize(Unit *u, FILE *f, FDSet *fds);
-
-int unit_add_node_link(Unit *u, const char *what, bool wants);
 
 int unit_coldplug(Unit *u);
 
