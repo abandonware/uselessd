@@ -280,66 +280,6 @@ static bool needs_quota(MountParameters *p) {
                 mount_test_option(p->options, "grpjquota");
 }
 
-static int mount_add_device_links(Mount *m) {
-        MountParameters *p;
-        bool device_wants_mount = false;
-        int r;
-
-        assert(m);
-
-        p = get_mount_parameters_fragment(m);
-        if (!p)
-                return 0;
-
-        if (!p->what)
-                return 0;
-
-        if (mount_is_bind(p))
-                return 0;
-
-        if (!is_device_path(p->what))
-                return 0;
-
-        if (path_equal(m->where, "/"))
-                return 0;
-
-        if (mount_is_auto(p) && UNIT(m)->manager->running_as == SYSTEMD_SYSTEM)
-                device_wants_mount = true;
-
-        r = unit_add_node_link(UNIT(m), p->what, device_wants_mount);
-        if (r < 0)
-                return r;
-
-        if (p->passno > 0 &&
-            UNIT(m)->manager->running_as == SYSTEMD_SYSTEM) {
-                char *name;
-                Unit *fsck;
-                /* Let's add in the fsck service */
-
-                /* aka SPECIAL_FSCK_SERVICE */
-                name = unit_name_from_path_instance("systemd-fsck", p->what, ".service");
-                if (!name)
-                        return -ENOMEM;
-
-                r = manager_load_unit_prepare(UNIT(m)->manager, name, NULL, NULL, &fsck);
-                if (r < 0) {
-                        log_warning_unit(name,
-                                         "Failed to prepare unit %s: %s", name, strerror(-r));
-                        free(name);
-                        return r;
-                }
-                free(name);
-
-                SERVICE(fsck)->fsck_passno = p->passno;
-
-                r = unit_add_two_dependencies(UNIT(m), UNIT_AFTER, UNIT_REQUIRES, fsck, true);
-                if (r < 0)
-                        return r;
-        }
-
-        return 0;
-}
-
 static int mount_add_quota_links(Mount *m) {
         int r;
         MountParameters *p;
@@ -557,10 +497,6 @@ static int mount_add_extras(Mount *m) {
                 if (r < 0)
                         return r;
         }
-
-        r = mount_add_device_links(m);
-        if (r < 0)
-                return r;
 
         r = mount_add_mount_links(m);
         if (r < 0)
