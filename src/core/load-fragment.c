@@ -1139,75 +1139,6 @@ int config_parse_exec_mount_flags(const char *unit,
         return 0;
 }
 
-int config_parse_timer(const char *unit,
-                       const char *filename,
-                       unsigned line,
-                       const char *section,
-                       const char *lvalue,
-                       int ltype,
-                       const char *rvalue,
-                       void *data,
-                       void *userdata) {
-
-        Timer *t = data;
-        usec_t u = 0;
-        TimerValue *v;
-        TimerBase b;
-        CalendarSpec *c = NULL;
-        clockid_t id;
-
-        assert(filename);
-        assert(lvalue);
-        assert(rvalue);
-        assert(data);
-
-        if (isempty(rvalue)) {
-                /* Empty assignment resets list */
-                timer_free_values(t);
-                return 0;
-        }
-
-        b = timer_base_from_string(lvalue);
-        if (b < 0) {
-                log_syntax(unit, LOG_ERR, filename, line, -b,
-                           "Failed to parse timer base, ignoring: %s", lvalue);
-                return 0;
-        }
-
-        if (b == TIMER_CALENDAR) {
-                if (calendar_spec_from_string(rvalue, &c) < 0) {
-                        log_syntax(unit, LOG_ERR, filename, line, EINVAL,
-                                   "Failed to parse calendar specification, ignoring: %s",
-                                   rvalue);
-                        return 0;
-                }
-
-                id = CLOCK_REALTIME;
-        } else {
-                if (parse_sec(rvalue, &u) < 0) {
-                        log_syntax(unit, LOG_ERR, filename, line, EINVAL,
-                                   "Failed to parse timer value, ignoring: %s",
-                                   rvalue);
-                        return 0;
-                }
-
-                id = CLOCK_MONOTONIC;
-        }
-
-        v = new0(TimerValue, 1);
-        if (!v)
-                return log_oom();
-
-        v->base = b;
-        v->clock_id = id;
-        v->value = u;
-        v->calendar_spec = c;
-
-        LIST_PREPEND(TimerValue, value, t->values, v);
-
-        return 0;
-}
-
 int config_parse_trigger_unit(
                 const char *unit,
                 const char *filename,
@@ -2694,7 +2625,6 @@ void unit_dump_config_items(FILE *f) {
                 { config_parse_exec_mount_flags,      "MOUNTFLAG [...]" },
                 { config_parse_unit_string_printf,    "STRING" },
                 { config_parse_trigger_unit,          "UNIT" },
-                { config_parse_timer,                 "TIMER" },
                 { config_parse_path_spec,             "PATH" },
                 { config_parse_notify_access,         "ACCESS" },
                 { config_parse_ip_tos,                "TOS" },
