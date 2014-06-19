@@ -20,7 +20,6 @@
 #include "automount.h"
 #include "cgroup.h"
 #include "condition.h"
-#include "device.h"
 #include "execute.h"
 #include "exit-status.h"
 #include "install.h"
@@ -51,7 +50,6 @@ int main(int argc, char **argv) {
         test_table(automount_state, AUTOMOUNT_STATE);
         test_table(cgroup_device_policy, CGROUP_DEVICE_POLICY);
         test_table(condition_type, CONDITION_TYPE);
-        test_table(device_state, DEVICE_STATE);
         test_table(exec_input, EXEC_INPUT);
         test_table(exec_output, EXEC_OUTPUT);
         test_table(job_mode, JOB_MODE);
