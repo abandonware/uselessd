@@ -283,24 +283,6 @@ static int socket_add_mount_links(Socket *s) {
         return 0;
 }
 
-static int socket_add_device_link(Socket *s) {
-        char *t;
-        int r;
-
-        assert(s);
-
-        if (!s->bind_to_device || streq(s->bind_to_device, "lo"))
-                return 0;
-
-        if (asprintf(&t, "/sys/subsystem/net/devices/%s", s->bind_to_device) < 0)
-                return -ENOMEM;
-
-        r = unit_add_node_link(UNIT(s), t, false);
-        free(t);
-
-        return r;
-}
-
 static int socket_add_default_dependencies(Socket *s) {
         int r;
         assert(s);
@@ -360,9 +342,6 @@ static int socket_load(Unit *u) {
                 }
 
                 if ((r = socket_add_mount_links(s)) < 0)
-                        return r;
-
-                if ((r = socket_add_device_link(s)) < 0)
                         return r;
 
                 if (socket_has_exec(s))
