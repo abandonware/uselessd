@@ -271,7 +271,6 @@ typedef enum UnitSetPropertiesMode {
 } UnitSetPropertiesMode;
 
 #include "service.h"
-#include "timer.h"
 #include "socket.h"
 #include "target.h"
 #include "mount.h"
@@ -453,7 +452,6 @@ extern const UnitVTable * const unit_vtable[_UNIT_TYPE_MAX];
 #define UNIT_TRIGGER(u) ((Unit*) set_first((u)->dependencies[UNIT_TRIGGERS]))
 
 DEFINE_CAST(SOCKET, Socket);
-DEFINE_CAST(TIMER, Timer);
 DEFINE_CAST(SERVICE, Service);
 DEFINE_CAST(TARGET, Target);
 DEFINE_CAST(MOUNT, Mount);
