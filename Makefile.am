@@ -336,7 +336,6 @@ dist_systemunit_DATA = \
 	units/sockets.target \
 	units/paths.target \
 	units/suspend.target \
-	units/swap.target \
 	units/slices.target \
 	units/system.slice \
 	units/x-.slice \
@@ -778,8 +777,6 @@ libsystemd_core_la_SOURCES = \
 	src/core/automount.h \
 	src/core/mount.c \
 	src/core/mount.h \
-	src/core/swap.c \
-	src/core/swap.h \
 	src/core/target.c \
 	src/core/target.h \
 	src/core/snapshot.c \
@@ -816,8 +813,6 @@ libsystemd_core_la_SOURCES = \
 	src/core/dbus-mount.h \
 	src/core/dbus-automount.c \
 	src/core/dbus-automount.h \
-	src/core/dbus-swap.c \
-	src/core/dbus-swap.h \
 	src/core/dbus-snapshot.c \
 	src/core/dbus-snapshot.h \
 	src/core/dbus-path.c \
@@ -975,7 +970,6 @@ dbusinterface_DATA += \
 	org.freedesktop.systemd1.Mount.xml \
 	org.freedesktop.systemd1.Automount.xml \
 	org.freedesktop.systemd1.Snapshot.xml \
-	org.freedesktop.systemd1.Swap.xml \
 	org.freedesktop.systemd1.Path.xml
 
 polkitpolicy_in_in_files += \
