@@ -241,14 +241,6 @@ EXEC_CONTEXT_CONFIG_ITEMS(Swap)m4_dnl
 CGROUP_CONTEXT_CONFIG_ITEMS(Swap)m4_dnl
 KILL_CONTEXT_CONFIG_ITEMS(Swap)m4_dnl
 m4_dnl
-Timer.OnCalendar,                config_parse_timer,                 0,                             0
-Timer.OnActiveSec,               config_parse_timer,                 0,                             0
-Timer.OnBootSec,                 config_parse_timer,                 0,                             0
-Timer.OnStartupSec,              config_parse_timer,                 0,                             0
-Timer.OnUnitActiveSec,           config_parse_timer,                 0,                             0
-Timer.OnUnitInactiveSec,         config_parse_timer,                 0,                             0
-Timer.Unit,                      config_parse_trigger_unit,          0,                             0
-m4_dnl
 Path.PathExists,                 config_parse_path_spec,             0,                             0
 Path.PathExistsGlob,             config_parse_path_spec,             0,                             0
 Path.PathChanged,                config_parse_path_spec,             0,                             0
