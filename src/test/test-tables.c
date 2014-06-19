@@ -35,7 +35,6 @@
 #include "snapshot.h"
 #include "socket-util.h"
 #include "socket.h"
-#include "swap.h"
 #include "target.h"
 #include "unit-name.h"
 #include "unit.h"
@@ -79,9 +78,6 @@ int main(int argc, char **argv) {
         test_table(socket_result, SOCKET_RESULT);
         test_table(socket_state, SOCKET_STATE);
         test_table(start_limit_action, SERVICE_START_LIMIT);
-        test_table(swap_exec_command, SWAP_EXEC_COMMAND);
-        test_table(swap_result, SWAP_RESULT);
-        test_table(swap_state, SWAP_STATE);
         test_table(systemd_running_as, SYSTEMD_RUNNING_AS);
         test_table(target_state, TARGET_STATE);
         test_table(unit_active_state, UNIT_ACTIVE_STATE);
