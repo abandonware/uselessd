@@ -234,13 +234,6 @@ m4_dnl
 Automount.Where,                 config_parse_path,                  0,                             offsetof(Automount, where)
 Automount.DirectoryMode,         config_parse_mode,                  0,                             offsetof(Automount, directory_mode)
 m4_dnl
-Swap.What,                       config_parse_path,                  0,                             offsetof(Swap, parameters_fragment.what)
-Swap.Priority,                   config_parse_int,                   0,                             offsetof(Swap, parameters_fragment.priority)
-Swap.TimeoutSec,                 config_parse_sec,                   0,                             offsetof(Swap, timeout_usec)
-EXEC_CONTEXT_CONFIG_ITEMS(Swap)m4_dnl
-CGROUP_CONTEXT_CONFIG_ITEMS(Swap)m4_dnl
-KILL_CONTEXT_CONFIG_ITEMS(Swap)m4_dnl
-m4_dnl
 Path.PathExists,                 config_parse_path_spec,             0,                             0
 Path.PathExistsGlob,             config_parse_path_spec,             0,                             0
 Path.PathChanged,                config_parse_path_spec,             0,                             0
