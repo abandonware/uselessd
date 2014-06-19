@@ -174,7 +174,6 @@ LOCAL_FS_TARGET_WANTS =
 MULTI_USER_TARGET_WANTS =
 SYSINIT_TARGET_WANTS =
 SOCKETS_TARGET_WANTS =
-TIMERS_TARGET_WANTS =
 
 SYSTEM_UNIT_ALIASES =
 USER_UNIT_ALIASES =
@@ -192,7 +191,6 @@ install-target-wants-hook:
 	what="$(MULTI_USER_TARGET_WANTS)" && wants=multi-user.target && $(add-wants)
 	what="$(SYSINIT_TARGET_WANTS)" && wants=sysinit.target && $(add-wants)
 	what="$(SOCKETS_TARGET_WANTS)" && wants=sockets.target && $(add-wants)
-	what="$(TIMERS_TARGET_WANTS)" && wants=timers.target && $(add-wants)
 	what="$(SLICES_TARGET_WANTS)" && wants=slices.target && $(add-wants)
 
 define add-wants
@@ -336,7 +334,6 @@ dist_systemunit_DATA = \
 	units/sigpwr.target \
 	units/sleep.target \
 	units/sockets.target \
-	units/timers.target \
 	units/paths.target \
 	units/suspend.target \
 	units/swap.target \
@@ -789,8 +786,6 @@ libsystemd_core_la_SOURCES = \
 	src/core/snapshot.h \
 	src/core/socket.c \
 	src/core/socket.h \
-	src/core/timer.c \
-	src/core/timer.h \
 	src/core/path.c \
 	src/core/path.h \
 	src/core/slice.c \
@@ -815,8 +810,6 @@ libsystemd_core_la_SOURCES = \
 	src/core/dbus-service.h \
 	src/core/dbus-socket.c \
 	src/core/dbus-socket.h \
-	src/core/dbus-timer.c \
-	src/core/dbus-timer.h \
 	src/core/dbus-target.c \
 	src/core/dbus-target.h \
 	src/core/dbus-mount.c \
@@ -978,7 +971,6 @@ dbusinterface_DATA += \
 	org.freedesktop.systemd1.Unit.xml \
 	org.freedesktop.systemd1.Service.xml \
 	org.freedesktop.systemd1.Socket.xml \
-	org.freedesktop.systemd1.Timer.xml \
 	org.freedesktop.systemd1.Target.xml \
 	org.freedesktop.systemd1.Mount.xml \
 	org.freedesktop.systemd1.Automount.xml \
@@ -1476,9 +1468,6 @@ systemd_tmpfiles_LDADD = \
 rootbin_PROGRAMS += \
 	systemd-tmpfiles
 
-dist_systemunit_DATA += \
-	units/systemd-tmpfiles-clean.timer
-
 nodist_systemunit_DATA += \
 	units/systemd-tmpfiles-setup-dev.service \
 	units/systemd-tmpfiles-setup.service \
@@ -1500,9 +1489,6 @@ SYSINIT_TARGET_WANTS += \
 
 dist_zshcompletion_DATA += \
 	shell-completion/zsh/_systemd-tmpfiles
-
-TIMERS_TARGET_WANTS += \
-	systemd-tmpfiles-clean.timer
 
 INSTALL_DIRS += \
 	$(tmpfilesdir) \
@@ -2134,7 +2120,6 @@ SYSTEM_UNIT_ALIASES += \
 USER_UNIT_ALIASES += \
 	$(systemunitdir)/shutdown.target shutdown.target \
 	$(systemunitdir)/sockets.target sockets.target \
-	$(systemunitdir)/timers.target timers.target \
 	$(systemunitdir)/paths.target paths.target \
 	$(systemunitdir)/bluetooth.target bluetooth.target \
 	$(systemunitdir)/printer.target printer.target \
