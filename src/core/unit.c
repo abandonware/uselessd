@@ -56,7 +56,6 @@ const UnitVTable * const unit_vtable[_UNIT_TYPE_MAX] = {
         [UNIT_MOUNT] = &mount_vtable,
         [UNIT_AUTOMOUNT] = &automount_vtable,
         [UNIT_SNAPSHOT] = &snapshot_vtable,
-        [UNIT_SWAP] = &swap_vtable,
         [UNIT_PATH] = &path_vtable,
         [UNIT_SLICE] = &slice_vtable,
         [UNIT_SCOPE] = &scope_vtable
