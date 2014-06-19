@@ -39,7 +39,6 @@ static const char* const unit_type_table[_UNIT_TYPE_MAX] = {
         [UNIT_MOUNT] = "mount",
         [UNIT_AUTOMOUNT] = "automount",
         [UNIT_SNAPSHOT] = "snapshot",
-        [UNIT_TIMER] = "timer",
         [UNIT_SWAP] = "swap",
         [UNIT_PATH] = "path",
         [UNIT_SLICE] = "slice",
