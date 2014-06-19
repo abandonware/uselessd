@@ -37,7 +37,6 @@
 #include "socket.h"
 #include "swap.h"
 #include "target.h"
-#include "timer.h"
 #include "unit-name.h"
 #include "unit.h"
 #include "util.h"
@@ -85,9 +84,6 @@ int main(int argc, char **argv) {
         test_table(swap_state, SWAP_STATE);
         test_table(systemd_running_as, SYSTEMD_RUNNING_AS);
         test_table(target_state, TARGET_STATE);
-        test_table(timer_base, TIMER_BASE);
-        test_table(timer_result, TIMER_RESULT);
-        test_table(timer_state, TIMER_STATE);
         test_table(unit_active_state, UNIT_ACTIVE_STATE);
         test_table(unit_dependency, UNIT_DEPENDENCY);
         test_table(unit_file_change_type, UNIT_FILE_CHANGE_TYPE);
