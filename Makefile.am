@@ -275,8 +275,7 @@ rootlibexec_PROGRAMS = \
 
 systemgenerator_PROGRAMS = \
 	systemd-getty-generator \
-	systemd-fstab-generator \
-	systemd-system-update-generator
+	systemd-fstab-generator
 
 systemd_analyze_SOURCES = \
 	src/analyze/systemd-analyze.c
@@ -359,7 +358,6 @@ dist_systemunit_DATA = \
 	units/smartcard.target \
 	units/systemd-ask-password-wall.path \
 	units/systemd-ask-password-console.path \
-	units/system-update.target \
 	units/initrd-switch-root.target
 
 nodist_systemunit_DATA = \
@@ -785,8 +783,6 @@ libsystemd_core_la_SOURCES = \
 	src/core/mount.h \
 	src/core/swap.c \
 	src/core/swap.h \
-	src/core/device.c \
-	src/core/device.h \
 	src/core/target.c \
 	src/core/target.h \
 	src/core/snapshot.c \
@@ -831,8 +827,6 @@ libsystemd_core_la_SOURCES = \
 	src/core/dbus-swap.h \
 	src/core/dbus-snapshot.c \
 	src/core/dbus-snapshot.h \
-	src/core/dbus-device.c \
-	src/core/dbus-device.h \
 	src/core/dbus-path.c \
 	src/core/dbus-path.h \
 	src/core/dbus-slice.c \
@@ -986,7 +980,6 @@ dbusinterface_DATA += \
 	org.freedesktop.systemd1.Socket.xml \
 	org.freedesktop.systemd1.Timer.xml \
 	org.freedesktop.systemd1.Target.xml \
-	org.freedesktop.systemd1.Device.xml \
 	org.freedesktop.systemd1.Mount.xml \
 	org.freedesktop.systemd1.Automount.xml \
 	org.freedesktop.systemd1.Snapshot.xml \
@@ -1599,14 +1592,6 @@ systemd_fstab_generator_SOURCES = \
 	src/core/mount-setup.c
 
 systemd_fstab_generator_LDADD = \
-	libsystemd-label.la \
-	libsystemd-shared.la
-
-# ------------------------------------------------------------------------------
-systemd_system_update_generator_SOURCES = \
-	src/system-update-generator/system-update-generator.c
-
-systemd_system_update_generator_LDADD = \
 	libsystemd-label.la \
 	libsystemd-shared.la
 
