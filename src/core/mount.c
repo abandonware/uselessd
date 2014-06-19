@@ -417,8 +417,6 @@ static int mount_fix_timeouts(Mount *m) {
         }
 
         SET_FOREACH(other, UNIT(m)->dependencies[UNIT_AFTER], i) {
-                if (other->type != UNIT_DEVICE)
-                        continue;
 
                 other->job_timeout = u;
         }
