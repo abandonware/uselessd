@@ -23,7 +23,9 @@
 
 #include <stdbool.h>
 
-#define FTW_CONTINUE 0 /* zero meaning keep traversing, for non-glibc compat */
+#ifndef __GLIBC__
+	#define FTW_CONTINUE 0 /* zero meaning keep traversing, for non-glibc compat */
+#endif
 
 int mount_setup_early(void);
 
