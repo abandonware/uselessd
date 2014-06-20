@@ -24,8 +24,10 @@
 #include "util.h"
 
 /* taken from <paths.h>, here for compatibility */
-#define _PATH_UTMPX	"/var/run/utmp"
-#define _PATH_WTMPX	"/var/log/wtmp"
+#ifndef __GLIBC__
+	#define _PATH_UTMPX	"/var/run/utmp"
+	#define _PATH_WTMPX	"/var/log/wtmp"
+#endif
 
 int utmp_get_runlevel(int *runlevel, int *previous);
 
