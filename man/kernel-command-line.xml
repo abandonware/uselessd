@@ -188,19 +188,6 @@
                         </varlistentry>
 
                         <varlistentry>
-                                <term><varname>systemd.journald.forward_to_syslog=</varname></term>
-                                <term><varname>systemd.journald.forward_to_kmsg=</varname></term>
-                                <term><varname>systemd.journald.forward_to_console=</varname></term>
-
-                                <listitem>
-                                        <para>Parameters understood by
-                                        the journal service. For
-                                        details, see
-                                        <citerefentry><refentrytitle>systemd-journald.service</refentrytitle><manvolnum>8</manvolnum></citerefentry>.</para>
-                                </listitem>
-                        </varlistentry>
-
-                        <varlistentry>
                                 <term><varname>vconsole.keymap=</varname></term>
                                 <term><varname>vconsole.keymap.toggle=</varname></term>
                                 <term><varname>vconsole.font=</varname></term>
@@ -216,23 +203,6 @@
                         </varlistentry>
 
                         <varlistentry>
-                                <term><varname>udev.log-priority=</varname></term>
-                                <term><varname>rd.udev.log-priority=</varname></term>
-                                <term><varname>udev.children-max=</varname></term>
-                                <term><varname>rd.udev.children-max=</varname></term>
-                                <term><varname>udev.exec-delay=</varname></term>
-                                <term><varname>rd.udev.exec-delay=</varname></term>
-                                <term><varname>net.ifnames=</varname></term>
-
-                                <listitem>
-                                        <para>Parameters understood by
-                                        the device event managing daemon. For
-                                        details, see
-                                        <citerefentry><refentrytitle>systemd-udevd.service</refentrytitle><manvolnum>8</manvolnum></citerefentry>.</para>
-                                </listitem>
-                        </varlistentry>
-
-                        <varlistentry>
                                 <term><varname>plymouth.enable=</varname></term>
 
                                 <listitem>
@@ -240,26 +210,6 @@
                                         the Plymouth boot splash. For
                                         details, see
                                         <citerefentry><refentrytitle>plymouth</refentrytitle><manvolnum>8</manvolnum></citerefentry>.</para>
-                                </listitem>
-                        </varlistentry>
-
-                        <varlistentry>
-                                <term><varname>luks=</varname></term>
-                                <term><varname>rd.luks=</varname></term>
-                                <term><varname>luks.crypttab=</varname></term>
-                                <term><varname>rd.luks.crypttab=</varname></term>
-                                <term><varname>luks.uuid=</varname></term>
-                                <term><varname>rd.luks.uuid=</varname></term>
-                                <term><varname>luks.options=</varname></term>
-                                <term><varname>rd.luks.options=</varname></term>
-                                <term><varname>luks.key=</varname></term>
-                                <term><varname>rd.luks.key=</varname></term>
-
-                                <listitem>
-                                        <para>Configures the LUKS
-                                        full-disk encryption logic at
-                                        boot. For details, see
-                                        <citerefentry><refentrytitle>systemd-cryptsetup-generator</refentrytitle><manvolnum>8</manvolnum></citerefentry>.</para>
                                 </listitem>
                         </varlistentry>
 
@@ -299,11 +249,8 @@
                           <citerefentry><refentrytitle>dracut.cmdline</refentrytitle><manvolnum>7</manvolnum></citerefentry>,
                           <citerefentry><refentrytitle>systemd-fsck@.service</refentrytitle><manvolnum>8</manvolnum></citerefentry>,
                           <citerefentry><refentrytitle>systemd-quotacheck.service</refentrytitle><manvolnum>8</manvolnum></citerefentry>,
-                          <citerefentry><refentrytitle>systemd-journald.service</refentrytitle><manvolnum>8</manvolnum></citerefentry>,
                           <citerefentry><refentrytitle>systemd-vconsole-setup.service</refentrytitle><manvolnum>8</manvolnum></citerefentry>,
-                          <citerefentry><refentrytitle>systemd-udevd.service</refentrytitle><manvolnum>8</manvolnum></citerefentry>,
                           <citerefentry><refentrytitle>plymouth</refentrytitle><manvolnum>8</manvolnum></citerefentry>,
-                          <citerefentry><refentrytitle>systemd-cryptsetup-generator</refentrytitle><manvolnum>8</manvolnum></citerefentry>,
                           <citerefentry><refentrytitle>systemd-fstab-generator</refentrytitle><manvolnum>8</manvolnum></citerefentry>,
                           <citerefentry><refentrytitle>systemd-modules-load.service</refentrytitle><manvolnum>8</manvolnum></citerefentry>
                   </para>

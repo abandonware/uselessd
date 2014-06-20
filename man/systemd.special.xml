@@ -51,7 +51,6 @@
                 <para><filename>basic.target</filename>,
                 <filename>bluetooth.target</filename>,
                 <filename>ctrl-alt-del.target</filename>,
-                <filename>cryptsetup.target</filename>,
                 <filename>dbus.service</filename>,
                 <filename>dbus.socket</filename>,
                 <filename>default.target</filename>,
@@ -94,12 +93,9 @@
                 <filename>sockets.target</filename>,
                 <filename>sound.target</filename>,
                 <filename>suspend.target</filename>,
-                <filename>swap.target</filename>,
                 <filename>sysinit.target</filename>,
                 <filename>syslog.socket</filename>,
-                <filename>system-update.target</filename>,
                 <filename>time-sync.target</filename>,
-                <filename>timers.target</filename>,
                 <filename>umount.target</filename>,
                 <filename>-.slice</filename>,
                 <filename>system.slice</filename>,
@@ -152,15 +148,6 @@
                                         should be aliased (symlinked)
                                         to
                                         <filename>reboot.target</filename>.</para>
-                                </listitem>
-                        </varlistentry>
-                        <varlistentry>
-                                <term><filename>cryptsetup.target</filename></term>
-                                <listitem>
-                                        <para>A target that pulls in
-                                        setup services for all
-                                        encrypted block
-                                        devices.</para>
                                 </listitem>
                         </varlistentry>
                         <varlistentry>
@@ -643,15 +630,6 @@
                                 </listitem>
                         </varlistentry>
                         <varlistentry>
-                                <term><filename>swap.target</filename></term>
-                                <listitem>
-                                        <para>Similar to
-                                        <filename>local-fs.target</filename>, but for swap
-                                        partitions and swap
-                                        files.</para>
-                                </listitem>
-                        </varlistentry>
-                        <varlistentry>
                                 <term><filename>sysinit.target</filename></term>
                                 <listitem>
                                         <para>A special target unit
@@ -672,46 +650,6 @@
                                         url="http://www.freedesktop.org/wiki/Software/systemd/syslog">Syslog
                                         Interface</ulink>
                                         document.</para>
-                                </listitem>
-                        </varlistentry>
-                        <varlistentry>
-                                <term><filename>system-update.target</filename></term>
-                                <listitem>
-                                        <para>A special target unit
-                                        that is used for off-line
-                                        system updates.
-                                        <citerefentry><refentrytitle>systemd-system-update-generator</refentrytitle><manvolnum>8</manvolnum></citerefentry>
-                                        will redirect the boot process
-                                        to this target if
-                                        <filename>/system-update</filename>
-                                        exists. For more information
-                                        see the <ulink
-                                        url="http://freedesktop.org/wiki/Software/systemd/SystemUpdates">System
-                                        Updates
-                                        Specification</ulink>.</para>
-                                </listitem>
-                        </varlistentry>
-                        <varlistentry>
-                                <term><filename>timers.target</filename></term>
-                                <listitem>
-                                        <para>A special target unit
-                                        that sets up all timer
-                                        units (see
-                                        <citerefentry><refentrytitle>systemd.timer</refentrytitle><manvolnum>5</manvolnum></citerefentry>
-                                        for details) that shall be
-                                        active after boot.</para>
-
-                                        <para>It is recommended that
-                                        timer units installed by
-                                        applications get pulled in via
-                                        <varname>Wants=</varname>
-                                        dependencies from this
-                                        unit. This is best configured
-                                        via
-                                        <varname>WantedBy=timers.target</varname>
-                                        in the timer unit's
-                                        <literal>[Install]</literal>
-                                        section.</para>
                                 </listitem>
                         </varlistentry>
                         <varlistentry>

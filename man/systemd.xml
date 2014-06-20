@@ -333,12 +333,6 @@
                         synchronization points during boot-up, see
                         <citerefentry><refentrytitle>systemd.target</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</para></listitem>
 
-                        <listitem><para>Device units expose kernel
-                        devices in systemd and may be used to
-                        implement device-based activation. For details
-                        see
-                        <citerefentry><refentrytitle>systemd.device</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</para></listitem>
-
                         <listitem><para>Mount units control mount
                         points in the file system, for details see
                         <citerefentry><refentrytitle>systemd.mount</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</para></listitem>
@@ -355,16 +349,6 @@
                         activating the saved snapshot unit. For more
                         information see
                         <citerefentry><refentrytitle>systemd.snapshot</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</para></listitem>
-
-                        <listitem><para>Timer units are useful for
-                        triggering activation of other units based on
-                        timers. You may find details in
-                        <citerefentry><refentrytitle>systemd.timer</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</para></listitem>
-
-                        <listitem><para>Swap units are very similar to
-                        mount units and encapsulate memory swap
-                        partitions or files of the operating
-                        system. They are described in <citerefentry><refentrytitle>systemd.swap</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</para></listitem>
 
                         <listitem><para>Path units may be used
                         to activate other services when file system
@@ -1284,7 +1268,6 @@
                         <citerefentry><refentrytitle>systemd-system.conf</refentrytitle><manvolnum>5</manvolnum></citerefentry>,
                         <citerefentry><refentrytitle>locale.conf</refentrytitle><manvolnum>5</manvolnum></citerefentry>,
                         <citerefentry><refentrytitle>systemctl</refentrytitle><manvolnum>1</manvolnum></citerefentry>,
-                        <citerefentry><refentrytitle>journalctl</refentrytitle><manvolnum>1</manvolnum></citerefentry>,
                         <citerefentry><refentrytitle>systemd-notify</refentrytitle><manvolnum>1</manvolnum></citerefentry>,
                         <citerefentry><refentrytitle>daemon</refentrytitle><manvolnum>7</manvolnum></citerefentry>,
                         <citerefentry><refentrytitle>sd-daemon</refentrytitle><manvolnum>3</manvolnum></citerefentry>,
