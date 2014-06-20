@@ -376,23 +376,24 @@ static CGroupControllerMask unit_get_siblings_mask(Unit *u) {
 }
 
 static int unit_create_cgroups(Unit *u, CGroupControllerMask mask) {
-        char *path = NULL;
+        _cleanup_free_ char *path;
         int r;
-        bool is_in_hash = false;
+        bool was_in_hash = false;
 
         assert(u);
 
         path = unit_default_cgroup_path(u);
         if (!path)
-                return -ENOMEM;
+                return log_oom();
 
         r = hashmap_put(u->manager->cgroup_unit, path, u);
-        if (r == 0)
-                is_in_hash = true;
-
-        if (r < 0) {
-                log_error("cgroup %s exists already: %s", path, strerror(-r));
-                free(path);
+        
+        if (r == 0) {
+                was_in_hash = true;
+        } else if (r < 0) {
+			    log_error(r == -EEXIST ?
+                              "cgroup %s exists already: %s" : "hashmap_put failed for %s: %s",
+                              path, strerror(-r));
                 return r;
         }
 
@@ -405,13 +406,15 @@ static int unit_create_cgroups(Unit *u, CGroupControllerMask mask) {
         if (u->cgroup_path) {
                 r = cg_migrate_everywhere(u->manager->cgroup_supported, u->cgroup_path, path);
                 if (r < 0)
-                        log_error("Failed to migrate cgroup %s: %s", path, strerror(-r));
+                         log_error("Failed to migrate cgroup from %s to %s: %s",
+                                       u->cgroup_path, path, strerror(-r));
         }
 
-        if (!is_in_hash) {
+        if (!was_in_hash) {
                 /* And remember the new data */
                 free(u->cgroup_path);
                 u->cgroup_path = path;
+                path = NULL;
         }
 
         u->cgroup_realized = true;
@@ -632,7 +635,18 @@ int manager_setup_cgroup(Manager *m) {
 
         log_debug("Using cgroup controller " SYSTEMD_CGROUP_CONTROLLER ". File system hierarchy is at %s.", path);
 
-        /* 3. Realize the system slice and put us in there */
+        /* 3. Install agent */
+        if (m->running_as == SYSTEMD_SYSTEM) {
+                r = cg_install_release_agent(SYSTEMD_CGROUP_CONTROLLER, SYSTEMD_CGROUP_AGENT_PATH);
+                if (r < 0)
+                        log_warning("Failed to install release agent, ignoring: %s", strerror(-r));
+                else if (r > 0)
+                        log_debug("Installed release agent.");
+                else
+                        log_debug("Release agent already installed.");
+        }
+
+        /* 4. Realize the system slice and put us in there */
         if (m->running_as == SYSTEMD_SYSTEM) {
                 a = strappenda(m->cgroup_root, "/" SPECIAL_SYSTEM_SLICE);
                 r = cg_create_and_attach(SYSTEMD_CGROUP_CONTROLLER, a, 0);
@@ -643,7 +657,7 @@ int manager_setup_cgroup(Manager *m) {
                 return r;
         }
 
-        /* 4. And pin it, so that it cannot be unmounted */
+        /* 5. And pin it, so that it cannot be unmounted */
         if (m->pin_cgroupfs_fd >= 0)
                 close_nointr_nofail(m->pin_cgroupfs_fd);
 
@@ -653,10 +667,10 @@ int manager_setup_cgroup(Manager *m) {
                 return -errno;
         }
 
-        /* 5. Figure out which controllers are supported */
+        /* 6. Figure out which controllers are supported */
         m->cgroup_supported = cg_mask_supported();
 
-        /* 6. Always enable hierarchial support if it exists... */
+        /* 7.  Always enable hierarchial support if it exists... */
         cg_set_attribute("memory", "/", "memory.use_hierarchy", "1");
 
         return 0;
