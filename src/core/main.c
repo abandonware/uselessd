@@ -64,10 +64,7 @@
 #endif
 #include "hostname-setup.h"
 #include "machine-id-setup.h"
-#include "selinux-setup.h"
-#include "ima-setup.h"
 #include "fileio.h"
-#include "smack-setup.h"
 
 static enum {
         ACTION_RUN,
@@ -1282,12 +1279,6 @@ int main(int argc, char *argv[]) {
 
                 if (!skip_setup) {
                         mount_setup_early();
-                        if (selinux_setup(&loaded_policy) < 0)
-                                goto finish;
-                        if (ima_setup() < 0)
-                                goto finish;
-                        if (smack_setup() < 0)
-                                goto finish;
                 }
 
                 if (label_init(NULL) < 0)
