@@ -27,10 +27,6 @@
 #include <sys/statvfs.h>
 #include <fnmatch.h>
 
-#ifdef HAVE_SELINUX
-#include <selinux/selinux.h>
-#endif
-
 #include <systemd/sd-id128.h>
 #include "util.h"
 #include "condition.h"
@@ -170,10 +166,6 @@ static bool test_apparmor_enabled(void) {
 }
 
 static bool test_security(const char *parameter) {
-#ifdef HAVE_SELINUX
-        if (streq(parameter, "selinux"))
-                return is_selinux_enabled() > 0;
-#endif
         if (streq(parameter, "apparmor"))
                 return test_apparmor_enabled();
         if (streq(parameter, "ima"))
