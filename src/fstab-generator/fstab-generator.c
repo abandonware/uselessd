@@ -38,6 +38,7 @@
 static const char *arg_dest = "/tmp";
 static bool arg_enabled = true;
 
+/* Unused, but leave in for now.
 static int mount_find_pri(struct mntent *me, int *ret) {
         char *end, *pri;
         unsigned long r;
@@ -62,6 +63,7 @@ static int mount_find_pri(struct mntent *me, int *ret) {
         *ret = (int) r;
         return 1;
 }
+*/
 
 static bool mount_is_network(struct mntent *me) {
         assert(me);

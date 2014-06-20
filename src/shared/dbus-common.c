@@ -214,9 +214,6 @@ int bus_connect_system_ssh(const char *user, const char *host, DBusConnection **
 }
 
 int bus_connect_system_polkit(DBusConnection **_bus, DBusError *error) {
-        DBusConnection *bus;
-        int r;
-
         assert(_bus);
 
         /* Don't bother with PolicyKit if we are root */

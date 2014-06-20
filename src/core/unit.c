@@ -654,8 +654,6 @@ Unit* unit_follow_merge(Unit *u) {
 }
 
 int unit_add_exec_dependencies(Unit *u, ExecContext *c) {
-        int r;
-
         assert(u);
         assert(c);
 

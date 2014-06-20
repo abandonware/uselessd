@@ -377,6 +377,7 @@ static int write_to_kmsg(
         return 1;
 }
 
+/* Unused, but leave in for now.
 static int log_do_header(char *header, size_t size,
                          int level,
                          const char *file, int line, const char *func,
@@ -392,21 +393,22 @@ static int log_do_header(char *header, size_t size,
                  LOG_PRI(level),
                  LOG_FAC(level),
                  file ? "CODE_FILE=" : "",
-                 file ? LINE_MAX : 0, file, /* %.0s means no output */
+                 file ? LINE_MAX : 0, file, // %.0s means no output
                  file ? "\n" : "",
                  line ? "CODE_LINE=" : "",
-                 line ? 1 : 0, line, /* %.0d means no output too, special case for 0 */
+                 line ? 1 : 0, line, // %.0d means no output too, special case for 0
                  line ? "\n" : "",
                  func ? "CODE_FUNCTION=" : "",
                  func ? LINE_MAX : 0, func,
                  func ? "\n" : "",
                  object ? object_name : "",
-                 object ? LINE_MAX : 0, object, /* %.0s means no output */
+                 object ? LINE_MAX : 0, object, // %.0s means no output
                  object ? "\n" : "",
                  program_invocation_short_name);
         header[size - 1] = '\0';
         return 0;
 }
+*/
 
 static int log_dispatch(
         int level,

@@ -258,11 +258,13 @@ static bool mount_is_bind(MountParameters *p) {
         return false;
 }
 
+/* Unused, but leave for now.
 static bool mount_is_auto(MountParameters *p) {
         assert(p);
 
         return !mount_test_option(p->options, "noauto");
 }
+*/
 
 static bool needs_quota(MountParameters *p) {
         assert(p);
