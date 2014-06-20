@@ -293,20 +293,6 @@ fi
 AM_CONDITIONAL(HAVE_BLKID, [test "$have_blkid" = "yes"])
 
 # ------------------------------------------------------------------------------
-have_ima=yes
-AC_ARG_ENABLE([ima], AS_HELP_STRING([--disable-ima],[Disable optional IMA support]),
-                [case "${enableval}" in
-                        yes) have_ima=yes ;;
-                        no) have_ima=no ;;
-                        *) AC_MSG_ERROR(bad value ${enableval} for --disable-ima) ;;
-                esac],
-                [have_ima=yes])
-
-if test "x${have_ima}" != xno ; then
-        AC_DEFINE(HAVE_IMA, 1, [Define if IMA is available])
-fi
-
-# ------------------------------------------------------------------------------
 have_chkconfig=yes
 AC_ARG_ENABLE([chkconfig], AS_HELP_STRING([--disable-chkconfig],[Disable optional chkconfig support]),
                 [case "${enableval}" in
@@ -324,34 +310,6 @@ AC_ARG_ENABLE([chkconfig], AS_HELP_STRING([--disable-chkconfig],[Disable optiona
 if test "x${have_chkconfig}" != xno ; then
         AC_DEFINE(HAVE_CHKCONFIG, 1, [Define if CHKCONFIG is available])
 fi
-
-# ------------------------------------------------------------------------------
-have_selinux=no
-AC_ARG_ENABLE(selinux, AS_HELP_STRING([--disable-selinux], [Disable optional SELINUX support]))
-if test "x$enable_selinux" != "xno"; then
-        PKG_CHECK_MODULES([SELINUX], [libselinux >= 2.1.9],
-                [AC_DEFINE(HAVE_SELINUX, 1, [Define if SELinux is available]) have_selinux=yes], have_selinux=no)
-        if test "x$have_selinux" = xno -a "x$enable_selinux" = xyes; then
-                AC_MSG_ERROR([*** SELinux support requested but libraries not found])
-        fi
-fi
-AM_CONDITIONAL(HAVE_SELINUX, [test "$have_selinux" = "yes"])
-
-AC_ARG_WITH(debug-shell,
-        AS_HELP_STRING([--with-debug-shell=PATH],
-                [Path to debug shell binary]),
-        [SUSHELL="$withval"],[
-        AS_IF([test "x${have_selinux}" != "xno"], [SUSHELL="/sbin/sushell"] , [SUSHELL="/bin/sh"])])
-
-AC_SUBST(SUSHELL)
-
-AC_ARG_WITH([debug-tty],
-        AS_HELP_STRING([--with-debug-tty=PATH],
-                [Specify the tty device for debug shell]),
-        [DEBUGTTY="$withval"],
-        [DEBUGTTY=/dev/tty9])
-
-AC_SUBST(DEBUGTTY)
 
 # ------------------------------------------------------------------------------
 have_xz=no
@@ -478,31 +436,6 @@ else
 fi
 AC_SUBST(XATTR_LIBS)
 AM_CONDITIONAL([HAVE_XATTR], [test "x$have_xattr" != xno])
-
-# ------------------------------------------------------------------------------
-AC_ARG_ENABLE([smack], AS_HELP_STRING([--disable-smack],[Disable optional SMACK support]),
-                [case "${enableval}" in
-                        yes) have_smack=yes ;;
-                        no) have_smack=no ;;
-                        *) AC_MSG_ERROR(bad value ${enableval} for --disable-smack) ;;
-                esac],
-                [have_smack=auto])
-
-if test "x${have_xattr}" = xno; then
-        if test "x${have_smack}" = xyes; then
-                AC_MSG_ERROR(SMACK requires xattr support)
-        else
-                have_smack=no
-        fi
-else
-        if test "x${have_smack}" = xauto; then
-                have_smack=yes
-        fi
-fi
-
-if test "x${have_smack}" = xyes ; then
-        AC_DEFINE(HAVE_SMACK, 1, [Define if SMACK is available])
-fi
 
 # ------------------------------------------------------------------------------
 AC_ARG_ENABLE([gcrypt],
@@ -851,9 +784,6 @@ AC_MSG_RESULT([
 
         PAM:                     ${have_pam}
         AUDIT:                   ${have_audit}
-        IMA:                     ${have_ima}
-        SELinux:                 ${have_selinux}
-        SMACK:                   ${have_smack}
         XZ:                      ${have_xz}
         ACL:                     ${have_acl}
         XATTR:                   ${have_xattr}

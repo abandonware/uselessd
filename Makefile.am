@@ -693,8 +693,6 @@ libsystemd_label_la_SOURCES = \
 	src/shared/socket-label.c \
 	src/shared/label.c \
 	src/shared/label.h \
-	src/shared/selinux-util.c \
-	src/shared/selinux-util.h \
 	src/shared/mkdir-label.c \
 	src/shared/ask-password-api.c \
 	src/shared/ask-password-api.h \
@@ -704,11 +702,7 @@ libsystemd_label_la_SOURCES = \
 	src/shared/dev-setup.h
 
 libsystemd_label_la_CFLAGS = \
-	$(AM_CFLAGS) \
-	$(SELINUX_CFLAGS)
-
-libsystemd_label_la_LIBADD = \
-	$(SELINUX_LIBS)
+	$(AM_CFLAGS)
 
 # ------------------------------------------------------------------------------
 noinst_LTLIBRARIES += \
@@ -797,6 +791,8 @@ libsystemd_core_la_SOURCES = \
 	src/core/kill.h \
 	src/core/dbus.c \
 	src/core/dbus.h \
+	src/core/selinux-access.c \
+	src/core/selinux-access.h \
 	src/core/dbus-manager.c \
 	src/core/dbus-manager.h \
 	src/core/dbus-unit.c \
@@ -829,14 +825,6 @@ libsystemd_core_la_SOURCES = \
 	src/core/dbus-cgroup.h \
 	src/core/cgroup.c \
 	src/core/cgroup.h \
-	src/core/selinux-access.c \
-	src/core/selinux-access.h \
-	src/core/selinux-setup.c \
-	src/core/selinux-setup.h \
-	src/core/smack-setup.c \
-	src/core/smack-setup.h \
-	src/core/ima-setup.c \
-	src/core/ima-setup.h \
 	src/core/locale-setup.h \
 	src/core/locale-setup.c \
 	src/core/hostname-setup.c \
