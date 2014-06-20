@@ -6,10 +6,7 @@ MANPAGES += \
 	man/daemon.7 \
 	man/halt.8 \
 	man/hostname.5 \
-	man/journalctl.1 \
-	man/journald.conf.5 \
 	man/kernel-command-line.7 \
-	man/locale.conf.5 \
 	man/localtime.5 \
 	man/machine-id.5 \
 	man/machine-info.5 \
@@ -17,26 +14,11 @@ MANPAGES += \
 	man/runlevel.8 \
 	man/sd-daemon.3 \
 	man/sd-id128.3 \
-	man/sd-journal.3 \
 	man/sd_booted.3 \
 	man/sd_id128_get_machine.3 \
 	man/sd_id128_randomize.3 \
 	man/sd_id128_to_string.3 \
 	man/sd_is_fifo.3 \
-	man/sd_journal_add_match.3 \
-	man/sd_journal_get_catalog.3 \
-	man/sd_journal_get_cursor.3 \
-	man/sd_journal_get_cutoff_realtime_usec.3 \
-	man/sd_journal_get_data.3 \
-	man/sd_journal_get_fd.3 \
-	man/sd_journal_get_realtime_usec.3 \
-	man/sd_journal_get_usage.3 \
-	man/sd_journal_next.3 \
-	man/sd_journal_open.3 \
-	man/sd_journal_print.3 \
-	man/sd_journal_query_unique.3 \
-	man/sd_journal_seek_head.3 \
-	man/sd_journal_stream_fd.3 \
 	man/sd_listen_fds.3 \
 	man/sd_notify.3 \
 	man/shutdown.8 \
@@ -46,7 +28,6 @@ MANPAGES += \
 	man/systemd-analyze.1 \
 	man/systemd-ask-password-console.service.8 \
 	man/systemd-ask-password.1 \
-	man/systemd-cat.1 \
 	man/systemd-cgls.1 \
 	man/systemd-cgtop.1 \
 	man/systemd-delta.1 \
@@ -55,11 +36,9 @@ MANPAGES += \
 	man/systemd-fsck@.service.8 \
 	man/systemd-fstab-generator.8 \
 	man/systemd-getty-generator.8 \
-	man/systemd-gpt-auto-generator.8 \
 	man/systemd-halt.service.8 \
 	man/systemd-inhibit.1 \
 	man/systemd-initctl.service.8 \
-	man/systemd-journald.service.8 \
 	man/systemd-machine-id-setup.1 \
 	man/systemd-notify.1 \
 	man/systemd-remount-fs.service.8 \
@@ -67,17 +46,13 @@ MANPAGES += \
 	man/systemd-sleep.conf.5 \
 	man/systemd-suspend.service.8 \
 	man/systemd-sysctl.service.8 \
-	man/systemd-system-update-generator.8 \
 	man/systemd-system.conf.5 \
 	man/systemd-tmpfiles.8 \
 	man/systemd-tty-ask-password-agent.1 \
-	man/systemd-udevd.service.8 \
 	man/systemd-update-utmp.service.8 \
 	man/systemd.1 \
 	man/systemd.automount.5 \
-	man/systemd.device.5 \
 	man/systemd.exec.5 \
-	man/systemd.journal-fields.7 \
 	man/systemd.kill.5 \
 	man/systemd.mount.5 \
 	man/systemd.path.5 \
@@ -89,15 +64,11 @@ MANPAGES += \
 	man/systemd.snapshot.5 \
 	man/systemd.socket.5 \
 	man/systemd.special.7 \
-	man/systemd.swap.5 \
 	man/systemd.target.5 \
 	man/systemd.time.7 \
-	man/systemd.timer.5 \
 	man/systemd.unit.5 \
 	man/telinit.8 \
-	man/tmpfiles.d.5 \
-	man/udev.7 \
-	man/udevadm.8
+	man/tmpfiles.d.5
 MANPAGES_ALIAS += \
 	man/SD_ALERT.3 \
 	man/SD_CRIT.3 \
@@ -109,18 +80,6 @@ MANPAGES_ALIAS += \
 	man/SD_ID128_FORMAT_VAL.3 \
 	man/SD_ID128_MAKE.3 \
 	man/SD_INFO.3 \
-	man/SD_JOURNAL_APPEND.3 \
-	man/SD_JOURNAL_CURRENT_USER.3 \
-	man/SD_JOURNAL_FOREACH.3 \
-	man/SD_JOURNAL_FOREACH_BACKWARDS.3 \
-	man/SD_JOURNAL_FOREACH_DATA.3 \
-	man/SD_JOURNAL_FOREACH_UNIQUE.3 \
-	man/SD_JOURNAL_INVALIDATE.3 \
-	man/SD_JOURNAL_LOCAL_ONLY.3 \
-	man/SD_JOURNAL_NOP.3 \
-	man/SD_JOURNAL_RUNTIME_ONLY.3 \
-	man/SD_JOURNAL_SUPPRESS_LOCATION.3 \
-	man/SD_JOURNAL_SYSTEM.3 \
 	man/SD_LISTEN_FDS_START.3 \
 	man/SD_NOTICE.3 \
 	man/SD_WARNING.3 \
@@ -135,39 +94,6 @@ MANPAGES_ALIAS += \
 	man/sd_is_socket.3 \
 	man/sd_is_socket_inet.3 \
 	man/sd_is_socket_unix.3 \
-	man/sd_journal.3 \
-	man/sd_journal_add_conjunction.3 \
-	man/sd_journal_add_disjunction.3 \
-	man/sd_journal_close.3 \
-	man/sd_journal_enumerate_data.3 \
-	man/sd_journal_enumerate_unique.3 \
-	man/sd_journal_flush_matches.3 \
-	man/sd_journal_get_catalog_for_message_id.3 \
-	man/sd_journal_get_cutoff_monotonic_usec.3 \
-	man/sd_journal_get_data_threshold.3 \
-	man/sd_journal_get_events.3 \
-	man/sd_journal_get_monotonic_usec.3 \
-	man/sd_journal_get_timeout.3 \
-	man/sd_journal_next_skip.3 \
-	man/sd_journal_open_directory.3 \
-	man/sd_journal_open_files.3 \
-	man/sd_journal_perror.3 \
-	man/sd_journal_previous.3 \
-	man/sd_journal_previous_skip.3 \
-	man/sd_journal_printv.3 \
-	man/sd_journal_process.3 \
-	man/sd_journal_reliable_fd.3 \
-	man/sd_journal_restart_data.3 \
-	man/sd_journal_restart_unique.3 \
-	man/sd_journal_seek_cursor.3 \
-	man/sd_journal_seek_monotonic_usec.3 \
-	man/sd_journal_seek_realtime_usec.3 \
-	man/sd_journal_seek_tail.3 \
-	man/sd_journal_send.3 \
-	man/sd_journal_sendv.3 \
-	man/sd_journal_set_data_threshold.3 \
-	man/sd_journal_test_cursor.3 \
-	man/sd_journal_wait.3 \
 	man/sd_notifyf.3 \
 	man/systemd-ask-password-console.path.8 \
 	man/systemd-ask-password-wall.path.8 \
@@ -178,8 +104,6 @@ MANPAGES_ALIAS += \
 	man/systemd-hybrid-sleep.service.8 \
 	man/systemd-initctl.8 \
 	man/systemd-initctl.socket.8 \
-	man/systemd-journald.8 \
-	man/systemd-journald.socket.8 \
 	man/systemd-kexec.service.8 \
 	man/systemd-poweroff.service.8 \
 	man/systemd-reboot.service.8 \
@@ -193,9 +117,6 @@ MANPAGES_ALIAS += \
 	man/systemd-tmpfiles-clean.timer.8 \
 	man/systemd-tmpfiles-setup-dev.service.8 \
 	man/systemd-tmpfiles-setup.service.8 \
-	man/systemd-udevd-control.socket.8 \
-	man/systemd-udevd-kernel.socket.8 \
-	man/systemd-udevd.8 \
 	man/systemd-update-utmp-runlevel.service.8 \
 	man/systemd-update-utmp.8 \
 	man/systemd-user.conf.5
@@ -209,18 +130,6 @@ man/SD_ID128_FORMAT_STR.3: man/sd-id128.3
 man/SD_ID128_FORMAT_VAL.3: man/sd-id128.3
 man/SD_ID128_MAKE.3: man/sd-id128.3
 man/SD_INFO.3: man/sd-daemon.3
-man/SD_JOURNAL_APPEND.3: man/sd_journal_get_fd.3
-man/SD_JOURNAL_CURRENT_USER.3: man/sd_journal_open.3
-man/SD_JOURNAL_FOREACH.3: man/sd_journal_next.3
-man/SD_JOURNAL_FOREACH_BACKWARDS.3: man/sd_journal_next.3
-man/SD_JOURNAL_FOREACH_DATA.3: man/sd_journal_get_data.3
-man/SD_JOURNAL_FOREACH_UNIQUE.3: man/sd_journal_query_unique.3
-man/SD_JOURNAL_INVALIDATE.3: man/sd_journal_get_fd.3
-man/SD_JOURNAL_LOCAL_ONLY.3: man/sd_journal_open.3
-man/SD_JOURNAL_NOP.3: man/sd_journal_get_fd.3
-man/SD_JOURNAL_RUNTIME_ONLY.3: man/sd_journal_open.3
-man/SD_JOURNAL_SUPPRESS_LOCATION.3: man/sd_journal_print.3
-man/SD_JOURNAL_SYSTEM.3: man/sd_journal_open.3
 man/SD_LISTEN_FDS_START.3: man/sd_listen_fds.3
 man/SD_NOTICE.3: man/sd-daemon.3
 man/SD_WARNING.3: man/sd-daemon.3
@@ -235,39 +144,6 @@ man/sd_is_mq.3: man/sd_is_fifo.3
 man/sd_is_socket.3: man/sd_is_fifo.3
 man/sd_is_socket_inet.3: man/sd_is_fifo.3
 man/sd_is_socket_unix.3: man/sd_is_fifo.3
-man/sd_journal.3: man/sd_journal_open.3
-man/sd_journal_add_conjunction.3: man/sd_journal_add_match.3
-man/sd_journal_add_disjunction.3: man/sd_journal_add_match.3
-man/sd_journal_close.3: man/sd_journal_open.3
-man/sd_journal_enumerate_data.3: man/sd_journal_get_data.3
-man/sd_journal_enumerate_unique.3: man/sd_journal_query_unique.3
-man/sd_journal_flush_matches.3: man/sd_journal_add_match.3
-man/sd_journal_get_catalog_for_message_id.3: man/sd_journal_get_catalog.3
-man/sd_journal_get_cutoff_monotonic_usec.3: man/sd_journal_get_cutoff_realtime_usec.3
-man/sd_journal_get_data_threshold.3: man/sd_journal_get_data.3
-man/sd_journal_get_events.3: man/sd_journal_get_fd.3
-man/sd_journal_get_monotonic_usec.3: man/sd_journal_get_realtime_usec.3
-man/sd_journal_get_timeout.3: man/sd_journal_get_fd.3
-man/sd_journal_next_skip.3: man/sd_journal_next.3
-man/sd_journal_open_directory.3: man/sd_journal_open.3
-man/sd_journal_open_files.3: man/sd_journal_open.3
-man/sd_journal_perror.3: man/sd_journal_print.3
-man/sd_journal_previous.3: man/sd_journal_next.3
-man/sd_journal_previous_skip.3: man/sd_journal_next.3
-man/sd_journal_printv.3: man/sd_journal_print.3
-man/sd_journal_process.3: man/sd_journal_get_fd.3
-man/sd_journal_reliable_fd.3: man/sd_journal_get_fd.3
-man/sd_journal_restart_data.3: man/sd_journal_get_data.3
-man/sd_journal_restart_unique.3: man/sd_journal_query_unique.3
-man/sd_journal_seek_cursor.3: man/sd_journal_seek_head.3
-man/sd_journal_seek_monotonic_usec.3: man/sd_journal_seek_head.3
-man/sd_journal_seek_realtime_usec.3: man/sd_journal_seek_head.3
-man/sd_journal_seek_tail.3: man/sd_journal_seek_head.3
-man/sd_journal_send.3: man/sd_journal_print.3
-man/sd_journal_sendv.3: man/sd_journal_print.3
-man/sd_journal_set_data_threshold.3: man/sd_journal_get_data.3
-man/sd_journal_test_cursor.3: man/sd_journal_get_cursor.3
-man/sd_journal_wait.3: man/sd_journal_get_fd.3
 man/sd_notifyf.3: man/sd_notify.3
 man/systemd-ask-password-console.path.8: man/systemd-ask-password-console.service.8
 man/systemd-ask-password-wall.path.8: man/systemd-ask-password-console.service.8
@@ -278,8 +154,6 @@ man/systemd-hibernate.service.8: man/systemd-suspend.service.8
 man/systemd-hybrid-sleep.service.8: man/systemd-suspend.service.8
 man/systemd-initctl.8: man/systemd-initctl.service.8
 man/systemd-initctl.socket.8: man/systemd-initctl.service.8
-man/systemd-journald.8: man/systemd-journald.service.8
-man/systemd-journald.socket.8: man/systemd-journald.service.8
 man/systemd-kexec.service.8: man/systemd-halt.service.8
 man/systemd-poweroff.service.8: man/systemd-halt.service.8
 man/systemd-reboot.service.8: man/systemd-halt.service.8
@@ -293,9 +167,6 @@ man/systemd-tmpfiles-clean.service.8: man/systemd-tmpfiles.8
 man/systemd-tmpfiles-clean.timer.8: man/systemd-tmpfiles.8
 man/systemd-tmpfiles-setup-dev.service.8: man/systemd-tmpfiles.8
 man/systemd-tmpfiles-setup.service.8: man/systemd-tmpfiles.8
-man/systemd-udevd-control.socket.8: man/systemd-udevd.service.8
-man/systemd-udevd-kernel.socket.8: man/systemd-udevd.service.8
-man/systemd-udevd.8: man/systemd-udevd.service.8
 man/systemd-update-utmp-runlevel.service.8: man/systemd-update-utmp.service.8
 man/systemd-update-utmp.8: man/systemd-update-utmp.service.8
 man/systemd-user.conf.5: man/systemd-system.conf.5
@@ -327,42 +198,6 @@ man/SD_ID128_MAKE.html: man/sd-id128.html
 	$(html-alias)
 
 man/SD_INFO.html: man/sd-daemon.html
-	$(html-alias)
-
-man/SD_JOURNAL_APPEND.html: man/sd_journal_get_fd.html
-	$(html-alias)
-
-man/SD_JOURNAL_CURRENT_USER.html: man/sd_journal_open.html
-	$(html-alias)
-
-man/SD_JOURNAL_FOREACH.html: man/sd_journal_next.html
-	$(html-alias)
-
-man/SD_JOURNAL_FOREACH_BACKWARDS.html: man/sd_journal_next.html
-	$(html-alias)
-
-man/SD_JOURNAL_FOREACH_DATA.html: man/sd_journal_get_data.html
-	$(html-alias)
-
-man/SD_JOURNAL_FOREACH_UNIQUE.html: man/sd_journal_query_unique.html
-	$(html-alias)
-
-man/SD_JOURNAL_INVALIDATE.html: man/sd_journal_get_fd.html
-	$(html-alias)
-
-man/SD_JOURNAL_LOCAL_ONLY.html: man/sd_journal_open.html
-	$(html-alias)
-
-man/SD_JOURNAL_NOP.html: man/sd_journal_get_fd.html
-	$(html-alias)
-
-man/SD_JOURNAL_RUNTIME_ONLY.html: man/sd_journal_open.html
-	$(html-alias)
-
-man/SD_JOURNAL_SUPPRESS_LOCATION.html: man/sd_journal_print.html
-	$(html-alias)
-
-man/SD_JOURNAL_SYSTEM.html: man/sd_journal_open.html
 	$(html-alias)
 
 man/SD_LISTEN_FDS_START.html: man/sd_listen_fds.html
@@ -407,105 +242,6 @@ man/sd_is_socket_inet.html: man/sd_is_fifo.html
 man/sd_is_socket_unix.html: man/sd_is_fifo.html
 	$(html-alias)
 
-man/sd_journal.html: man/sd_journal_open.html
-	$(html-alias)
-
-man/sd_journal_add_conjunction.html: man/sd_journal_add_match.html
-	$(html-alias)
-
-man/sd_journal_add_disjunction.html: man/sd_journal_add_match.html
-	$(html-alias)
-
-man/sd_journal_close.html: man/sd_journal_open.html
-	$(html-alias)
-
-man/sd_journal_enumerate_data.html: man/sd_journal_get_data.html
-	$(html-alias)
-
-man/sd_journal_enumerate_unique.html: man/sd_journal_query_unique.html
-	$(html-alias)
-
-man/sd_journal_flush_matches.html: man/sd_journal_add_match.html
-	$(html-alias)
-
-man/sd_journal_get_catalog_for_message_id.html: man/sd_journal_get_catalog.html
-	$(html-alias)
-
-man/sd_journal_get_cutoff_monotonic_usec.html: man/sd_journal_get_cutoff_realtime_usec.html
-	$(html-alias)
-
-man/sd_journal_get_data_threshold.html: man/sd_journal_get_data.html
-	$(html-alias)
-
-man/sd_journal_get_events.html: man/sd_journal_get_fd.html
-	$(html-alias)
-
-man/sd_journal_get_monotonic_usec.html: man/sd_journal_get_realtime_usec.html
-	$(html-alias)
-
-man/sd_journal_get_timeout.html: man/sd_journal_get_fd.html
-	$(html-alias)
-
-man/sd_journal_next_skip.html: man/sd_journal_next.html
-	$(html-alias)
-
-man/sd_journal_open_directory.html: man/sd_journal_open.html
-	$(html-alias)
-
-man/sd_journal_open_files.html: man/sd_journal_open.html
-	$(html-alias)
-
-man/sd_journal_perror.html: man/sd_journal_print.html
-	$(html-alias)
-
-man/sd_journal_previous.html: man/sd_journal_next.html
-	$(html-alias)
-
-man/sd_journal_previous_skip.html: man/sd_journal_next.html
-	$(html-alias)
-
-man/sd_journal_printv.html: man/sd_journal_print.html
-	$(html-alias)
-
-man/sd_journal_process.html: man/sd_journal_get_fd.html
-	$(html-alias)
-
-man/sd_journal_reliable_fd.html: man/sd_journal_get_fd.html
-	$(html-alias)
-
-man/sd_journal_restart_data.html: man/sd_journal_get_data.html
-	$(html-alias)
-
-man/sd_journal_restart_unique.html: man/sd_journal_query_unique.html
-	$(html-alias)
-
-man/sd_journal_seek_cursor.html: man/sd_journal_seek_head.html
-	$(html-alias)
-
-man/sd_journal_seek_monotonic_usec.html: man/sd_journal_seek_head.html
-	$(html-alias)
-
-man/sd_journal_seek_realtime_usec.html: man/sd_journal_seek_head.html
-	$(html-alias)
-
-man/sd_journal_seek_tail.html: man/sd_journal_seek_head.html
-	$(html-alias)
-
-man/sd_journal_send.html: man/sd_journal_print.html
-	$(html-alias)
-
-man/sd_journal_sendv.html: man/sd_journal_print.html
-	$(html-alias)
-
-man/sd_journal_set_data_threshold.html: man/sd_journal_get_data.html
-	$(html-alias)
-
-man/sd_journal_test_cursor.html: man/sd_journal_get_cursor.html
-	$(html-alias)
-
-man/sd_journal_wait.html: man/sd_journal_get_fd.html
-	$(html-alias)
-
 man/sd_notifyf.html: man/sd_notify.html
 	$(html-alias)
 
@@ -534,12 +270,6 @@ man/systemd-initctl.html: man/systemd-initctl.service.html
 	$(html-alias)
 
 man/systemd-initctl.socket.html: man/systemd-initctl.service.html
-	$(html-alias)
-
-man/systemd-journald.html: man/systemd-journald.service.html
-	$(html-alias)
-
-man/systemd-journald.socket.html: man/systemd-journald.service.html
 	$(html-alias)
 
 man/systemd-kexec.service.html: man/systemd-halt.service.html
@@ -579,15 +309,6 @@ man/systemd-tmpfiles-setup-dev.service.html: man/systemd-tmpfiles.html
 	$(html-alias)
 
 man/systemd-tmpfiles-setup.service.html: man/systemd-tmpfiles.html
-	$(html-alias)
-
-man/systemd-udevd-control.socket.html: man/systemd-udevd.service.html
-	$(html-alias)
-
-man/systemd-udevd-kernel.socket.html: man/systemd-udevd.service.html
-	$(html-alias)
-
-man/systemd-udevd.html: man/systemd-udevd.service.html
 	$(html-alias)
 
 man/systemd-update-utmp-runlevel.service.html: man/systemd-update-utmp.service.html
