@@ -505,7 +505,6 @@ int manager_new(SystemdRunningAs running_as, bool reexecuting, Manager **_m) {
         m->idle_pipe[0] = m->idle_pipe[1] = m->idle_pipe[2] = m->idle_pipe[3] = -1;
 
         watch_init(&m->signal_watch);
-        watch_init(&m->mount_watch);
         watch_init(&m->time_change_watch);
         watch_init(&m->jobs_in_progress_watch);
 
@@ -1696,8 +1695,6 @@ static int process_event(Manager *m, struct epoll_event *ev) {
         }
 
         case WATCH_MOUNT:
-                /* Some mount table change, intended for the mount subsystem */
-                mount_fd_event(m, ev->events);
                 break;
 
         case WATCH_SWAP:
@@ -1948,8 +1945,7 @@ void manager_send_unit_plymouth(Manager *m, Unit *u) {
         if (m->running_as != SYSTEMD_SYSTEM)
                 return;
 
-        if (u->type != UNIT_SERVICE &&
-            u->type != UNIT_MOUNT)
+        if (u->type != UNIT_SERVICE)
                 return;
 
         /* We set SOCK_NONBLOCK here so that we rather drop the
