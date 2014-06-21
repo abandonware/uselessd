@@ -97,11 +97,6 @@
                 path to a unit name see
                 <citerefentry><refentrytitle>systemd.unit</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</para>
 
-                <para>Optionally, a mount unit may be accompanied by
-                an automount unit, to allow on-demand or parallelized
-                mounting. See
-                <citerefentry><refentrytitle>systemd.automount</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</para>
-
                 <para>If a mount point is beneath another mount point
                 in the file system hierarchy, a dependency between both
                 units is created automatically.</para>
@@ -145,11 +140,6 @@
                 <filename>local-fs.target</filename> or
                 <filename>remote-fs.target</filename>, depending
                 whether the file system is local or remote. If
-                <option>x-systemd.automount</option> is set, an
-                automount unit will be created for the file
-                system. See
-                <citerefentry><refentrytitle>systemd.automount</refentrytitle><manvolnum>5</manvolnum></citerefentry>
-                for details. If
                 <option>x-systemd.device-timeout=</option> is
                 specified, it may be used to configure how long systemd
                 should wait for a device to show up before giving up

@@ -656,8 +656,7 @@
                                 <term><filename>umount.target</filename></term>
                                 <listitem>
                                         <para>A special target unit
-                                        that umounts all mount and
-                                        automount points on system
+                                        that umounts all mount points on system
                                         shutdown.</para>
 
                                         <para>Mounts that shall be

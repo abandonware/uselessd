@@ -54,7 +54,6 @@
                 <para><filename><replaceable>service</replaceable>.service</filename>,
                 <filename><replaceable>socket</replaceable>.socket</filename>,
                 <filename><replaceable>mount</replaceable>.mount</filename>,
-                <filename><replaceable>automount</replaceable>.automount</filename>,
                 <filename><replaceable>target</replaceable>.target</filename>,
                 <filename><replaceable>path</replaceable>.path</filename>,
                 <filename><replaceable>snapshot</replaceable>.snapshot</filename>,
@@ -79,11 +78,8 @@
                 <title>Description</title>
 
                 <para>A unit configuration file encodes information
-                about a service, a socket, a device, a mount point, an
-                automount point, a swap file or partition, a start-up
-                target, a watched file system path, a timer controlled
-                and supervised by
-                <citerefentry><refentrytitle>systemd</refentrytitle><manvolnum>1</manvolnum></citerefentry>,
+                about a service, a socket, a mount point, a start-up
+                target, a watched file system path,
                 a temporary system state snapshot, a resource
                 management slice or a group of externally created
                 processes. The syntax is inspired by <ulink
@@ -106,7 +102,6 @@
                 <citerefentry><refentrytitle>systemd.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>,
                 <citerefentry><refentrytitle>systemd.socket</refentrytitle><manvolnum>5</manvolnum></citerefentry>,
                 <citerefentry><refentrytitle>systemd.mount</refentrytitle><manvolnum>5</manvolnum></citerefentry>,
-                <citerefentry><refentrytitle>systemd.automount</refentrytitle><manvolnum>5</manvolnum></citerefentry>,
                 <citerefentry><refentrytitle>systemd.target</refentrytitle><manvolnum>5</manvolnum></citerefentry>,
                 <citerefentry><refentrytitle>systemd.path</refentrytitle><manvolnum>5</manvolnum></citerefentry>,
                 <citerefentry><refentrytitle>systemd.snapshot</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
@@ -1304,7 +1299,6 @@
                         <citerefentry><refentrytitle>systemd.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>,
                         <citerefentry><refentrytitle>systemd.socket</refentrytitle><manvolnum>5</manvolnum></citerefentry>,
                         <citerefentry><refentrytitle>systemd.mount</refentrytitle><manvolnum>5</manvolnum></citerefentry>,
-                        <citerefentry><refentrytitle>systemd.automount</refentrytitle><manvolnum>5</manvolnum></citerefentry>,
                         <citerefentry><refentrytitle>systemd.target</refentrytitle><manvolnum>5</manvolnum></citerefentry>,
                         <citerefentry><refentrytitle>systemd.path</refentrytitle><manvolnum>5</manvolnum></citerefentry>,
                         <citerefentry><refentrytitle>systemd.snapshot</refentrytitle><manvolnum>5</manvolnum></citerefentry>,

@@ -55,17 +55,15 @@
                 <title>Description</title>
 
                 <para><filename>systemd-efi-boot-generator</filename>
-                is a generator that automatically creates mount and
-                automount units for the EFI System Partition (ESP),
+                is a generator that automatically creates mount units
+                for the EFI System Partition (ESP),
                 mounting it to <filename>/boot</filename>. Note that
                 this generator will execute no operation on non-EFI
                 systems, on systems where the boot loader does not
                 communicate the used ESP to the OS, on systems where
                 <filename>/boot</filename> is an explicitly configured
                 mount (for example, listed in <citerefentry><refentrytitle>fstab</refentrytitle><manvolnum>5</manvolnum></citerefentry>) or where the <filename>/boot</filename> mount
-                point is non-empty. Since this generator creates an
-                automount unit, the mount will only be activated
-                on-demand, when accessed.</para>
+                point is non-empty. The mount will be activated only on demand.</para>
 
                 <para><filename>systemd-efi-boot-generator</filename>
                 implements the <ulink
@@ -78,8 +76,6 @@
                 <para>
                         <citerefentry><refentrytitle>systemd</refentrytitle><manvolnum>1</manvolnum></citerefentry>,
                         <citerefentry><refentrytitle>systemd.mount</refentrytitle><manvolnum>5</manvolnum></citerefentry>,
-                        <citerefentry><refentrytitle>systemd.automount</refentrytitle><manvolnum>5</manvolnum></citerefentry>,
-                        <citerefentry><refentrytitle>systemd-gpt-auto-generator</refentrytitle><manvolnum>8</manvolnum></citerefentry>,
                         <citerefentry><refentrytitle>gummiboot</refentrytitle><manvolnum>8</manvolnum></citerefentry>,
                         <citerefentry><refentrytitle>fstab</refentrytitle><manvolnum>5</manvolnum></citerefentry>
                 </para>

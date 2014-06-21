@@ -337,12 +337,6 @@
                         points in the file system, for details see
                         <citerefentry><refentrytitle>systemd.mount</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</para></listitem>
 
-                        <listitem><para>Automount units provide
-                        automount capabilities, for on-demand mounting
-                        of file systems as well as parallelized
-                        boot-up. See
-                        <citerefentry><refentrytitle>systemd.automount</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</para></listitem>
-
                         <listitem><para>Snapshot units can be used to
                         temporarily save the state of the set of
                         systemd units, which later may be restored by
