@@ -54,7 +54,6 @@ const UnitVTable * const unit_vtable[_UNIT_TYPE_MAX] = {
         [UNIT_SOCKET] = &socket_vtable,
         [UNIT_TARGET] = &target_vtable,
         [UNIT_MOUNT] = &mount_vtable,
-        [UNIT_AUTOMOUNT] = &automount_vtable,
         [UNIT_SNAPSHOT] = &snapshot_vtable,
         [UNIT_PATH] = &path_vtable,
         [UNIT_SLICE] = &slice_vtable,
