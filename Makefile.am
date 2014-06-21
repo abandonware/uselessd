@@ -272,8 +272,7 @@ rootlibexec_PROGRAMS = \
 	systemd-sleep
 
 systemgenerator_PROGRAMS = \
-	systemd-getty-generator \
-	systemd-fstab-generator
+	systemd-getty-generator
 
 systemd_analyze_SOURCES = \
 	src/analyze/systemd-analyze.c
@@ -1537,28 +1536,6 @@ systemd_getty_generator_SOURCES = \
 systemd_getty_generator_LDADD = \
 	libsystemd-label.la \
 	libsystemd-shared.la
-
-# ------------------------------------------------------------------------------
-systemd_fstab_generator_SOURCES = \
-	src/fstab-generator/fstab-generator.c \
-	src/core/mount-setup.c
-
-systemd_fstab_generator_LDADD = \
-	libsystemd-label.la \
-	libsystemd-shared.la
-
-if ENABLE_EFI
-# ------------------------------------------------------------------------------
-systemgenerator_PROGRAMS +=  \
-	systemd-efi-boot-generator
-
-systemd_efi_boot_generator_SOURCES = \
-	src/efi-boot-generator/efi-boot-generator.c
-
-systemd_efi_boot_generator_LDADD = \
-	libsystemd-label.la \
-	libsystemd-shared.la
-endif
 
 # ------------------------------------------------------------------------------
 systemd_rc_local_generator_SOURCES = \
