@@ -231,9 +231,6 @@ EXEC_CONTEXT_CONFIG_ITEMS(Mount)m4_dnl
 CGROUP_CONTEXT_CONFIG_ITEMS(Mount)m4_dnl
 KILL_CONTEXT_CONFIG_ITEMS(Mount)m4_dnl
 m4_dnl
-Automount.Where,                 config_parse_path,                  0,                             offsetof(Automount, where)
-Automount.DirectoryMode,         config_parse_mode,                  0,                             offsetof(Automount, directory_mode)
-m4_dnl
 Path.PathExists,                 config_parse_path_spec,             0,                             0
 Path.PathExistsGlob,             config_parse_path_spec,             0,                             0
 Path.PathChanged,                config_parse_path_spec,             0,                             0
