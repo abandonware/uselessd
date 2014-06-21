@@ -258,31 +258,6 @@ static int socket_verify(Socket *s) {
         return 0;
 }
 
-static int socket_add_mount_links(Socket *s) {
-        SocketPort *p;
-        int r;
-
-        assert(s);
-
-        LIST_FOREACH(port, p, s->ports) {
-                const char *path = NULL;
-
-                if (p->type == SOCKET_SOCKET)
-                        path = socket_address_get_path(&p->address);
-                else if (p->type == SOCKET_FIFO || p->type == SOCKET_SPECIAL)
-                        path = p->path;
-
-                if (!path)
-                        continue;
-
-                r = unit_require_mounts_for(UNIT(s), path);
-                if (r < 0)
-                        return r;
-        }
-
-        return 0;
-}
-
 static int socket_add_default_dependencies(Socket *s) {
         int r;
         assert(s);
@@ -340,9 +315,6 @@ static int socket_load(Unit *u) {
                         if (r < 0)
                                 return r;
                 }
-
-                if ((r = socket_add_mount_links(s)) < 0)
-                        return r;
 
                 if (socket_has_exec(s))
                         if ((r = unit_add_exec_dependencies(u, &s->exec_context)) < 0)
