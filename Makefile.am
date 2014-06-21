@@ -342,12 +342,6 @@ dist_systemunit_DATA = \
 	units/systemd-initctl.socket \
 	units/systemd-shutdownd.socket \
 	units/syslog.socket \
-	units/dev-hugepages.mount \
-	units/dev-mqueue.mount \
-	units/sys-kernel-config.mount \
-	units/sys-kernel-debug.mount \
-	units/sys-fs-fuse-connections.mount \
-	units/tmp.mount \
 	units/printer.target \
 	units/sound.target \
 	units/bluetooth.target \
@@ -767,8 +761,6 @@ libsystemd_core_la_SOURCES = \
 	src/core/load-fragment.h \
 	src/core/service.c \
 	src/core/service.h \
-	src/core/mount.c \
-	src/core/mount.h \
 	src/core/target.c \
 	src/core/target.h \
 	src/core/snapshot.c \
@@ -803,8 +795,6 @@ libsystemd_core_la_SOURCES = \
 	src/core/dbus-socket.h \
 	src/core/dbus-target.c \
 	src/core/dbus-target.h \
-	src/core/dbus-mount.c \
-	src/core/dbus-mount.h \
 	src/core/dbus-snapshot.c \
 	src/core/dbus-snapshot.h \
 	src/core/dbus-path.c \
@@ -951,7 +941,6 @@ dbusinterface_DATA += \
 	org.freedesktop.systemd1.Service.xml \
 	org.freedesktop.systemd1.Socket.xml \
 	org.freedesktop.systemd1.Target.xml \
-	org.freedesktop.systemd1.Mount.xml \
 	org.freedesktop.systemd1.Snapshot.xml \
 	org.freedesktop.systemd1.Path.xml
 
@@ -1771,9 +1760,6 @@ systemd_binfmt_LDADD = \
 rootlibexec_PROGRAMS += \
 	systemd-binfmt
 
-dist_systemunit_DATA += \
-	units/proc-sys-fs-binfmt_misc.mount
-
 nodist_systemunit_DATA += \
 	units/systemd-binfmt.service
 
@@ -2062,17 +2048,11 @@ SYSINIT_TARGET_WANTS += \
 	systemd-update-utmp.service
 LOCAL_FS_TARGET_WANTS += \
 	systemd-remount-fs.service \
-	systemd-fsck-root.service \
-	tmp.mount
+	systemd-fsck-root.service
 MULTI_USER_TARGET_WANTS += \
 	getty.target \
 	systemd-ask-password-wall.path
 SYSINIT_TARGET_WANTS += \
-	dev-hugepages.mount \
-	dev-mqueue.mount \
-	sys-kernel-config.mount \
-	sys-kernel-debug.mount \
-	sys-fs-fuse-connections.mount \
 	systemd-sysctl.service \
 	systemd-ask-password-console.path
 
