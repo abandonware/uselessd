@@ -35,7 +35,6 @@ enum UnitType {
         UNIT_SOCKET,
         UNIT_TARGET,
         UNIT_MOUNT,
-        UNIT_AUTOMOUNT,
         UNIT_SNAPSHOT,
         UNIT_PATH,
         UNIT_SLICE,
