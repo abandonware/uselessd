@@ -273,7 +273,6 @@ typedef enum UnitSetPropertiesMode {
 #include "service.h"
 #include "socket.h"
 #include "target.h"
-#include "mount.h"
 #include "snapshot.h"
 #include "path.h"
 #include "slice.h"
@@ -452,7 +451,6 @@ extern const UnitVTable * const unit_vtable[_UNIT_TYPE_MAX];
 DEFINE_CAST(SOCKET, Socket);
 DEFINE_CAST(SERVICE, Service);
 DEFINE_CAST(TARGET, Target);
-DEFINE_CAST(MOUNT, Mount);
 DEFINE_CAST(SNAPSHOT, Snapshot);
 DEFINE_CAST(PATH, Path);
 DEFINE_CAST(SLICE, Slice);
@@ -579,8 +577,6 @@ void unit_ref_unset(UnitRef *ref);
 
 #define UNIT_DEREF(ref) ((ref).unit)
 #define UNIT_ISSET(ref) (!!(ref).unit)
-
-int unit_add_mount_links(Unit *u);
 
 int unit_exec_context_defaults(Unit *u, ExecContext *c);
 

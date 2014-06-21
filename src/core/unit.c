@@ -53,7 +53,6 @@ const UnitVTable * const unit_vtable[_UNIT_TYPE_MAX] = {
         [UNIT_SERVICE] = &service_vtable,
         [UNIT_SOCKET] = &socket_vtable,
         [UNIT_TARGET] = &target_vtable,
-        [UNIT_MOUNT] = &mount_vtable,
         [UNIT_SNAPSHOT] = &snapshot_vtable,
         [UNIT_PATH] = &path_vtable,
         [UNIT_SLICE] = &slice_vtable,
@@ -961,10 +960,6 @@ int unit_load(Unit *u) {
                         if (r < 0)
                                 goto fail;
                 }
-
-                r = unit_add_mount_links(u);
-                if (r < 0)
-                        goto fail;
 
                 if (u->on_failure_isolate &&
                     set_size(u->dependencies[UNIT_ON_FAILURE]) > 1) {
@@ -2625,44 +2620,6 @@ void unit_ref_unset(UnitRef *ref) {
 
         LIST_REMOVE(UnitRef, refs, ref->unit->refs, ref);
         ref->unit = NULL;
-}
-
-int unit_add_mount_links(Unit *u) {
-        char **i;
-        int r;
-
-        assert(u);
-
-        STRV_FOREACH(i, u->requires_mounts_for) {
-                char prefix[strlen(*i) + 1];
-
-                PATH_FOREACH_PREFIX_MORE(prefix, *i) {
-                        Unit *m;
-
-                        r = manager_get_unit_by_path(u->manager, prefix, ".mount", &m);
-                        if (r < 0)
-                                return r;
-                        if (r == 0)
-                                continue;
-                        if (m == u)
-                                continue;
-
-                        if (m->load_state != UNIT_LOADED)
-                                continue;
-
-                        r = unit_add_dependency(u, UNIT_AFTER, m, true);
-                        if (r < 0)
-                                return r;
-
-                        if (m->fragment_path) {
-                                r = unit_add_dependency(u, UNIT_REQUIRES, m, true);
-                                if (r < 0)
-                                        return r;
-                        }
-                }
-        }
-
-        return 0;
 }
 
 int unit_exec_context_defaults(Unit *u, ExecContext *c) {
