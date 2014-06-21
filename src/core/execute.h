@@ -33,6 +33,7 @@ typedef struct ExecContext ExecContext;
 #include <stdio.h>
 #include <sched.h>
 
+#include "cgroup-util.h"
 #include "list.h"
 #include "util.h"
 
