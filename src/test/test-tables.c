@@ -25,7 +25,6 @@
 #include "job.h"
 #include "kill.h"
 #include "log.h"
-#include "mount.h"
 #include "path-lookup.h"
 #include "path.h"
 #include "scope.h"
@@ -54,9 +53,6 @@ int main(int argc, char **argv) {
         test_table(kill_mode, KILL_MODE);
         test_table(kill_who, KILL_WHO);
         test_table(log_target, LOG_TARGET);
-        test_table(mount_exec_command, MOUNT_EXEC_COMMAND);
-        test_table(mount_result, MOUNT_RESULT);
-        test_table(mount_state, MOUNT_STATE);
         test_table(notify_access, NOTIFY_ACCESS);
         test_table(path_result, PATH_RESULT);
         test_table(path_state, PATH_STATE);
