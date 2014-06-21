@@ -17,7 +17,6 @@
   along with systemd; If not, see <http://www.gnu.org/licenses/>.
 ***/
 
-#include "automount.h"
 #include "cgroup.h"
 #include "condition.h"
 #include "execute.h"
@@ -44,8 +43,6 @@
 #include "test-tables.h"
 
 int main(int argc, char **argv) {
-        test_table(automount_result, AUTOMOUNT_RESULT);
-        test_table(automount_state, AUTOMOUNT_STATE);
         test_table(cgroup_device_policy, CGROUP_DEVICE_POLICY);
         test_table(condition_type, CONDITION_TYPE);
         test_table(exec_input, EXEC_INPUT);
