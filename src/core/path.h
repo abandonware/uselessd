@@ -24,7 +24,6 @@
 typedef struct Path Path;
 
 #include "unit.h"
-#include "mount.h"
 
 typedef enum PathState {
         PATH_DEAD,

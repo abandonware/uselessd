@@ -297,21 +297,6 @@ static void path_done(Unit *u) {
         path_free_specs(p);
 }
 
-static int path_add_mount_links(Path *p) {
-        PathSpec *s;
-        int r;
-
-        assert(p);
-
-        LIST_FOREACH(spec, s, p->specs) {
-                r = unit_require_mounts_for(UNIT(p), s->path);
-                if (r < 0)
-                        return r;
-        }
-
-        return 0;
-}
-
 static int path_verify(Path *p) {
         assert(p);
 
@@ -372,10 +357,6 @@ static int path_load(Unit *u) {
                         if (r < 0)
                                 return r;
                 }
-
-                r = path_add_mount_links(p);
-                if (r < 0)
-                        return r;
 
                 if (UNIT(p)->default_dependencies) {
                         r = path_add_default_dependencies(p);
