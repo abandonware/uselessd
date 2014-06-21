@@ -36,7 +36,6 @@ static const char* const unit_type_table[_UNIT_TYPE_MAX] = {
         [UNIT_SERVICE] = "service",
         [UNIT_SOCKET] = "socket",
         [UNIT_TARGET] = "target",
-        [UNIT_MOUNT] = "mount",
         [UNIT_SNAPSHOT] = "snapshot",
         [UNIT_PATH] = "path",
         [UNIT_SLICE] = "slice",
@@ -483,12 +482,6 @@ char *unit_name_mangle(const char *name) {
         const char *f;
 
         assert(name);
-
-        /* Try to turn a string that might not be a unit name into a
-         * sensible unit name. */
-
-        if (path_is_absolute(name))
-                return unit_name_from_path(name, ".mount");
 
         /* We'll only escape the obvious characters here, to play
          * safe. */

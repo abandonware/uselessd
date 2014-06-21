@@ -34,7 +34,6 @@ enum UnitType {
         UNIT_SERVICE = 0,
         UNIT_SOCKET,
         UNIT_TARGET,
-        UNIT_MOUNT,
         UNIT_SNAPSHOT,
         UNIT_PATH,
         UNIT_SLICE,
