@@ -767,8 +767,6 @@ libsystemd_core_la_SOURCES = \
 	src/core/load-fragment.h \
 	src/core/service.c \
 	src/core/service.h \
-	src/core/automount.c \
-	src/core/automount.h \
 	src/core/mount.c \
 	src/core/mount.h \
 	src/core/target.c \
@@ -807,8 +805,6 @@ libsystemd_core_la_SOURCES = \
 	src/core/dbus-target.h \
 	src/core/dbus-mount.c \
 	src/core/dbus-mount.h \
-	src/core/dbus-automount.c \
-	src/core/dbus-automount.h \
 	src/core/dbus-snapshot.c \
 	src/core/dbus-snapshot.h \
 	src/core/dbus-path.c \
@@ -956,7 +952,6 @@ dbusinterface_DATA += \
 	org.freedesktop.systemd1.Socket.xml \
 	org.freedesktop.systemd1.Target.xml \
 	org.freedesktop.systemd1.Mount.xml \
-	org.freedesktop.systemd1.Automount.xml \
 	org.freedesktop.systemd1.Snapshot.xml \
 	org.freedesktop.systemd1.Path.xml
 
@@ -1777,7 +1772,6 @@ rootlibexec_PROGRAMS += \
 	systemd-binfmt
 
 dist_systemunit_DATA += \
-	units/proc-sys-fs-binfmt_misc.automount \
 	units/proc-sys-fs-binfmt_misc.mount
 
 nodist_systemunit_DATA += \
@@ -1788,8 +1782,7 @@ INSTALL_DIRS += \
 	$(sysconfdir)/binfmt.d
 
 SYSINIT_TARGET_WANTS += \
-	systemd-binfmt.service \
-	proc-sys-fs-binfmt_misc.automount
+	systemd-binfmt.service
 
 endif
 
