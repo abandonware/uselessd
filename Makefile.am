@@ -254,7 +254,6 @@ rootbin_PROGRAMS = \
 
 bin_PROGRAMS = \
 	systemd-cgtop \
-	systemd-detect-virt \
 	systemd-delta \
 	systemd-analyze
 
@@ -1383,41 +1382,6 @@ systemd_shutdown_LDADD = \
 	libsystemd-shared.la
 
 # ------------------------------------------------------------------------------
-if HAVE_KMOD
-systemd_modules_load_SOURCES = \
-	src/modules-load/modules-load.c
-
-systemd_modules_load_CFLAGS = \
-	$(AM_CFLAGS) \
-	$(KMOD_CFLAGS)
-
-systemd_modules_load_LDADD = \
-	libsystemd-shared.la \
-	$(KMOD_LIBS)
-
-rootlibexec_PROGRAMS += \
-	systemd-modules-load
-
-nodist_systemunit_DATA += \
-	units/systemd-modules-load.service
-
-SYSINIT_TARGET_WANTS += \
-	systemd-modules-load.service
-
-if ENABLE_TMPFILES
-nodist_systemunit_DATA += \
-	units/kmod-static-nodes.service
-
-SYSINIT_TARGET_WANTS += \
-	kmod-static-nodes.service
-endif
-endif
-
-EXTRA_DIST += \
-        units/systemd-modules-load.service.in \
-        units/kmod-static-nodes.service.in
-
-# ------------------------------------------------------------------------------
 if ENABLE_TMPFILES
 systemd_tmpfiles_SOURCES = \
 	src/tmpfiles/tmpfiles.c \
@@ -1508,19 +1472,6 @@ systemd_ac_power_SOURCES = \
 
 systemd_ac_power_LDADD = \
 	libsystemd-shared.la
-
-# ------------------------------------------------------------------------------
-systemd_detect_virt_SOURCES = \
-	src/detect-virt/detect-virt.c
-
-systemd_detect_virt_LDADD = \
-	libsystemd-shared.la
-
-systemd-detect-virt-install-hook:
-	-$(SETCAP) cap_dac_override,cap_sys_ptrace=ep $(DESTDIR)$(bindir)/systemd-detect-virt
-
-INSTALL_EXEC_HOOKS += \
-	systemd-detect-virt-install-hook
 
 # ------------------------------------------------------------------------------
 systemd_delta_SOURCES = \
@@ -1725,74 +1676,6 @@ systemd_activate_SOURCES = \
 systemd_activate_LDADD = \
 	libsystemd-shared.la \
 	libsystemd-daemon.la
-
-# ------------------------------------------------------------------------------
-if ENABLE_BINFMT
-systemd_binfmt_SOURCES = \
-	src/binfmt/binfmt.c
-
-systemd_binfmt_LDADD = \
-	libsystemd-shared.la
-
-rootlibexec_PROGRAMS += \
-	systemd-binfmt
-
-nodist_systemunit_DATA += \
-	units/systemd-binfmt.service
-
-INSTALL_DIRS += \
-	$(prefix)/lib/binfmt.d \
-	$(sysconfdir)/binfmt.d
-
-SYSINIT_TARGET_WANTS += \
-	systemd-binfmt.service
-
-endif
-
-EXTRA_DIST += \
-	units/systemd-binfmt.service.in
-
-# ------------------------------------------------------------------------------
-if ENABLE_VCONSOLE
-systemd_vconsole_setup_SOURCES = \
-	src/vconsole/vconsole-setup.c
-
-systemd_vconsole_setup_LDADD = \
-	libsystemd-shared.la
-
-rootlibexec_PROGRAMS += \
-	systemd-vconsole-setup
-
-nodist_systemunit_DATA += \
-	units/systemd-vconsole-setup.service
-
-SYSINIT_TARGET_WANTS += \
-	systemd-vconsole-setup.service
-endif
-
-EXTRA_DIST += \
-	units/systemd-vconsole-setup.service.in
-
-# ------------------------------------------------------------------------------
-if ENABLE_QUOTACHECK
-rootlibexec_PROGRAMS += \
-	systemd-quotacheck
-
-nodist_systemunit_DATA += \
-	units/systemd-quotacheck.service
-
-systemd_quotacheck_SOURCES = \
-	src/quotacheck/quotacheck.c
-
-systemd_quotacheck_LDADD = \
-	libsystemd-shared.la
-endif
-
-EXTRA_DIST += \
-	units/systemd-quotacheck.service.in
-
-nodist_systemunit_DATA += \
-	units/quotaon.service
 
 # ------------------------------------------------------------------------------
 if ENABLE_RANDOMSEED
@@ -2074,8 +1957,6 @@ INSTALL_DIRS += \
 endif
 
 INSTALL_DIRS += \
-	$(prefix)/lib/modules-load.d \
-	$(sysconfdir)/modules-load.d \
 	$(prefix)/lib/sysctl.d \
 	$(sysconfdir)/sysctl.d \
 	$(prefix)/lib/kernel/install.d \

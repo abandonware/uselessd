@@ -508,30 +508,6 @@ fi
 AC_SUBST(AUDIT_LIBS)
 
 # ------------------------------------------------------------------------------
-have_binfmt=no
-AC_ARG_ENABLE(binfmt, AS_HELP_STRING([--disable-binfmt], [disable binfmt tool]))
-if test "x$enable_binfmt" != "xno"; then
-        have_binfmt=yes
-fi
-AM_CONDITIONAL(ENABLE_BINFMT, [test "$have_binfmt" = "yes"])
-
-# ------------------------------------------------------------------------------
-have_vconsole=no
-AC_ARG_ENABLE(vconsole, AS_HELP_STRING([--disable-vconsole], [disable vconsole tool]))
-if test "x$enable_vconsole" != "xno"; then
-        have_vconsole=yes
-fi
-AM_CONDITIONAL(ENABLE_VCONSOLE, [test "$have_vconsole" = "yes"])
-
-# ------------------------------------------------------------------------------
-have_quotacheck=no
-AC_ARG_ENABLE(quotacheck, AS_HELP_STRING([--disable-quotacheck], [disable quotacheck tools]))
-if test "x$enable_quotacheck" != "xno"; then
-        have_quotacheck=yes
-fi
-AM_CONDITIONAL(ENABLE_QUOTACHECK, [test "$have_quotacheck" = "yes"])
-
-# ------------------------------------------------------------------------------
 have_tmpfiles=no
 AC_ARG_ENABLE(tmpfiles, AS_HELP_STRING([--disable-tmpfiles], [disable tmpfiles support]))
 if test "x$enable_tmpfiles" != "xno"; then
@@ -789,9 +765,6 @@ AC_MSG_RESULT([
         XATTR:                   ${have_xattr}
         GCRYPT:                  ${have_gcrypt}
         CHKCONFIG:               ${have_chkconfig}
-        binfmt:                  ${have_binfmt}
-        vconsole:                ${have_vconsole}
-        quotacheck:              ${have_quotacheck}
         tmpfiles:                ${have_tmpfiles}
         randomseed:              ${have_randomseed}
         polkit:                  ${have_polkit}
