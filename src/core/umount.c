@@ -442,13 +442,14 @@ int swapoff_all(bool *changed) {
         return r;
 }
 
-/* TODO: address in lack of libudev */
-int loopback_detach_all(bool *changed) {
-        LIST_HEAD(MountPoint, loopback_list_head);
-
-        LIST_HEAD_INIT(MountPoint, loopback_list_head);
-        
-        mount_points_list_free(&loopback_list_head);
+/* Calls losetup(8) from util-linux directly.
+ * Used to originally employ libudev. */
+int loopback_detach_all() {
+	   int r;
+	   
+	   r = exec_command_set("/sbin/losetup -D", NULL);
+	   if (r < 0)
+	         log_error("Detaching loopback devices with losetup(8) failed.");
 }
 
 /* TODO: address in lack of libudev */

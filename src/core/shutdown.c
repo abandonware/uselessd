@@ -236,7 +236,7 @@ int main(int argc, char *argv[]) {
 
                 if (need_loop_detach) {
                         log_info("Detaching loop devices.");
-                        r = loopback_detach_all(&changed);
+                        r = loopback_detach_all();
                         if (r == 0) {
                                 need_loop_detach = false;
                                 log_info("All loop devices detached.");
