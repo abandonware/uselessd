@@ -2564,7 +2564,7 @@ static void print_status_info(UnitStatusInfo *i,
                         unsigned k = 0;
                         pid_t extra[2];
                         char prefix[] = "           ";
-
+                        
                         c = columns();
                         if (c > sizeof(prefix) - 1)
                                 c -= sizeof(prefix) - 1;
