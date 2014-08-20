@@ -25,6 +25,6 @@ int umount_all(bool *changed);
 
 int swapoff_all(bool *changed);
 
-int loopback_detach_all(bool *changed);
+int loopback_detach_all(void);
 
 int dm_detach_all(bool *changed);

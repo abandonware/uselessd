@@ -25,6 +25,7 @@
 #include <sys/mount.h>
 #include <sys/swap.h>
 #include <unistd.h>
+#include <stdlib.h>
 #include <linux/loop.h>
 #include <linux/dm-ioctl.h>
 
@@ -199,25 +200,7 @@ finish:
         return r;
 }
 
-static int delete_loopback(const char *device) {
-        int fd, r;
-
-        if ((fd = open(device, O_RDONLY|O_CLOEXEC)) < 0)
-                return errno == ENOENT ? 0 : -errno;
-
-        r = ioctl(fd, LOOP_CLR_FD, 0);
-        close_nointr_nofail(fd);
-
-        if (r >= 0)
-                return 1;
-
-        /* ENXIO: not bound, so no error */
-        if (errno == ENXIO)
-                return 0;
-
-        return -errno;
-}
-
+/*
 static int delete_dm(dev_t devnum) {
         _cleanup_close_ int fd = -1;
         int r;
@@ -237,7 +220,7 @@ static int delete_dm(dev_t devnum) {
 
         r = ioctl(fd, DM_DEV_REMOVE, &dm);
         return r >= 0 ? 0 : -errno;
-}
+} */
 
 static int mount_points_list_umount(MountPoint **head, bool *changed, bool log_error) {
         MountPoint *m, *n;
@@ -321,43 +304,7 @@ static int swap_points_list_off(MountPoint **head, bool *changed) {
         return n_failed;
 }
 
-static int loopback_points_list_detach(MountPoint **head, bool *changed) {
-        MountPoint *m, *n;
-        int n_failed = 0, k;
-        struct stat root_st;
-
-        assert(head);
-
-        k = lstat("/", &root_st);
-
-        LIST_FOREACH_SAFE(mount_point, m, n, *head) {
-                int r;
-                struct stat loopback_st;
-
-                if (k >= 0 &&
-                    major(root_st.st_dev) != 0 &&
-                    lstat(m->path, &loopback_st) >= 0 &&
-                    root_st.st_dev == loopback_st.st_rdev) {
-                        n_failed ++;
-                        continue;
-                }
-
-                log_info("Detaching loopback %s.", m->path);
-                r = delete_loopback(m->path);
-                if (r >= 0) {
-                        if (r > 0 && changed)
-                                *changed = true;
-
-                        mount_point_free(head, m);
-                } else {
-                        log_warning("Could not detach loopback %s: %m", m->path);
-                        n_failed++;
-                }
-        }
-
-        return n_failed;
-}
-
+/*
 static int dm_points_list_detach(MountPoint **head, bool *changed) {
         MountPoint *m, *n;
         int n_failed = 0, k;
@@ -391,7 +338,7 @@ static int dm_points_list_detach(MountPoint **head, bool *changed) {
         }
 
         return n_failed;
-}
+} */
 
 int umount_all(bool *changed) {
         int r;
@@ -444,12 +391,14 @@ int swapoff_all(bool *changed) {
 
 /* Calls losetup(8) from util-linux directly.
  * Used to originally employ libudev. */
-int loopback_detach_all() {
+int loopback_detach_all(void) {
 	   int r;
 	   
-	   r = exec_command_set("/sbin/losetup -D", NULL);
+	   r = system("/sbin/losetup -D");
 	   if (r < 0)
 	         log_error("Detaching loopback devices with losetup(8) failed.");
+	         
+	   return r;
 }
 
 /* TODO: address in lack of libudev */
@@ -459,4 +408,6 @@ int dm_detach_all(bool *changed) {
         LIST_HEAD_INIT(MountPoint, dm_list_head);
 
         mount_points_list_free(&dm_list_head);
+        
+        return 0;
 }
