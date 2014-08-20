@@ -1870,18 +1870,11 @@ if HAVE_SYSV_COMPAT
 sysvinit_DATA = \
 	docs/sysvinit/README
 
-varlog_DATA = \
-	docs/var-log/README
-
 docs/sysvinit/README: docs/sysvinit/README.in
 	$(SED_PROCESS)
 
-docs/var-log/README: docs/var-log/README.in
-	$(SED_PROCESS)
-
 CLEANFILES += \
-	docs/sysvinit/README \
-	docs/var-log/README
+	docs/sysvinit/README
 endif
 
 EXTRA_DIST += \

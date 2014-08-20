@@ -28,13 +28,9 @@ MANPAGES += \
 	man/systemd-analyze.1 \
 	man/systemd-ask-password-console.service.8 \
 	man/systemd-ask-password.1 \
-	man/systemd-cgls.1 \
 	man/systemd-cgtop.1 \
 	man/systemd-delta.1 \
-	man/systemd-detect-virt.1 \
-	man/systemd-efi-boot-generator.8 \
 	man/systemd-fsck@.service.8 \
-	man/systemd-fstab-generator.8 \
 	man/systemd-getty-generator.8 \
 	man/systemd-halt.service.8 \
 	man/systemd-inhibit.1 \
@@ -51,10 +47,8 @@ MANPAGES += \
 	man/systemd-tty-ask-password-agent.1 \
 	man/systemd-update-utmp.service.8 \
 	man/systemd.1 \
-	man/systemd.automount.5 \
 	man/systemd.exec.5 \
 	man/systemd.kill.5 \
-	man/systemd.mount.5 \
 	man/systemd.path.5 \
 	man/systemd.preset.5 \
 	man/systemd.resource-control.5 \
@@ -65,7 +59,6 @@ MANPAGES += \
 	man/systemd.socket.5 \
 	man/systemd.special.7 \
 	man/systemd.target.5 \
-	man/systemd.time.7 \
 	man/systemd.unit.5 \
 	man/telinit.8 \
 	man/tmpfiles.d.5
@@ -320,30 +313,6 @@ man/systemd-update-utmp.html: man/systemd-update-utmp.service.html
 man/systemd-user.conf.html: man/systemd-system.conf.html
 	$(html-alias)
 
-
-if ENABLE_BINFMT
-MANPAGES += \
-	man/binfmt.d.5 \
-	man/systemd-binfmt.service.8
-MANPAGES_ALIAS += \
-	man/systemd-binfmt.8
-man/systemd-binfmt.8: man/systemd-binfmt.service.8
-man/systemd-binfmt.html: man/systemd-binfmt.service.html
-	$(html-alias)
-
-endif
-
-if ENABLE_QUOTACHECK
-MANPAGES += \
-	man/systemd-quotacheck.service.8
-MANPAGES_ALIAS += \
-	man/systemd-quotacheck.8
-man/systemd-quotacheck.8: man/systemd-quotacheck.service.8
-man/systemd-quotacheck.html: man/systemd-quotacheck.service.html
-	$(html-alias)
-
-endif
-
 if ENABLE_RANDOMSEED
 MANPAGES += \
 	man/systemd-random-seed.service.8
@@ -351,18 +320,6 @@ MANPAGES_ALIAS += \
 	man/systemd-random-seed.8
 man/systemd-random-seed.8: man/systemd-random-seed.service.8
 man/systemd-random-seed.html: man/systemd-random-seed.service.html
-	$(html-alias)
-
-endif
-
-if ENABLE_VCONSOLE
-MANPAGES += \
-	man/systemd-vconsole-setup.service.8 \
-	man/vconsole.conf.5
-MANPAGES_ALIAS += \
-	man/systemd-vconsole-setup.8
-man/systemd-vconsole-setup.8: man/systemd-vconsole-setup.service.8
-man/systemd-vconsole-setup.html: man/systemd-vconsole-setup.service.html
 	$(html-alias)
 
 endif
