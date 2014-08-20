@@ -1597,7 +1597,7 @@ char *cg_escape(const char *p) {
 
                                 n = strndup(p, dot - p);
                                 if (!n)
-                                        return -ENOMEM;
+                                        return (char *)-ENOMEM;
 
                                 if (check_hierarchy(n) >= 0)
                                         need_prefix = true;
