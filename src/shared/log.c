@@ -37,6 +37,10 @@
 
 #define SNDBUF_SIZE (8*1024*1024)
 
+const char *next_format(
+                 const char *format,
+                 va_list *ap);
+
 static LogTarget log_target = LOG_TARGET_CONSOLE;
 static int log_max_level = LOG_INFO;
 static int log_facility = LOG_DAEMON;
@@ -679,6 +683,8 @@ int log_struct_internal(
         PROTECT_ERRNO;
         va_list ap, app;
         int r;
+        char buf[LINE_MAX];
+        bool found = false;
 
         if (_likely_(LOG_PRI(level) > log_max_level))
                 return 0;
@@ -688,9 +694,6 @@ int log_struct_internal(
 
         if ((level & LOG_FACMASK) == 0)
                 level = log_facility | LOG_PRI(level);
-                
-         char buf[LINE_MAX];
-                bool found = false;
 
                 /* Fallback if journal logging is not available */
 
