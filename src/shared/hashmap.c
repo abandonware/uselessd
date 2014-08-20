@@ -184,7 +184,6 @@ Hashmap *hashmap_new(hash_func_t hash_func, compare_func_t compare_func) {
         bool b;
         Hashmap *h;
         size_t size;
-        void *auxv;
 
         b = is_main_thread();
 
@@ -221,6 +220,7 @@ Hashmap *hashmap_new(hash_func_t hash_func, compare_func_t compare_func) {
          * rehash everything using a new random XOR mask from
          * /dev/random. */
 #ifdef HAVE_SYS_AUXV_H
+        void *auxv;
         auxv = (void*) getauxval(AT_RANDOM);
         h->random_xor = auxv ? *(unsigned*) auxv : random_u();
 #else
