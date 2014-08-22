@@ -291,8 +291,7 @@ dist_zshcompletion_DATA = \
 	shell-completion/zsh/_systemctl \
 	shell-completion/zsh/_systemd-analyze \
 	shell-completion/zsh/_sd_hosts_or_user_at_host \
-	shell-completion/zsh/_systemd-delta \
-	shell-completion/zsh/_systemd
+	shell-completion/zsh/_systemd-delta
 
 dist_sysctl_DATA = \
 	sysctl.d/50-default.conf
@@ -409,7 +408,6 @@ EXTRA_DIST += \
 	units/systemd-hibernate.service.in \
 	units/systemd-hybrid-sleep.service.in \
 	units/systemd-suspend.service.in \
-	units/quotaon.service.in \
 	units/initrd-parse-etc.service.in \
 	units/initrd-cleanup.service.in \
 	units/initrd-switch-root.service.in \
@@ -553,7 +551,6 @@ libsystemd_shared_la_SOURCES = \
 	src/shared/linux/fanotify.h \
 	src/shared/linux/seccomp.h \
 	src/shared/linux/seccomp-bpf.h \
-	src/shared/linux/posix_capability.h \
 	src/shared/missing.h \
 	src/shared/list.h \
 	src/shared/macro.h \
@@ -1863,8 +1860,7 @@ CLEANFILES += \
 endif
 
 EXTRA_DIST += \
-	docs/sysvinit/README.in \
-	docs/var-log/README.in
+	docs/sysvinit/README.in
 
 SOCKETS_TARGET_WANTS += \
 	systemd-initctl.socket \
@@ -1990,11 +1986,6 @@ if ENABLE_GTK_DOC
 DISTCHECK_CONFIGURE_FLAGS += \
 	--enable-gtk-doc
 endif
-
-upload: all distcheck
-	cp -v systemd-$(VERSION).tar.xz /home/lennart/git.fedora/systemd/
-	scp systemd-$(VERSION).tar.xz fdo:/srv/www.freedesktop.org/www/software/systemd/
-	scp man/*.html tango:public/systemd-man/
 
 www_target = www.freedesktop.org:/srv/www.freedesktop.org/www/software/systemd
 doc-sync: all destdir-sphinx
