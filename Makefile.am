@@ -258,14 +258,13 @@ bin_PROGRAMS = \
 	systemd-analyze
 
 rootlibexec_PROGRAMS = \
-	systemd \
+	usysd \
 	systemd-initctl \
 	systemd-update-utmp \
 	systemd-shutdownd \
 	systemd-shutdown \
 	systemd-remount-fs \
 	systemd-reply-password \
-	systemd-fsck \
 	systemd-ac-power \
 	systemd-sysctl \
 	systemd-sleep
@@ -372,7 +371,6 @@ nodist_systemunit_DATA = \
 	units/systemd-reboot.service \
 	units/systemd-kexec.service \
 	units/systemd-fsck@.service \
-	units/systemd-fsck-root.service \
 	units/debug-shell.service \
 	units/initrd-parse-etc.service \
 	units/initrd-cleanup.service \
@@ -406,7 +404,6 @@ EXTRA_DIST += \
 	units/systemd-kexec.service.in \
 	units/user/systemd-exit.service.in \
 	units/systemd-fsck@.service.in \
-	units/systemd-fsck-root.service.in \
 	units/user@.service.in \
 	units/debug-shell.service.in \
 	units/systemd-hibernate.service.in \
@@ -582,7 +579,7 @@ libsystemd_shared_la_SOURCES = \
 	src/shared/fdset.h \
 	src/shared/prioq.c \
 	src/shared/prioq.h \
-        src/shared/printf.h \
+    src/shared/printf.h \
 	src/shared/sleep-config.c \
 	src/shared/sleep-config.h \
 	src/shared/strv.c \
@@ -909,14 +906,14 @@ src/core/syscall-to-name.h: src/core/syscall-list.txt Makefile
 	$(AM_V_GEN)$(AWK) 'BEGIN{ print "const char* const syscall_names[] = { "} { printf "[SYSCALL_TO_INDEX(__NR_%s)] = \"%s\",\n", $$1, $$1 } END{print "};"}' < $< > $@
 
 # ------------------------------------------------------------------------------
-systemd_SOURCES = \
+usysd_SOURCES = \
 	src/core/main.c
 
-systemd_CFLAGS = \
+usysd_CFLAGS = \
 	$(AM_CFLAGS) \
 	$(DBUS_CFLAGS)
 
-systemd_LDADD = \
+usysd_LDADD = \
 	libsystemd-core.la \
 	libsystemd-daemon.la \
 	libsystemd-id128-internal.la \
@@ -945,7 +942,7 @@ dbusinterface_DATA += \
 polkitpolicy_in_in_files += \
 	src/core/org.freedesktop.systemd1.policy.in.in
 
-org.freedesktop.systemd1.%.xml: systemd
+org.freedesktop.systemd1.%.xml: usysd
 	$(AM_V_GEN)$(LIBTOOL) --mode=execute $(OBJCOPY) -O binary -j introspect.$* $< $@.tmp && \
 		$(STRINGS) $@.tmp | $(AWK) -f $(srcdir)/introspect.awk | \
 		$(DBUS_PREPROCESS) -o $@ - && rm $@.tmp
@@ -1455,18 +1452,6 @@ systemd_sleep_LDADD = \
 	libsystemd-shared.la
 
 # ------------------------------------------------------------------------------
-systemd_fsck_SOURCES = \
-	src/fsck/fsck.c
-
-systemd_fsck_CFLAGS = \
-	$(AM_CFLAGS) \
-	$(DBUS_CFLAGS)
-
-systemd_fsck_LDADD = \
-	libsystemd-shared.la \
-	libsystemd-dbus.la
-
-# ------------------------------------------------------------------------------
 systemd_ac_power_SOURCES = \
 	src/ac-power/ac-power.c
 
@@ -1900,8 +1885,7 @@ endif
 SYSINIT_TARGET_WANTS += \
 	systemd-update-utmp.service
 LOCAL_FS_TARGET_WANTS += \
-	systemd-remount-fs.service \
-	systemd-fsck-root.service
+	systemd-remount-fs.service
 MULTI_USER_TARGET_WANTS += \
 	getty.target \
 	systemd-ask-password-wall.path
