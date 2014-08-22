@@ -6,7 +6,7 @@
 #  (at your option) any later version.
 
 [Unit]
-Description=File System Check on %f
+Description=File System Check on All
 Documentation=man:systemd-fsck@.service(8)
 DefaultDependencies=no
 After=default.target
@@ -15,6 +15,6 @@ Before=shutdown.target
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-ExecStart=@rootlibexecdir@/systemd-fsck %f
-StandardOutput=journal+console
+ExecStart=/sbin/fsck -M -A -l
+StandardOutput=syslog+console
 TimeoutSec=0
