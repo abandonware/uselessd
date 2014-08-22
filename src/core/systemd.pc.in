@@ -19,7 +19,7 @@ systemduserunitpath=${systemduserconfdir}:/etc/systemd/user:/run/systemd/user:/u
 systemdsystemgeneratordir=@systemgeneratordir@
 systemdusergeneratordir=@usergeneratordir@
 
-Name: systemd
-Description: systemd System and Service Manager
+Name: usysd
+Description: usysd System and Service Manager
 URL: @PACKAGE_URL@
 Version: @PACKAGE_VERSION@
