@@ -21,7 +21,7 @@ AC_PREREQ([2.64])
 
 AC_INIT([usysd],
         [1],
-        [http://bugs.freedesktop.org/enter_bug.cgi?product=systemd],
+        [https://bitbucket.org/bcsd/usysd/issues],
         [usysd],
         [http://usysd.darknedgy.net])
 
