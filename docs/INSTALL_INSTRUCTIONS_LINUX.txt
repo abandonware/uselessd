@@ -20,7 +20,7 @@
    
    sysconfdir is /etc, root prefix is typically left
    blank, sysvinit path is typically /etc/init.d/,
-   GIDs can be discovered using `getent groups
+   GIDs can be discovered using `getent group
    <GROUPNAME>`, sysvrcnd-path may be /etc/rcS.d,
    so on and so forth. These things should be easy
    to deduce.
@@ -48,7 +48,10 @@
    where usysd[1]'s logs are outputted, and their
    verbosity, respectively.
    
-7. Reboot and pray.
+7. update-grub
+   reboot
+   
+   Pray to dmr or something.
 
 8. Permanent conversion to usysd will vary from distro
    to distro, depending on exact init scheme implementation.
