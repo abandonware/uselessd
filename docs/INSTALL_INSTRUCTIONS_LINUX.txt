@@ -1,0 +1,54 @@
+1. Obtain source. If there is no configure file present,
+   run either autogen.sh or `autoreconf -fvi` to generate
+   it.
+   
+2. Run configure, view the help, enable and disable
+   components as seen fit. Of particular importance
+   are the following prefixes, which may vary between
+   distros:
+   
+   --sysconfdir=
+   --with-root-prefix=
+   --with-sysvinit-path=
+   --with-tty-gid=
+   --with-telinit=
+   --with-sysvrcnd-path=
+   --with-kbd-setfont=
+   --with-kbd-loadkeys=
+   --with-rc-local-script-path-start=
+   --with-rc-local-script-path-stop=
+   
+   sysconfdir is /etc, root prefix is typically left
+   blank, sysvinit path is typically /etc/init.d/,
+   GIDs can be discovered using `getent groups
+   <GROUPNAME>`, sysvrcnd-path may be /etc/rcS.d,
+   so on and so forth. These things should be easy
+   to deduce.
+   
+3. make
+
+4. Optionally run make check, to see if tests pass.
+   Test failures don't necessarily mean usysd won't
+   work, but they are worth looking into. If
+   test-sleep in particular happens to fail,
+   try running systemd-machine-id-setup and retry.
+   
+5. make install
+
+6. Now it's time to make your system boot from usysd.
+   In GRUB2, you will need to find the appropriate
+   GRUB menu config (located in /etc/default/grub 
+   in some distros) and modify the GRUB_CMDLINE_LINUX
+   option to include the line:
+   
+   init=/lib/systemd/usysd
+   
+   You may also optionally add arguments, such as
+   systemd.log_target and systemd.log_level to control
+   where usysd[1]'s logs are outputted, and their
+   verbosity, respectively.
+   
+7. Reboot and pray.
+
+8. Permanent conversion to usysd will vary from distro
+   to distro, depending on exact init scheme implementation.
