@@ -21,7 +21,7 @@
    sysconfdir is /etc, root prefix is typically left
    blank, sysvinit path is typically /etc/init.d/,
    GIDs can be discovered using `getent group
-   <GROUPNAME>`, sysvrcnd-path may be /etc/rcS.d,
+   <GROUPNAME>`, sysvrcnd-path may be /etc/rcS.d/,
    so on and so forth. These things should be easy
    to deduce.
    
@@ -38,8 +38,9 @@
 6. Now it's time to make your system boot from usysd.
    In GRUB2, you will need to find the appropriate
    GRUB menu config (located in /etc/default/grub 
-   in some distros) and modify the GRUB_CMDLINE_LINUX
-   option to include the line:
+   in some distros, or /etc/grub.d) and modify the 
+   GRUB_CMDLINE_LINUX_DEFAULT option to include the 
+   following line:
    
    init=/lib/systemd/usysd
    
