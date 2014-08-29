@@ -200,28 +200,6 @@ finish:
         return r;
 }
 
-/*
-static int delete_dm(dev_t devnum) {
-        _cleanup_close_ int fd = -1;
-        int r;
-        struct dm_ioctl dm = {
-                .version = {DM_VERSION_MAJOR,
-                            DM_VERSION_MINOR,
-                            DM_VERSION_PATCHLEVEL},
-                .data_size = sizeof(dm),
-                .dev = devnum,
-        };
-
-        assert(major(devnum) != 0);
-
-        fd = open("/dev/mapper/control", O_RDWR|O_CLOEXEC);
-        if (fd < 0)
-                return -errno;
-
-        r = ioctl(fd, DM_DEV_REMOVE, &dm);
-        return r >= 0 ? 0 : -errno;
-} */
-
 static int mount_points_list_umount(MountPoint **head, bool *changed, bool log_error) {
         MountPoint *m, *n;
         int n_failed = 0;
@@ -304,42 +282,6 @@ static int swap_points_list_off(MountPoint **head, bool *changed) {
         return n_failed;
 }
 
-/*
-static int dm_points_list_detach(MountPoint **head, bool *changed) {
-        MountPoint *m, *n;
-        int n_failed = 0, k;
-        struct stat root_st;
-
-        assert(head);
-
-        k = lstat("/", &root_st);
-
-        LIST_FOREACH_SAFE(mount_point, m, n, *head) {
-                int r;
-
-                if (k >= 0 &&
-                    major(root_st.st_dev) != 0 &&
-                    root_st.st_dev == m->devnum) {
-                        n_failed ++;
-                        continue;
-                }
-
-                log_info("Detaching DM %u:%u.", major(m->devnum), minor(m->devnum));
-                r = delete_dm(m->devnum);
-                if (r >= 0) {
-                        if (changed)
-                                *changed = true;
-
-                        mount_point_free(head, m);
-                } else {
-                        log_warning("Could not detach DM %s: %m", m->path);
-                        n_failed++;
-                }
-        }
-
-        return n_failed;
-} */
-
 int umount_all(bool *changed) {
         int r;
         bool umount_changed;
@@ -401,13 +343,11 @@ int loopback_detach_all(void) {
 	   return r;
 }
 
-/* TODO: address in lack of libudev */
-int dm_detach_all(bool *changed) {
-        LIST_HEAD(MountPoint, dm_list_head);
+/* Call dmsetup(8) directly. Originally called libudev. */
+int dm_detach_all(void) {
+           int r;
 
-        LIST_HEAD_INIT(MountPoint, dm_list_head);
-
-        mount_points_list_free(&dm_list_head);
-        
-        return 0;
+           r = system("/sbin/dmsetup remove_all");
+           if (r < 0)
+                  log_error("Detaching DM devices with dmsetup(8) failed.");
 }

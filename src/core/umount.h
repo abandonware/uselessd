@@ -27,4 +27,4 @@ int swapoff_all(bool *changed);
 
 int loopback_detach_all(void);
 
-int dm_detach_all(bool *changed);
+int dm_detach_all(void);

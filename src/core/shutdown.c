@@ -248,7 +248,7 @@ int main(int argc, char *argv[]) {
 
                 if (need_dm_detach) {
                         log_info("Detaching DM devices.");
-                        r = dm_detach_all(&changed);
+                        r = dm_detach_all();
                         if (r == 0) {
                                 need_dm_detach = false;
                                 log_info("All DM devices detached.");
