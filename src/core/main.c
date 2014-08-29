@@ -1005,7 +1005,7 @@ static int parse_argv(int argc, char *argv[]) {
 
 static int help(void) {
 
-        printf("%s [OPTIONS...]\n\n"
+        printf("usysd [OPTIONS...]\n\n"
                "Starts up and maintains the system or user services.\n\n"
                "  -h --help                      Show this help\n"
                "     --test                      Determine startup sequence, dump it and exit\n"
@@ -1024,7 +1024,7 @@ static int help(void) {
                "     --log-location[=0|1]        Include code location in log messages\n"
                "     --default-standard-output=  Set default standard output for services\n"
                "     --default-standard-error=   Set default standard error output for services\n",
-               program_invocation_short_name);
+               );
 
         return 0;
 }
