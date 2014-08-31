@@ -1023,8 +1023,7 @@ static int help(void) {
                "     --log-color[=0|1]           Highlight important log messages\n"
                "     --log-location[=0|1]        Include code location in log messages\n"
                "     --default-standard-output=  Set default standard output for services\n"
-               "     --default-standard-error=   Set default standard error output for services\n",
-               );
+               "     --default-standard-error=   Set default standard error output for services\n");
 
         return 0;
 }
@@ -1215,7 +1214,7 @@ int main(int argc, char *argv[]) {
         dual_timestamp initrd_timestamp = { 0ULL, 0ULL };
         dual_timestamp userspace_timestamp = { 0ULL, 0ULL };
         dual_timestamp kernel_timestamp = { 0ULL, 0ULL };
-        static char systemd[] = "systemd";
+        static char systemd[] = "usysd";
         bool skip_setup = false;
         int j;
         bool loaded_policy = false;
@@ -1252,10 +1251,10 @@ int main(int argc, char *argv[]) {
 
         /* If we get started via the /sbin/init symlink then we are
            called 'init'. After a subsequent reexecution we are then
-           called 'systemd'. That is confusing, hence let's call us
-           systemd right-away. */
+           called 'usysd'. That is confusing, hence let's call us
+           usysd right-away. */
         program_invocation_short_name = systemd;
-        prctl(PR_SET_NAME, systemd);
+        prctl(PR_SET_NAME, usysd);
 
         saved_argv = argv;
         saved_argc = argc;
