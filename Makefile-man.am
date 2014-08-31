@@ -59,6 +59,7 @@ MANPAGES += \
 	man/systemd.socket.5 \
 	man/systemd.special.7 \
 	man/systemd.target.5 \
+	man/systemd.time.7 \
 	man/systemd.unit.5 \
 	man/telinit.8 \
 	man/tmpfiles.d.5
@@ -77,6 +78,7 @@ MANPAGES_ALIAS += \
 	man/SD_NOTICE.3 \
 	man/SD_WARNING.3 \
 	man/init.1 \
+	man/usysd.1 \
 	man/poweroff.8 \
 	man/reboot.8 \
 	man/sd_id128_equal.3 \
@@ -127,6 +129,7 @@ man/SD_LISTEN_FDS_START.3: man/sd_listen_fds.3
 man/SD_NOTICE.3: man/sd-daemon.3
 man/SD_WARNING.3: man/sd-daemon.3
 man/init.1: man/systemd.1
+man/usysd.1: man/systemd.1
 man/poweroff.8: man/halt.8
 man/reboot.8: man/halt.8
 man/sd_id128_equal.3: man/sd-id128.3
@@ -203,6 +206,9 @@ man/SD_WARNING.html: man/sd-daemon.html
 	$(html-alias)
 
 man/init.html: man/systemd.html
+	$(html-alias)
+
+man/usysd.html: man/systemd.html
 	$(html-alias)
 
 man/poweroff.html: man/halt.html
@@ -326,12 +332,19 @@ endif
 
 if HAVE_KMOD
 MANPAGES += \
-	man/modules-load.d.5 \
-	man/systemd-modules-load.service.8
+	man/modules-load.d.5
 MANPAGES_ALIAS += \
-	man/systemd-modules-load.8
-man/systemd-modules-load.8: man/systemd-modules-load.service.8
-man/systemd-modules-load.html: man/systemd-modules-load.service.html
-	$(html-alias)
+	#
+
+
+endif
+
+if HAVE_PYTHON
+MANPAGES += \
+	man/systemd.directives.7 \
+	man/systemd.index.7
+MANPAGES_ALIAS += \
+	#
+
 
 endif
