@@ -1214,7 +1214,7 @@ int main(int argc, char *argv[]) {
         dual_timestamp initrd_timestamp = { 0ULL, 0ULL };
         dual_timestamp userspace_timestamp = { 0ULL, 0ULL };
         dual_timestamp kernel_timestamp = { 0ULL, 0ULL };
-        static char systemd[] = "usysd";
+        static char usysd[] = "usysd";
         bool skip_setup = false;
         int j;
         bool loaded_policy = false;
@@ -1253,7 +1253,7 @@ int main(int argc, char *argv[]) {
            called 'init'. After a subsequent reexecution we are then
            called 'usysd'. That is confusing, hence let's call us
            usysd right-away. */
-        program_invocation_short_name = systemd;
+        program_invocation_short_name = usysd;
         prctl(PR_SET_NAME, usysd);
 
         saved_argv = argv;
