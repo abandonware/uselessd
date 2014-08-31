@@ -1991,7 +1991,7 @@ static int start_unit(DBusConnection *bus, char **args) {
                         return r;
 
                 /* When stopping units, warn if they can still be triggered by
-                 * another active unit (socket, path, timer) */
+                 * another active unit (socket, path...) */
                 if (!arg_quiet && streq(method, "StopUnit")) {
                         if (one_name)
                                 check_triggering_units(bus, one_name);
@@ -4402,7 +4402,7 @@ static int enable_unit(DBusConnection *bus, char **args) {
                             "   .wants/ or .requires/ directory.\n"
                             "2) A unit's purpose may be to act as a helper for some other unit which has\n"
                             "   a requirement dependency on it.\n"
-                            "3) A unit may be started when needed via activation (socket, path, timer,\n"
+                            "3) A unit may be started when needed via activation (socket, path,\n"
                             "   D-Bus, udev, scripted systemctl call, ...).\n");
 
 finish:
