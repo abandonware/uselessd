@@ -637,6 +637,9 @@ libsystemd_shared_la_SOURCES = \
 	src/shared/mkdir.c \
 	src/shared/mkdir.h
 
+pkginclude_HEADERS += \
+	src/systemd/sd-messages.h
+
 #-------------------------------------------------------------------------------
 noinst_LTLIBRARIES += \
 	libsystemd-dbus.la
@@ -1861,7 +1864,7 @@ CLEANFILES += \
 endif
 
 EXTRA_DIST += \
-	docs/sysvinit/README.in
+	docs/sysvinit/README.in \
 	docs/INSTALL_INSTRUCTIONS_LINUX.txt
 
 SOCKETS_TARGET_WANTS += \
