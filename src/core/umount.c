@@ -350,4 +350,6 @@ int dm_detach_all(void) {
            r = system("/sbin/dmsetup remove_all");
            if (r < 0)
                   log_error("Detaching DM devices with dmsetup(8) failed.");
+
+           return r;
 }
