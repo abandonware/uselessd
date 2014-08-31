@@ -1862,6 +1862,7 @@ endif
 
 EXTRA_DIST += \
 	docs/sysvinit/README.in
+        docs/INSTALL_INSTRUCTIONS_LINUX.txt
 
 SOCKETS_TARGET_WANTS += \
 	systemd-initctl.socket \
