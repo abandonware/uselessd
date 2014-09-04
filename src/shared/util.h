@@ -198,15 +198,9 @@ int safe_atod(const char *s, double *ret_d);
  * we default to 32-bit. */
 
 static inline int safe_atolu(const char *s, unsigned long *ret_u) {
-        #ifndef __UCLIBC__
-        assert_cc(sizeof(unsigned long) == sizeof(unsigned));
-	    #endif
         return safe_atou(s, (unsigned*) ret_u);
 }
 static inline int safe_atoli(const char *s, long int *ret_u) {
-	    #ifndef __UCLIBC__
-        assert_cc(sizeof(long int) == sizeof(int));
-	    #endif
         return safe_atoi(s, (int*) ret_u);
 }
 
