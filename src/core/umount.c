@@ -26,6 +26,7 @@
 #include <sys/swap.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <signal.h>
 #include <linux/loop.h>
 #include <linux/dm-ioctl.h>
 
@@ -334,7 +335,14 @@ int swapoff_all(bool *changed) {
 /* Calls losetup(8) from util-linux directly.
  * Used to originally employ libudev. */
 int loopback_detach_all(void) {
-	   int r;
+           int r;
+           int s;
+           sigset_t mask;
+           sigfillset(&mask);
+
+           s = sigprocmask(SIG_SETMASK, &mask, NULL);
+           if (s < 0)
+                 log_error("Setting blocking signal mask failed.");
 	   
 	   r = system("/sbin/losetup -D");
 	   if (r < 0)
@@ -346,6 +354,13 @@ int loopback_detach_all(void) {
 /* Call dmsetup(8) directly. Originally called libudev. */
 int dm_detach_all(void) {
            int r;
+           int s;
+           sigset_t mask;
+           sigfillset(&mask);
+
+           s = sigprocmask(SIG_SETMASK, &mask, NULL);
+           if (s < 0)
+                 log_error("Setting blocking signal mask failed.");
 
            r = system("/sbin/dmsetup remove_all");
            if (r < 0)
