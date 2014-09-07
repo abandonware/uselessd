@@ -45,7 +45,8 @@
         <refnamediv>
                 <refname>systemd</refname>
                 <refname>init</refname>
-                <refpurpose>systemd system and service manager</refpurpose>
+                <refname>usysd</refname>
+                <refpurpose>systemd/usysd system and service manager</refpurpose>
         </refnamediv>
 
         <refsynopsisdiv>
@@ -264,8 +265,6 @@
                                 <option>inherit</option>,
                                 <option>null</option>,
                                 <option>tty</option>,
-                                <option>journal</option>,
-                                <option>journal+console</option>,
                                 <option>syslog</option>,
                                 <option>syslog+console</option>,
                                 <option>kmsg</option>,
@@ -332,10 +331,6 @@
                         group units, or provide well-known
                         synchronization points during boot-up, see
                         <citerefentry><refentrytitle>systemd.target</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</para></listitem>
-
-                        <listitem><para>Mount units control mount
-                        points in the file system, for details see
-                        <citerefentry><refentrytitle>systemd.mount</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</para></listitem>
 
                         <listitem><para>Snapshot units can be used to
                         temporarily save the state of the set of
@@ -1260,7 +1255,6 @@
                 <para>
                         The <ulink url="http://www.freedesktop.org/wiki/Software/systemd/">systemd Homepage</ulink>,
                         <citerefentry><refentrytitle>systemd-system.conf</refentrytitle><manvolnum>5</manvolnum></citerefentry>,
-                        <citerefentry><refentrytitle>locale.conf</refentrytitle><manvolnum>5</manvolnum></citerefentry>,
                         <citerefentry><refentrytitle>systemctl</refentrytitle><manvolnum>1</manvolnum></citerefentry>,
                         <citerefentry><refentrytitle>systemd-notify</refentrytitle><manvolnum>1</manvolnum></citerefentry>,
                         <citerefentry><refentrytitle>daemon</refentrytitle><manvolnum>7</manvolnum></citerefentry>,
