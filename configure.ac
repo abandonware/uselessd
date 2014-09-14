@@ -19,11 +19,11 @@
 
 AC_PREREQ([2.64])
 
-AC_INIT([usysd],
+AC_INIT([uselessd],
         [1],
-        [https://bitbucket.org/bcsd/usysd/issues],
-        [usysd],
-        [http://usysd.darknedgy.net])
+        [https://bitbucket.org/bcsd/uselessd/issues],
+        [uselessd],
+        [http://uselessd.darknedgy.net])
 
 AC_CONFIG_SRCDIR([src/core/main.c])
 AC_CONFIG_MACRO_DIR([m4])

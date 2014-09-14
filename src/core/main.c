@@ -1005,7 +1005,7 @@ static int parse_argv(int argc, char *argv[]) {
 
 static int help(void) {
 
-        printf("usysd [OPTIONS...]\n\n"
+        printf("uselessd [OPTIONS...]\n\n"
                "Starts up and maintains the system or user services.\n\n"
                "  -h --help                      Show this help\n"
                "     --test                      Determine startup sequence, dump it and exit\n"
@@ -1214,7 +1214,7 @@ int main(int argc, char *argv[]) {
         dual_timestamp initrd_timestamp = { 0ULL, 0ULL };
         dual_timestamp userspace_timestamp = { 0ULL, 0ULL };
         dual_timestamp kernel_timestamp = { 0ULL, 0ULL };
-        static char usysd[] = "usysd";
+        static char uselessd[] = "uselessd";
         bool skip_setup = false;
         int j;
         bool loaded_policy = false;
@@ -1251,10 +1251,10 @@ int main(int argc, char *argv[]) {
 
         /* If we get started via the /sbin/init symlink then we are
            called 'init'. After a subsequent reexecution we are then
-           called 'usysd'. That is confusing, hence let's call us
-           usysd right-away. */
-        program_invocation_short_name = usysd;
-        prctl(PR_SET_NAME, usysd);
+           called 'uselessd'. That is confusing, hence let's call us
+           uselessd right-away. */
+        program_invocation_short_name = uselessd;
+        prctl(PR_SET_NAME, uselessd);
 
         saved_argv = argv;
         saved_argc = argc;

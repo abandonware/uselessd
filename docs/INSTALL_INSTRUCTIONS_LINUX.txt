@@ -28,25 +28,25 @@
 3. make
 
 4. Optionally run make check, to see if tests pass.
-   Test failures don't necessarily mean usysd won't
+   Test failures don't necessarily mean uselessd won't
    work, but they are worth looking into. If
    test-sleep in particular happens to fail,
    try running systemd-machine-id-setup and retry.
 
 5. make install
 
-6. Now it's time to make your system boot from usysd.
+6. Now it's time to make your system boot from uselessd.
    In GRUB2, you will need to find the appropriate
    GRUB menu config (located in /etc/default/grub
    in some distros, or /etc/grub.d) and modify the
    GRUB_CMDLINE_LINUX_DEFAULT option to include the
    following line:
 
-   init=/lib/systemd/usysd
+   init=/lib/systemd/uselessd
 
    You may also optionally add arguments, such as
    systemd.log_target and systemd.log_level to control
-   where usysd[1]'s logs are outputted, and their
+   where uselessd[1]'s logs are outputted, and their
    verbosity, respectively.
 
 7. update-grub
@@ -54,5 +54,6 @@
 
    Pray to dmr or something.
 
-8. Permanent conversion to usysd will vary from distro
+8. Permanent conversion to uselessd will vary from distro
    to distro, depending on exact init scheme implementation.
+   Certain things like symlinking to /sbin/init are a given.

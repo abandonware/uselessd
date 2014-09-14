@@ -45,8 +45,8 @@
         <refnamediv>
                 <refname>systemd</refname>
                 <refname>init</refname>
-                <refname>usysd</refname>
-                <refpurpose>systemd/usysd system and service manager</refpurpose>
+                <refname>uselessd</refname>
+                <refpurpose>the useless system and service manager</refpurpose>
         </refnamediv>
 
         <refsynopsisdiv>
