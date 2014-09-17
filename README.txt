@@ -1,35 +1,35 @@
-uselessd System and Service Manager [original description do not steal]
------------------------------------------
+     uselessd System and Service Manager [original description do not steal]
+     -----------------------------------------
 
-WEB SITE + DETAILS:
+    WEB SITE + DETAILS:
         http://uselessd.darknedgy.net [read it]
 
-IRC:
+    IRC:
         #uselessd on irc.darknedgy.net
 
-AUTHOR:
+    AUTHOR:
         Lennart Poettering
         Kay Sievers
-	The Initfinder General
+        The Initfinder General
         ...and many others
 
-LICENSE:
+    LICENSE:
         LGPLv2.1+ for all code
         - except sd-daemon.[ch] which is MIT
         - except src/shared/MurmurHash3.c which is Public Domain
 
-REQUIREMENTS:
-        Linux kernel >= 3.0
-          CONFIG_DEVTMPFS
-          CONFIG_CGROUPS (it's OK to disable all controllers)
-          CONFIG_INOTIFY_USER
-          CONFIG_SIGNALFD
-          CONFIG_TIMERFD
-          CONFIG_EPOLL
-          CONFIG_NET
-          CONFIG_SYSFS
+    REQUIREMENTS:
+       Linux kernel >= 3.0
+           CONFIG_DEVTMPFS
+           CONFIG_CGROUPS (it's OK to disable all controllers)
+           CONFIG_INOTIFY_USER
+           CONFIG_SIGNALFD
+           CONFIG_TIMERFD
+           CONFIG_EPOLL
+           CONFIG_NET
+           CONFIG_SYSFS
 
-        Linux kernel >= 3.8 for Smack support
+       Linux kernel >= 3.8 for Smack support
 
         Mount and bind mount handling might require it:
           CONFIG_FHANDLE
@@ -73,7 +73,7 @@ REQUIREMENTS:
         During runtime you need the following additional dependencies:
 
         util-linux >= v2.19 (requires fsck -l, agetty -s, losetup)
-	dmsetup
+        dmsetup
         sulogin (from util-linux >= 2.22 or sysvinit-tools, optional but recommended)
         dracut (optional)
         PolicyKit (optional)
@@ -99,7 +99,7 @@ REQUIREMENTS:
         pass the same DESTDIR to 'make sphinx-html' invocation.
 
 
-WARNINGS:
+    WARNINGS:
         systemd/uselessd will warn you during boot if /etc/mtab is not a
         symlink to /proc/mounts. Please ensure that /etc/mtab is a
         proper symlink.
