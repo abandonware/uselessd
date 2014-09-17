@@ -444,7 +444,7 @@ INSTALL_DATA_HOOKS += units-install-hook
 UNINSTALL_DATA_HOOKS += units-uninstall-hook
 
 dist_doc_DATA = \
-	README \
+	README.txt \
 	NEWS \
 	LICENSE.LGPL2.1 \
 	LICENSE.GPL2 \
