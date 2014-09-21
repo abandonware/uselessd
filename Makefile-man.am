@@ -329,12 +329,3 @@ man/systemd-random-seed.html: man/systemd-random-seed.service.html
 	$(html-alias)
 
 endif
-
-if HAVE_KMOD
-MANPAGES += \
-	man/modules-load.d.5
-MANPAGES_ALIAS += \
-	#
-
-
-endif
