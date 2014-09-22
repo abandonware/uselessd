@@ -251,7 +251,7 @@ static bool enough_memory_for_hibernation(void) {
 }
 
 int can_sleep(const char *verb) {
-        _cleanup_strv_free_ char **modes = NULL, **states = NULL;
+        char **modes = NULL, **states = NULL;
         int r;
 
         assert(streq(verb, "suspend") ||
