@@ -6,8 +6,6 @@ Look for units to tweak.
 Decouple stuff from PID1.
 ...
 
-uselessd-2:
-
 	Take src/core/{hostname|locale}-setup.c and refactor them into
 	independent tools (uselessd-hostname-setup and uselessd-locale-
 	setup) with extended options, much in the same way machine-id-setup
@@ -16,3 +14,9 @@ uselessd-2:
 	Consider merging machine-id-setup-main.c and machine-id-setup.c.
 
 	Consider moving *-setup.c files to shared.
+
+	Remove the internal pager entirely. Pipes exist for a reason.
+	Use them.
+
+	Remove the redundant "dump" and "set-log-level" options from
+	systemd-analyze.
