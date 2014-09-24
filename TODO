@@ -3,4 +3,14 @@ dietlibc compatibility.
 Improve FreeBSD port, port to other *BSDs and Hurd.
 Fix up manpages and build.
 Look for units to tweak.
+Decouple stuff from PID1.
 ...
+
+uselessd-2:
+
+	Take src/core/{hostname|locale}-setup.c and refactor them into
+	independent tools (uselessd-hostname-setup and uselessd-locale-
+	setup) with extended options, much in the same way machine-id-setup
+	is at present.
+
+	Consider merging machine-id-setup-main.c and machine-id-setup.c.
