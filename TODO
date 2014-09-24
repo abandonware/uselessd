@@ -14,3 +14,5 @@ uselessd-2:
 	is at present.
 
 	Consider merging machine-id-setup-main.c and machine-id-setup.c.
+
+	Consider moving *-setup.c files to shared.
