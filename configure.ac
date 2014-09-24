@@ -42,9 +42,8 @@ AS_IF([test "x$host_cpu" = "xmips" || test "x$host_cpu" = "xmipsel" ||
       [AC_DEFINE(ARCH_MIPS, [], [Whether on mips arch])])
 
 LT_PREREQ(2.2)
-LT_INIT([disable-static])
+LT_INIT
 
-AS_IF([test "x$enable_static" = "xyes"], [AC_MSG_ERROR([--enable-static is not supported by systemd])])
 AS_IF([test "x$enable_largefile" = "xno"], [AC_MSG_ERROR([--disable-largefile is not supported by systemd])])
 
 # i18n stuff for the PolicyKit policy files
