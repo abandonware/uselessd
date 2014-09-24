@@ -134,7 +134,7 @@ int efi_get_variable(
 
 int efi_get_variable_string(sd_id128_t vendor, const char *name, char **p) {
         _cleanup_free_ void *s = NULL;
-        size_t ss;
+        size_t ss = 0;
         int r;
         char *x;
 
