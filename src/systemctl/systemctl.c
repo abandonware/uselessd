@@ -57,7 +57,6 @@
 #include "bus-errors.h"
 #include "build.h"
 #include "unit-name.h"
-#include "pager.h"
 #include "spawn-ask-password-agent.h"
 #include "spawn-polkit-agent.h"
 #include "install.h"
@@ -80,7 +79,6 @@ static const char *arg_job_mode = "replace";
 static UnitFileScope arg_scope = UNIT_FILE_SYSTEM;
 static bool arg_no_block = false;
 static bool arg_no_legend = false;
-static bool arg_no_pager = false;
 static bool arg_no_wtmp = false;
 static bool arg_no_wall = false;
 static bool arg_no_reload = false;
@@ -135,14 +133,6 @@ static bool private_bus = false;
 
 static int daemon_reload(DBusConnection *bus, char **args);
 static void halt_now(enum action a);
-
-static void pager_open_if_enabled(void) {
-
-        if (arg_no_pager)
-                return;
-
-        pager_open(false);
-}
 
 static void ask_password_agent_open_if_enabled(void) {
 
@@ -329,7 +319,7 @@ static void output_units_list(const struct unit_info *unit_infos, unsigned c) {
                                active_len, "ACTIVE", sub_len, "SUB");
                         if (job_count)
                                 printf("%-*s ", job_len, "JOB");
-                        if (!arg_full && arg_no_pager)
+                        if (!arg_full)
                                 printf("%.*s\n", desc_len, "DESCRIPTION");
                         else
                                 printf("%s\n", "DESCRIPTION");
@@ -445,8 +435,6 @@ static int list_units(DBusConnection *bus, char **args) {
         _cleanup_free_ struct unit_info *unit_infos = NULL;
         unsigned c = 0;
         int r;
-
-        pager_open_if_enabled();
 
         r = get_unit_list(bus, &reply, &unit_infos, &c);
         if (r < 0)
@@ -669,8 +657,6 @@ static int list_sockets(DBusConnection *bus, char **args) {
         size_t size = 0;
         int r;
 
-        pager_open_if_enabled();
-
         r = get_unit_list(bus, &reply, &unit_infos, &cu);
         if (r < 0)
                 return r;
@@ -823,8 +809,6 @@ static int list_unit_files(DBusConnection *bus, char **args) {
         DBusMessageIter iter, sub, sub2;
         unsigned c = 0, n_units = 0;
         int r;
-
-        pager_open_if_enabled();
 
         if (avoid_bus()) {
                 Hashmap *h;
@@ -1134,8 +1118,6 @@ static int list_dependencies(DBusConnection *bus, char **args) {
         } else
                 u = SPECIAL_DEFAULT_TARGET;
 
-        pager_open_if_enabled();
-
         puts(u);
 
         return list_dependencies_one(bus, u, 0, &units, 0);
@@ -1214,8 +1196,6 @@ static void list_jobs_print(struct job_info* jobs, size_t n) {
                 printf("%sNo jobs running.%s\n", on, off);
                 return;
         }
-
-        pager_open_if_enabled();
 
         {
                 /* JOB UNIT TYPE STATE */
@@ -3351,9 +3331,6 @@ static int show(DBusConnection *bus, char **args) {
         show_properties = streq(args[0], "show");
         show_status = streq(args[0], "status");
 
-        if (show_properties)
-                pager_open_if_enabled();
-
         /* If no argument is specified inspect the manager itself */
 
         if (show_properties && strv_length(args) <= 1)
@@ -3880,8 +3857,6 @@ static int show_enviroment(DBusConnection *bus, char **args) {
         const char
                 *interface = "org.freedesktop.systemd1.Manager",
                 *property = "Environment";
-
-        pager_open_if_enabled();
 
         r = bus_method_call_with_reply(
                         bus,
@@ -4501,8 +4476,6 @@ static int unit_is_enabled(DBusConnection *bus, char **args) {
 
 static int systemctl_help(void) {
 
-        pager_open_if_enabled();
-
         printf("%s [OPTIONS...] {COMMAND} ...\n\n"
                "Query or send control commands to the systemd manager.\n\n"
                "  -h --help           Show this help\n"
@@ -4535,7 +4508,6 @@ static int systemctl_help(void) {
                "     --no-reload      When enabling/disabling unit files, don't reload daemon\n"
                "                      configuration\n"
                "     --no-legend      Do not print a legend (column headers and hints)\n"
-               "     --no-pager       Do not pipe output into a pager\n"
                "     --no-ask-password\n"
                "                      Do not ask for system passwords\n"
                "     --system         Connect to system manager\n"
@@ -4715,7 +4687,6 @@ static int systemctl_parse_argv(int argc, char *argv[]) {
                 ARG_GLOBAL,
                 ARG_NO_BLOCK,
                 ARG_NO_LEGEND,
-                ARG_NO_PAGER,
                 ARG_NO_WALL,
                 ARG_ROOT,
                 ARG_NO_RELOAD,
@@ -4749,7 +4720,6 @@ static int systemctl_parse_argv(int argc, char *argv[]) {
                 { "global",              no_argument,       NULL, ARG_GLOBAL              },
                 { "no-block",            no_argument,       NULL, ARG_NO_BLOCK            },
                 { "no-legend",           no_argument,       NULL, ARG_NO_LEGEND           },
-                { "no-pager",            no_argument,       NULL, ARG_NO_PAGER            },
                 { "no-wall",             no_argument,       NULL, ARG_NO_WALL             },
                 { "quiet",               no_argument,       NULL, 'q'                     },
                 { "root",                required_argument, NULL, ARG_ROOT                },
@@ -4911,10 +4881,6 @@ static int systemctl_parse_argv(int argc, char *argv[]) {
 
                 case ARG_NO_LEGEND:
                         arg_no_legend = true;
-                        break;
-
-                case ARG_NO_PAGER:
-                        arg_no_pager = true;
                         break;
 
                 case ARG_NO_WALL:
@@ -5981,7 +5947,6 @@ finish:
         strv_free(arg_states);
         strv_free(arg_properties);
 
-        pager_close();
         ask_password_agent_close();
         polkit_agent_close();
 
