@@ -598,8 +598,6 @@ libsystemd_shared_la_SOURCES = \
 	src/shared/exit-status.h \
 	src/shared/utf8.c \
 	src/shared/utf8.h \
-	src/shared/pager.c \
-	src/shared/pager.h \
 	src/shared/ioprio.h \
 	src/shared/socket-util.c \
 	src/shared/socket-util.h \
