@@ -1,4 +1,30 @@
 uselessd System and Service Manager
 
+   CHANGES WITH 2:
+
+    * Redundant options from systemd-analyze (set-log-level and dump)
+      have been removed. Use the ones from the uselessd binary instead,
+      or by setting the systemd.log_level kernel parameter.
+
+    * The internal pager has been removed entirely. Pipes exist for
+      a reason. Use them. Don't burden the software with junk.
+
+    * A double-free bug has been fixed in the can_sleep() function in
+      sleep-config.c. This means that the test-sleep binary will now
+      pass successfully.
+
+    * Some memory leaks were patched, thanks to findings obtained from
+      clang-analyzer.
+
+    * An unused shared file was removed, as well as some vestiges from
+      the old manpages. Unused dropin directories were removed from
+      systemd-delta's array listing.
+
+    * The flag for disabling static linking has been removed from the
+      build. Nonetheless, a modern GNU/Linux system typically requires
+      shared objects for components such as NSS, gethostname(2) and many
+      other things. We haven't done anything to explicitly enable static
+      builds, we just got rid of the build-time error.
+
    CHANGES WITH 1:
 	Please read http://uselessd.darknedgy.net for project details.
