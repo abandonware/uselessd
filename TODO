@@ -14,9 +14,3 @@ Decouple stuff from PID1.
 	Consider merging machine-id-setup-main.c and machine-id-setup.c.
 
 	Consider moving *-setup.c files to shared.
-
-	Remove the internal pager entirely. Pipes exist for a reason.
-	Use them.
-
-	Remove the redundant "dump" and "set-log-level" options from
-	systemd-analyze.
