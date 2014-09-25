@@ -29,11 +29,9 @@
 #include "util.h"
 #include "path-util.h"
 #include "log.h"
-#include "pager.h"
 #include "build.h"
 #include "strv.h"
 
-static bool arg_no_pager = false;
 static int arg_diff = -1;
 
 static enum {
@@ -437,7 +435,6 @@ static void help(void) {
                "Find overridden configuration files.\n\n"
                "  -h --help           Show this help\n"
                "     --version        Show package version\n"
-               "     --no-pager       Do not pipe output into a pager\n"
                "     --diff[=1|0]     Show a diff when overridden files differ\n"
                "  -t --type=LIST...   Only display a selected set of override types\n",
                program_invocation_short_name);
@@ -471,7 +468,6 @@ static int parse_flags(const char *flag_str, int flags) {
 static int parse_argv(int argc, char *argv[]) {
 
         enum {
-                ARG_NO_PAGER = 0x100,
                 ARG_DIFF,
                 ARG_VERSION
         };
@@ -479,7 +475,6 @@ static int parse_argv(int argc, char *argv[]) {
         static const struct option options[] = {
                 { "help",      no_argument,       NULL, 'h'          },
                 { "version",   no_argument,       NULL, ARG_VERSION  },
-                { "no-pager",  no_argument,       NULL, ARG_NO_PAGER },
                 { "diff",      optional_argument, NULL, ARG_DIFF     },
                 { "type",      required_argument, NULL, 't'          },
                 { NULL,        0,                 NULL, 0            }
@@ -502,10 +497,6 @@ static int parse_argv(int argc, char *argv[]) {
                         puts(PACKAGE_STRING);
                         puts(SYSTEMD_FEATURES);
                         return 0;
-
-                case ARG_NO_PAGER:
-                        arg_no_pager = true;
-                        break;
 
                 case '?':
                         return -EINVAL;
@@ -591,9 +582,6 @@ int main(int argc, char *argv[]) {
         else if (arg_diff)
                 arg_flags |= SHOW_OVERRIDDEN;
 
-        if (!arg_no_pager)
-                pager_open(false);
-
         if (optind < argc) {
                 int i;
 
@@ -622,7 +610,5 @@ int main(int argc, char *argv[]) {
                        n_found ? "\n" : "", n_found);
 
 finish:
-        pager_close();
-
         return r < 0 ? EXIT_FAILURE : EXIT_SUCCESS;
 }
