@@ -109,7 +109,6 @@ MANPAGES_ALIAS += \
 	man/systemd-sleep.8 \
 	man/systemd-sysctl.8 \
 	man/systemd-tmpfiles-clean.service.8 \
-	man/systemd-tmpfiles-clean.timer.8 \
 	man/systemd-tmpfiles-setup-dev.service.8 \
 	man/systemd-tmpfiles-setup.service.8 \
 	man/systemd-update-utmp-runlevel.service.8 \
@@ -160,7 +159,6 @@ man/systemd-shutdownd.socket.8: man/systemd-shutdownd.service.8
 man/systemd-sleep.8: man/systemd-suspend.service.8
 man/systemd-sysctl.8: man/systemd-sysctl.service.8
 man/systemd-tmpfiles-clean.service.8: man/systemd-tmpfiles.8
-man/systemd-tmpfiles-clean.timer.8: man/systemd-tmpfiles.8
 man/systemd-tmpfiles-setup-dev.service.8: man/systemd-tmpfiles.8
 man/systemd-tmpfiles-setup.service.8: man/systemd-tmpfiles.8
 man/systemd-update-utmp-runlevel.service.8: man/systemd-update-utmp.service.8
@@ -299,9 +297,6 @@ man/systemd-sysctl.html: man/systemd-sysctl.service.html
 	$(html-alias)
 
 man/systemd-tmpfiles-clean.service.html: man/systemd-tmpfiles.html
-	$(html-alias)
-
-man/systemd-tmpfiles-clean.timer.html: man/systemd-tmpfiles.html
 	$(html-alias)
 
 man/systemd-tmpfiles-setup-dev.service.html: man/systemd-tmpfiles.html
