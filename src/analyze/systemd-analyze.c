@@ -38,7 +38,6 @@
 #include "unit-name.h"
 #include "special.h"
 #include "hashmap.h"
-#include "pager.h"
 
 #define SCALE_X (0.1 / 1000.0)   /* pixels per us */
 #define SCALE_Y 20.0
@@ -69,7 +68,6 @@ static enum dot {
 static char** arg_dot_from_patterns = NULL;
 static char** arg_dot_to_patterns = NULL;
 static usec_t arg_fuzz = 0;
-static bool arg_no_pager = false;
 
 struct boot_times {
         usec_t firmware_time;
@@ -93,14 +91,6 @@ struct unit_times {
         usec_t aet;
         usec_t time;
 };
-
-static void pager_open_if_enabled(void) {
-
-        if (arg_no_pager)
-                return;
-
-        pager_open(false);
-}
 
 static int bus_get_uint64_property(DBusConnection *bus, const char *path, const char *interface, const char *property, uint64_t *val) {
         _cleanup_dbus_message_unref_ DBusMessage *reply = NULL;
@@ -922,8 +912,6 @@ static int analyze_critical_chain(DBusConnection *bus, char *names[]) {
         }
         unit_times_hashmap = h;
 
-        pager_open_if_enabled();
-
         puts("The time after the unit is active or started is printed after the \"@\" character.\n"
              "The time the unit takes to start is printed after the \"+\" character.\n");
 
@@ -949,8 +937,6 @@ static int analyze_blame(DBusConnection *bus) {
                 return n;
 
         qsort(times, n, sizeof(struct unit_times), compare_unit_time);
-
-        pager_open_if_enabled();
 
         for (i = 0; i < (unsigned) n; i++) {
                 char ts[FORMAT_TIMESPAN_MAX];
@@ -1176,96 +1162,7 @@ static int dot(DBusConnection *bus, char* patterns[]) {
         return 0;
 }
 
-static int dump(DBusConnection *bus, char **args) {
-        _cleanup_free_ DBusMessage *reply = NULL;
-        DBusError error;
-        int r;
-        const char *text;
-
-        dbus_error_init(&error);
-
-        if (!strv_isempty(args)) {
-                log_error("Too many arguments.");
-                return -E2BIG;
-        }
-
-        pager_open_if_enabled();
-
-        r = bus_method_call_with_reply(
-                        bus,
-                        "org.freedesktop.systemd1",
-                        "/org/freedesktop/systemd1",
-                        "org.freedesktop.systemd1.Manager",
-                        "Dump",
-                        &reply,
-                        NULL,
-                        DBUS_TYPE_INVALID);
-        if (r < 0)
-                return r;
-
-        if (!dbus_message_get_args(reply, &error,
-                                   DBUS_TYPE_STRING, &text,
-                                   DBUS_TYPE_INVALID)) {
-                log_error("Failed to parse reply: %s", bus_error_message(&error));
-                dbus_error_free(&error);
-                return  -EIO;
-        }
-
-        fputs(text, stdout);
-        return 0;
-}
-
-static int set_log_level(DBusConnection *bus, char **args) {
-        _cleanup_dbus_error_free_ DBusError error;
-        _cleanup_dbus_message_unref_ DBusMessage *m = NULL, *reply = NULL;
-        DBusMessageIter iter, sub;
-        const char* property = "LogLevel";
-        const char* interface = "org.freedesktop.systemd1.Manager";
-        const char* value;
-
-        assert(bus);
-        assert(args);
-
-        if (strv_length(args) != 1) {
-                log_error("This command expects one argument only.");
-                return -E2BIG;
-        }
-
-        value = args[0];
-        dbus_error_init(&error);
-
-        m = dbus_message_new_method_call("org.freedesktop.systemd1",
-                                         "/org/freedesktop/systemd1",
-                                         "org.freedesktop.DBus.Properties",
-                                         "Set");
-        if (!m)
-                return log_oom();
-
-        dbus_message_iter_init_append(m, &iter);
-
-        if (!dbus_message_iter_append_basic(&iter, DBUS_TYPE_STRING, &interface) ||
-            !dbus_message_iter_append_basic(&iter, DBUS_TYPE_STRING, &property) ||
-            !dbus_message_iter_open_container(&iter, DBUS_TYPE_VARIANT, "s", &sub))
-                return log_oom();
-
-        if (!dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &value))
-                return log_oom();
-
-        if (!dbus_message_iter_close_container(&iter, &sub))
-                return log_oom();
-
-        reply = dbus_connection_send_with_reply_and_block(bus, m, -1, &error);
-        if (!reply) {
-                log_error("Failed to issue method call: %s", bus_error_message(&error));
-                return -EIO;
-        }
-
-        return 0;
-}
-
 static void analyze_help(void) {
-
-        pager_open_if_enabled();
 
         printf("%s [OPTIONS...] {COMMAND} ...\n\n"
                "Process systemd profiling information\n\n"
@@ -1281,16 +1178,13 @@ static void analyze_help(void) {
                "     --fuzz=TIMESPAN  When printing the tree of the critical chain, print also\n"
                "                      services, which finished TIMESPAN earlier, than the\n"
                "                      latest in the branch. The unit of TIMESPAN is seconds\n"
-               "                      unless specified with a different unit, i.e. 50ms\n"
-               "     --no-pager       Do not pipe output into a pager\n\n"
+               "                      unless specified with a different unit, i.e. 50ms\n\n"
                "Commands:\n"
                "  time                Print time spent in the kernel before reaching userspace\n"
                "  blame               Print list of running units ordered by time to init\n"
                "  critical-chain      Print a tree of the time critical chain of units\n"
                "  plot                Output SVG graphic showing service initialization\n"
-               "  dot                 Output dependency graph in dot(1) format\n"
-               "  set-log-level LEVEL Set logging threshold for systemd\n"
-               "  dump                Output state serialization of service manager\n",
+               "  dot                 Output dependency graph in dot(1) format\n",
                program_invocation_short_name);
 
         /* When updating this list, including descriptions, apply
@@ -1309,8 +1203,7 @@ static int parse_argv(int argc, char *argv[]) {
                 ARG_SYSTEM,
                 ARG_DOT_FROM_PATTERN,
                 ARG_DOT_TO_PATTERN,
-                ARG_FUZZ,
-                ARG_NO_PAGER
+                ARG_FUZZ
         };
 
         static const struct option options[] = {
@@ -1323,7 +1216,6 @@ static int parse_argv(int argc, char *argv[]) {
                 { "from-pattern", required_argument, NULL, ARG_DOT_FROM_PATTERN },
                 { "to-pattern",   required_argument, NULL, ARG_DOT_TO_PATTERN   },
                 { "fuzz",         required_argument, NULL, ARG_FUZZ             },
-                { "no-pager",     no_argument,       NULL, ARG_NO_PAGER         },
                 { NULL,           0,                 NULL, 0                    }
         };
 
@@ -1375,10 +1267,6 @@ static int parse_argv(int argc, char *argv[]) {
                                 return r;
                         break;
 
-                case ARG_NO_PAGER:
-                        arg_no_pager = true;
-                        break;
-
                 case -1:
                         return 1;
 
@@ -1420,18 +1308,12 @@ int main(int argc, char *argv[]) {
                 r = analyze_plot(bus);
         else if (streq(argv[optind], "dot"))
                 r = dot(bus, argv+optind+1);
-        else if (streq(argv[optind], "dump"))
-                r = dump(bus, argv+optind+1);
-        else if (streq(argv[optind], "set-log-level"))
-                r = set_log_level(bus, argv+optind+1);
         else
                 log_error("Unknown operation '%s'.", argv[optind]);
 
         dbus_connection_unref(bus);
 
 finish:
-        pager_close();
-
         strv_free(arg_dot_from_patterns);
         strv_free(arg_dot_to_patterns);
 
