@@ -249,8 +249,7 @@ rootbin_PROGRAMS = \
 	systemctl \
 	systemd-notify \
 	systemd-ask-password \
-	systemd-tty-ask-password-agent \
-	systemd-machine-id-setup
+	systemd-tty-ask-password-agent
 
 bin_PROGRAMS = \
 	systemd-cgtop \
@@ -308,7 +307,7 @@ dist_systemunit_DATA = \
 	units/kexec.target \
 	units/local-fs.target \
 	units/local-fs-pre.target \
-        units/swap.target \
+    units/swap.target \
 	units/initrd.target \
 	units/initrd-fs.target \
 	units/initrd-root-fs.target \
@@ -418,6 +417,17 @@ CLEANFILES += \
 	units/console-shell.service.m4 \
 	units/console-getty.service.m4 \
 	units/rescue.service.m4
+
+if ENABLE_MACHINE_ID_SETUP
+rootbin_PROGRAMS += \
+	systemd-machine-id-setup
+
+nodist_systemunit_DATA += \
+	units/systemd-machine-id-setup.service
+
+EXTRA_DIST += \
+	units/systemd-machine-id-setup.service.in
+endif
 
 if HAVE_SYSV_COMPAT
 nodist_systemunit_DATA += \
@@ -807,8 +817,6 @@ libsystemd_core_la_SOURCES = \
 	src/core/locale-setup.c \
 	src/core/hostname-setup.c \
 	src/core/hostname-setup.h \
-	src/core/machine-id-setup.c \
-	src/core/machine-id-setup.h \
 	src/core/mount-setup.c \
 	src/core/mount-setup.h \
 	src/core/loopback-setup.h \
@@ -1418,9 +1426,7 @@ EXTRA_DIST += \
 
 # ------------------------------------------------------------------------------
 systemd_machine_id_setup_SOURCES = \
-	src/machine-id-setup/machine-id-setup-main.c \
-	src/core/machine-id-setup.c \
-	src/core/machine-id-setup.h
+	src/machine-id-setup/machine-id-setup-main.c
 
 systemd_machine_id_setup_LDADD = \
 	libsystemd-label.la \
