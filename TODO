@@ -11,6 +11,4 @@ Decouple stuff from PID1.
 	setup) with extended options, much in the same way machine-id-setup
 	is at present.
 
-	Consider merging machine-id-setup-main.c and machine-id-setup.c.
-
 	Consider moving *-setup.c files to shared.
