@@ -8,8 +8,6 @@ MANPAGES += \
 	man/hostname.5 \
 	man/kernel-command-line.7 \
 	man/localtime.5 \
-	man/machine-id.5 \
-	man/machine-info.5 \
 	man/os-release.5 \
 	man/runlevel.8 \
 	man/sd-daemon.3 \
@@ -35,7 +33,6 @@ MANPAGES += \
 	man/systemd-halt.service.8 \
 	man/systemd-inhibit.1 \
 	man/systemd-initctl.service.8 \
-	man/systemd-machine-id-setup.1 \
 	man/systemd-notify.1 \
 	man/systemd-remount-fs.service.8 \
 	man/systemd-shutdownd.service.8 \
@@ -77,7 +74,7 @@ MANPAGES_ALIAS += \
 	man/SD_LISTEN_FDS_START.3 \
 	man/SD_NOTICE.3 \
 	man/SD_WARNING.3 \
-        man/init.1 \
+    man/init.1 \
 	man/uselessd.1 \
 	man/poweroff.8 \
 	man/reboot.8 \
@@ -322,5 +319,12 @@ MANPAGES_ALIAS += \
 man/systemd-random-seed.8: man/systemd-random-seed.service.8
 man/systemd-random-seed.html: man/systemd-random-seed.service.html
 	$(html-alias)
+
+endif
+
+if ENABLE_MACHINE_ID_SETUP
+MANPAGES += \
+	man/machine-id.5
+	man/systemd-machine-id-setup.1
 
 endif
