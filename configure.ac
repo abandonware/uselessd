@@ -524,6 +524,14 @@ fi
 AM_CONDITIONAL(ENABLE_RANDOMSEED, [test "$have_randomseed" = "yes"])
 
 # ------------------------------------------------------------------------------
+have_machine_id_setup=no
+AC_ARG_ENABLE(machine_id_setup, AS_HELP_STRING([--disable-machine-id-setup], [disable machine-id tools]))
+if test "x$enable_machine_id_setup" != "xno"; then
+        have_machine_id_setup=yes
+fi
+AM_CONDITIONAL(ENABLE_MACHINE_ID_SETUP, [test "$have_machine_id_setup" = "yes"])
+
+# ------------------------------------------------------------------------------
 have_polkit=no
 AC_ARG_ENABLE(polkit, AS_HELP_STRING([--disable-polkit], [disable PolicyKit support]))
 if test "x$enable_polkit" != "xno"; then
