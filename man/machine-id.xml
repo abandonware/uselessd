@@ -22,7 +22,7 @@
   along with systemd; If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<refentry id="machine-id">
+<refentry id="machine-id" conditional="ENABLE_MACHINE_ID_SETUP">
         <refentryinfo>
                 <title>machine-id</title>
                 <productname>systemd</productname>
