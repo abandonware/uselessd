@@ -39,8 +39,6 @@
 #include "virt.h"
 #include "fileio.h"
 
-#ifdef ENABLE_MACHINE_ID_SETUP
-
 int machine_id_setup(void);
 
 static int shorten_uuid(char destination[34], const char source[36]) {
@@ -313,5 +311,3 @@ int main(int argc, char *argv[]) {
 
         return machine_id_setup() < 0 ? EXIT_FAILURE : EXIT_SUCCESS;
 }
-
-#endif
