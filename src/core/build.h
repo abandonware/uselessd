@@ -45,12 +45,6 @@
 #define _LIBCRYPTSETUP_FEATURE_ "-LIBCRYPTSETUP"
 #endif
 
-#ifdef HAVE_GCRYPT
-#define _GCRYPT_FEATURE_ "+GCRYPT"
-#else
-#define _GCRYPT_FEATURE_ "-GCRYPT"
-#endif
-
 #ifdef HAVE_ACL
 #define _ACL_FEATURE_ "+ACL"
 #else
