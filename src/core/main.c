@@ -62,7 +62,6 @@
 #ifdef HAVE_KMOD
 #include "kmod-setup.h"
 #endif
-#include "hostname-setup.h"
 #include "fileio.h"
 
 static enum {
@@ -1470,7 +1469,6 @@ int main(int argc, char *argv[]) {
 #ifdef HAVE_KMOD
                 kmod_setup();
 #endif
-                hostname_setup();
                 loopback_setup();
 
                 test_mtab();
