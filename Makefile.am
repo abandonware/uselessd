@@ -429,6 +429,17 @@ EXTRA_DIST += \
 	units/systemd-machine-id-setup.service.in
 endif
 
+if ENABLE_HOSTNAME_SETUP
+rootbin_PROGRAMS += \
+	uselessd-hostname-setup
+
+nodist_systemunit_DATA += \
+	units/uselessd-hostname-setup.service
+
+EXTRA_DIST += \
+	units/uselessd-hostname-setup.service.in
+endif
+
 if HAVE_SYSV_COMPAT
 nodist_systemunit_DATA += \
 	units/rc-local.service \
@@ -815,8 +826,6 @@ libsystemd_core_la_SOURCES = \
 	src/core/cgroup.h \
 	src/core/locale-setup.h \
 	src/core/locale-setup.c \
-	src/core/hostname-setup.c \
-	src/core/hostname-setup.h \
 	src/core/mount-setup.c \
 	src/core/mount-setup.h \
 	src/core/loopback-setup.h \
@@ -971,7 +980,6 @@ manual_tests += \
 	test-engine \
 	test-ns \
 	test-loopback \
-	test-hostname \
 	test-daemon \
 	test-cgroup \
 	test-install \
@@ -1057,12 +1065,6 @@ test_loopback_SOURCES = \
 
 test_loopback_LDADD = \
 	libsystemd-shared.la \
-	libsystemd-core.la
-
-test_hostname_SOURCES = \
-	src/test/test-hostname.c
-
-test_hostname_LDADD = \
 	libsystemd-core.la
 
 if ENABLE_EFI
@@ -1433,6 +1435,16 @@ systemd_machine_id_setup_LDADD = \
 	libsystemd-shared.la \
 	libsystemd-id128-internal.la
 
+# ------------------------------------------------------------------------------
+if ENABLE_HOSTNAME_SETUP
+
+uselessd_hostname_setup_SOURCES = \
+	src/hostname-setup/hostname-setup.c
+
+uselessd_hostname_setup_LDADD = \
+	libsystemd-shared.la
+
+endif
 # ------------------------------------------------------------------------------
 systemd_sysctl_SOURCES = \
 	src/sysctl/sysctl.c
