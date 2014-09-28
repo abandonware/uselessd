@@ -324,7 +324,7 @@ endif
 
 if ENABLE_MACHINE_ID_SETUP
 MANPAGES += \
-	man/systemd-machine-id-setup.1
+	man/systemd-machine-id-setup.1 \
 	man/machine-id.5
 
 endif
