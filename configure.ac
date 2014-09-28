@@ -532,6 +532,14 @@ fi
 AM_CONDITIONAL(ENABLE_MACHINE_ID_SETUP, [test "$have_machine_id_setup" = "yes"])
 
 # ------------------------------------------------------------------------------
+have_hostname_setup=no
+AC_ARG_ENABLE(hostname_setup, AS_HELP_STRING([--disable-hostname-setup], [disable hostname setup tool]))
+if test "x$enable_hostname_setup" != "xno"; then
+        have_hostname_setup=yes
+fi
+AM_CONDITIONAL(ENABLE_HOSTNAME_SETUP, [test "$have_hostname_setup" = "yes"])
+
+# ------------------------------------------------------------------------------
 have_polkit=no
 AC_ARG_ENABLE(polkit, AS_HELP_STRING([--disable-polkit], [disable PolicyKit support]))
 if test "x$enable_polkit" != "xno"; then
