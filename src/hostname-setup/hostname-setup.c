@@ -24,9 +24,11 @@
 #include <errno.h>
 #include <string.h>
 #include <stdlib.h>
+#include <getopt.h>
 
 #include "macro.h"
 #include "util.h"
+#include "build.h"
 #include "log.h"
 #include "fileio.h"
 
@@ -150,7 +152,7 @@ static int parse_argv(int argc, char *argv[]) {
         return 1;
 }
 
-int main(void) {
+int main(int argc, char *argv[]) {
 	   int r;
 
 	   log_parse_environment();
