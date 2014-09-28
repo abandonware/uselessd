@@ -324,7 +324,13 @@ endif
 
 if ENABLE_MACHINE_ID_SETUP
 MANPAGES += \
-	man/machine-id.5
 	man/systemd-machine-id-setup.1
+	man/machine-id.5
+
+endif
+
+if ENABLE_HOSTNAME_SETUP
+MANPAGES += \
+	man/uselessd-hostname-setup.1
 
 endif
