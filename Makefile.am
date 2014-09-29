@@ -440,6 +440,17 @@ EXTRA_DIST += \
 	units/uselessd-hostname-setup.service.in
 endif
 
+if ENABLE_LOOPBACK_SETUP
+rootbin_PROGRAMS += \
+	uselessd-loopback-setup
+
+nodist_systemunit_DATA += \
+	units/uselessd-loopback-setup.service
+
+EXTRA_DIST += \
+	units/uselessd-loopback-setup.service.in
+endif
+
 if HAVE_SYSV_COMPAT
 nodist_systemunit_DATA += \
 	units/rc-local.service \
@@ -828,8 +839,6 @@ libsystemd_core_la_SOURCES = \
 	src/core/locale-setup.c \
 	src/core/mount-setup.c \
 	src/core/mount-setup.h \
-	src/core/loopback-setup.h \
-	src/core/loopback-setup.c \
 	src/core/condition.c \
 	src/core/condition.h \
 	src/core/namespace.c \
@@ -979,7 +988,6 @@ CLEANFILES += \
 manual_tests += \
 	test-engine \
 	test-ns \
-	test-loopback \
 	test-daemon \
 	test-cgroup \
 	test-install \
@@ -1059,13 +1067,6 @@ test_ns_LDADD = \
 test_ns_CFLAGS = \
 	$(AM_CFLAGS) \
 	$(DBUS_CFLAGS)
-
-test_loopback_SOURCES = \
-	src/test/test-loopback.c
-
-test_loopback_LDADD = \
-	libsystemd-shared.la \
-	libsystemd-core.la
 
 if ENABLE_EFI
 manual_tests += \
@@ -1436,15 +1437,19 @@ systemd_machine_id_setup_LDADD = \
 	libsystemd-id128-internal.la
 
 # ------------------------------------------------------------------------------
-if ENABLE_HOSTNAME_SETUP
-
 uselessd_hostname_setup_SOURCES = \
 	src/hostname-setup/hostname-setup.c
 
 uselessd_hostname_setup_LDADD = \
 	libsystemd-shared.la
 
-endif
+# ------------------------------------------------------------------------------
+uselessd_loopback_setup_SOURCES = \
+	src/loopback-setup/loopback-setup.c
+
+uselessd_loopback_setup_LDADD = \
+	libsystemd-shared.la
+
 # ------------------------------------------------------------------------------
 systemd_sysctl_SOURCES = \
 	src/sysctl/sysctl.c
