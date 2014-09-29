@@ -9,7 +9,6 @@
 Description=Initialize Machine ID
 Documentation=man:systemd-machine-id-setup(1)
 DefaultDependencies=no
-Wants=local-fs.target
 Conflicts=shutdown.target
 After=local-fs.target
 Before=sysinit.target shutdown.target
@@ -17,3 +16,6 @@ Before=sysinit.target shutdown.target
 [Service]
 Type=oneshot
 ExecStart=@rootbindir@/systemd-machine-id-setup
+
+[Install]
+WantedBy=default.target

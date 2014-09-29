@@ -9,7 +9,6 @@
 Description=Initialize Hostname
 Documentation=man:uselessd-hostname-setup(1)
 DefaultDependencies=no
-Wants=local-fs.target
 Conflicts=shutdown.target
 After=systemd-machine-id-setup.service
 Before=sysinit.target shutdown.target
@@ -17,3 +16,6 @@ Before=sysinit.target shutdown.target
 [Service]
 Type=oneshot
 ExecStart=@rootbindir@/uselessd-hostname-setup
+
+[Install]
+WantedBy=default.target
