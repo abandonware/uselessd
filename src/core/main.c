@@ -58,7 +58,6 @@
 #include "sd-messages.h"
 
 #include "mount-setup.h"
-#include "loopback-setup.h"
 #ifdef HAVE_KMOD
 #include "kmod-setup.h"
 #endif
@@ -1469,7 +1468,6 @@ int main(int argc, char *argv[]) {
 #ifdef HAVE_KMOD
                 kmod_setup();
 #endif
-                loopback_setup();
 
                 test_mtab();
                 test_usr();
