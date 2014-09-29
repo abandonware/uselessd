@@ -334,3 +334,9 @@ MANPAGES += \
 	man/uselessd-hostname-setup.1
 
 endif
+
+if ENABLE_LOOPBACK_SETUP
+MANPAGES += \
+	man/uselessd-loopback-setup.1
+
+endif
