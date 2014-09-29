@@ -60,7 +60,6 @@
 #include "missing.h"
 #include "utmp-wtmp.h"
 #include "def.h"
-#include "loopback-setup.h"
 #include "path-util.h"
 #include "syscall-list.h"
 #include "env-util.h"
@@ -1314,7 +1313,7 @@ int exec_spawn(ExecCommand *command,
                                 goto fail_child;
                         }
 
-                        loopback_setup();
+                        //loopback_setup();
                 }
 
                 if (strv_length(context->read_write_dirs) > 0 ||
