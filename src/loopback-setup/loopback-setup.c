@@ -27,13 +27,17 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <getopt.h>
 #include <linux/netlink.h>
 #include <linux/rtnetlink.h>
 
+#include "build.h"
+#include "log.h"
 #include "util.h"
 #include "macro.h"
-#include "loopback-setup.h"
 #include "socket-util.h"
+
+int loopback_setup(void);
 
 #define NLMSG_TAIL(nmsg)                                                \
         ((struct rtattr *) (((uint8_t*) (nmsg)) + NLMSG_ALIGN((nmsg)->nlmsg_len)))
@@ -305,4 +309,75 @@ int loopback_setup(void) {
 error:
         log_warning("Failed to configure loopback device: %s", strerror(-r));
         return r;
+}
+
+static int help(void) {
+
+        printf("%s [OPTIONS...]\n\n"
+               "Initialize and set /etc/hostname.\n\n"
+               "  -h --help             Show this help\n"
+               "     --version          Show package version\n",
+               program_invocation_short_name);
+
+        return 0;
+}
+
+static int parse_argv(int argc, char *argv[]) {
+
+        enum {
+                ARG_VERSION = 0x100
+        };
+
+        static const struct option options[] = {
+                { "help",      no_argument,       NULL, 'h'           },
+                { "version",   no_argument,       NULL, ARG_VERSION   },
+                { NULL,        0,                 NULL, 0             }
+        };
+
+        int c;
+
+        assert(argc >= 0);
+        assert(argv);
+
+        while ((c = getopt_long(argc, argv, "hqcv", options, NULL)) >= 0) {
+
+                switch (c) {
+
+                case 'h':
+                        help();
+                        return 0;
+
+                case ARG_VERSION:
+                        puts(PACKAGE_STRING);
+                        puts(SYSTEMD_FEATURES);
+                        return 0;
+
+                case '?':
+                        return -EINVAL;
+
+                default:
+                        log_error("Unknown option code %c", c);
+                        return -EINVAL;
+                }
+        }
+
+        if (optind < argc) {
+                help();
+                return -EINVAL;
+        }
+
+        return 1;
+}
+
+int main(int argc, char *argv[]) {
+	   int r;
+
+	   log_parse_environment();
+	   log_open();
+
+	   r = parse_argv(argc, argv);
+       if (r <= 0)
+               return r < 0 ? EXIT_FAILURE : EXIT_SUCCESS;
+
+	   return loopback_setup() < 0 ? EXIT_FAILURE : EXIT_SUCCESS;
 }
