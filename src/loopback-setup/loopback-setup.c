@@ -314,7 +314,7 @@ error:
 static int help(void) {
 
         printf("%s [OPTIONS...]\n\n"
-               "Initialize and set /etc/hostname.\n\n"
+               "Initialize loopback device.\n\n"
                "  -h --help             Show this help\n"
                "     --version          Show package version\n",
                program_invocation_short_name);
