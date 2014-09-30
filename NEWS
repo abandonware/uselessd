@@ -1,5 +1,35 @@
 uselessd System and Service Manager
 
+Version 3 (2014-09-30)
+----------------------
+   *  The systemd-machine-id-setup tool is now entirely standalone
+      and not also a routine called by PID1. It is governed by a
+      oneshot unit, and it can be optionally disabled from the build.
+
+   *  Two new tools have been introduced:
+
+      uselessd-hostname-setup
+      uselessd-loopback-setup
+
+      These are once again decoupled from PID1 logic and refactored
+      into their own tools wrapped around by getopt loops, and
+      governed by oneshot units. They, too, can be disabled from
+      the build, and come with brief manpages.
+
+      You may need to enable their services through systemctl.
+
+   *  The test-hostname binary was dropped for being redundant,
+      as a result. The test was manual to begin with.
+
+   *  libgcrypt and liblzma (xz) have been dropped from the build,
+      due to not actually being used. They formerly belonged as
+      enabling optional extensions to journald behavior.
+
+   *  An ordering bug in one of the default units was fixed.
+
+   *  A bugfix for systemd-tmpfiles was backported, concerning files
+      inheriting the age of their top-level directories.
+
 Version 2 (2014-09-25)
 ----------------------
    *  Redundant options from systemd-analyze (set-log-level and dump)

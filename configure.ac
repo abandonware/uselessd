@@ -20,7 +20,7 @@
 AC_PREREQ([2.64])
 
 AC_INIT([uselessd],
-        [2],
+        [3],
         [https://bitbucket.org/bcsd/uselessd/issues],
         [uselessd],
         [http://uselessd.darknedgy.net])
