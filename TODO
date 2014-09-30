@@ -6,9 +6,27 @@ Look for units to tweak.
 Decouple stuff from PID1.
 ...
 
-	Take src/core/{hostname|locale}-setup.c and refactor them into
-	independent tools (uselessd-hostname-setup and uselessd-locale-
-	setup) with extended options, much in the same way machine-id-setup
-	is at present.
+	Consider moving *-setup.c files to shared. ???
 
-	Consider moving *-setup.c files to shared.
+	Make -initctl, -sleep, -remount-fs, -sysctl, -delta, -cgtop
+	-activate, -update-utmp and the password agents configurable out
+	of the build.
+
+	Refactor core and shared files. Merge or decouple where needed.
+
+	Look into isolating some of the resource control and execution
+	logic into separate tools, alongside the context of declarative
+	unit configuration guided by a transactional dependency system.
+	Alternately, look into making a lighter port of systemd-run,
+	or separating the functionality of systemctl set-property (as
+	well as perhaps get-default and set-default [targets]) into
+	a separate tool with extended options, so as to at least
+	emulate the purpose of transient units.
+
+	Write a tool or add configuration options (in system.conf
+	and/or user.conf) to tweak the parameters of the transaction
+	system.
+
+	Remove i18n/NLS/.po entirely.
+
+	REMINDER: Backport bugfixes from systemd-stable.
