@@ -1,0 +1,21 @@
+#  This file is part of systemd/uselessd.
+#
+#  systemd is free software; you can redistribute it and/or modify it
+#  under the terms of the GNU Lesser General Public License as published by
+#  the Free Software Foundation; either version 2.1 of the License, or
+#  (at your option) any later version.
+
+[Unit]
+Description=Initialize Hostname
+Documentation=man:uselessd-hostname-setup(1)
+DefaultDependencies=no
+Conflicts=shutdown.target
+After=systemd-machine-id-setup.service
+Before=sysinit.target shutdown.target
+
+[Service]
+Type=oneshot
+ExecStart=@rootbindir@/uselessd-hostname-setup
+
+[Install]
+WantedBy=default.target

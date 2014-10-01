@@ -1,0 +1,61 @@
+uselessd System and Service Manager
+
+Version 3 (2014-09-30)
+----------------------
+   *  The systemd-machine-id-setup tool is now entirely standalone
+      and not also a routine called by PID1. It is governed by a
+      oneshot unit, and it can be optionally disabled from the build.
+
+   *  Two new tools have been introduced:
+
+      uselessd-hostname-setup
+      uselessd-loopback-setup
+
+      These are once again decoupled from PID1 logic and refactored
+      into their own tools wrapped around by getopt loops, and
+      governed by oneshot units. They, too, can be disabled from
+      the build, and come with brief manpages.
+
+      You may need to enable their services through systemctl.
+
+   *  The test-hostname binary was dropped for being redundant,
+      as a result. The test was manual to begin with.
+
+   *  libgcrypt and liblzma (xz) have been dropped from the build,
+      due to not actually being used. They formerly belonged as
+      enabling optional extensions to journald behavior.
+
+   *  An ordering bug in one of the default units was fixed.
+
+   *  A bugfix for systemd-tmpfiles was backported, concerning files
+      inheriting the age of their top-level directories.
+
+Version 2 (2014-09-25)
+----------------------
+   *  Redundant options from systemd-analyze (set-log-level and dump)
+      have been removed. Use the ones from the uselessd binary instead,
+      or by setting the systemd.log_level kernel parameter.
+
+   *  The internal pager has been removed entirely. Pipes exist for
+      a reason. Use them. Don't burden the software with junk.
+
+   *  A double-free bug has been fixed in the can_sleep() function in
+      sleep-config.c. This means that the test-sleep binary will now
+      pass successfully.
+
+   *  Some memory leaks were patched, thanks to findings obtained from
+      clang-analyzer.
+
+   *  An unused shared file was removed, as well as some vestiges from
+      the old manpages. Unused dropin directories were removed from
+      systemd-delta's array listing.
+
+   *  The flag for disabling static linking has been removed from the
+      build. Nonetheless, a modern GNU/Linux system typically requires
+      shared objects for components such as NSS, gethostname(2) and many
+      other things. We haven't done anything to explicitly enable static
+      builds, we just got rid of the build-time error.
+
+Version 1 (2014-09-14)
+----------------------
+   *  Please read http://uselessd.darknedgy.net for project details.
