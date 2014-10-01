@@ -370,12 +370,11 @@ static int transaction_verify_order_one(Transaction *tr, Job *j, Job *from, unsi
                 for (k = from; k; k = ((k->generation == generation && k->marker != k) ? k->marker : NULL)) {
 
                         /* logging for j not k here here to provide consistent narrative */
-                        log_warning_unit(j->unit->id,
-                                         "Found dependency on %s/%s",
-                                         k->unit->id, job_type_to_string(k->type));
+                        log_info_unit(j->unit->id,
+                                      "Found dependency on %s/%s",
+                                      k->unit->id, job_type_to_string(k->type));
 
-                        /* verify unit is part of transaction */
-                        if (!delete && hashmap_get(tr->jobs, k->unit) &&
+                        if (!delete &&
                             !unit_matters_to_anchor(k->unit, k)) {
                                 /* Ok, we can drop this one, so let's
                                  * do so. */
@@ -478,14 +477,14 @@ static void transaction_collect_garbage(Transaction *tr) {
 rescan:
         HASHMAP_FOREACH(j, tr->jobs, i) {
                 if (tr->anchor_job == j || j->object_list) {
-                       /* log_debug("Keeping job %s/%s because of %s/%s",
-                                   j->unit->id, job_type_to_string(j->type),
-                                   j->object_list->subject ? j->object_list->subject->unit->id : "root",
-                                   j->object_list->subject ? job_type_to_string(j->object_list->subject->type) : "root"); */
+                        /* log_debug("Keeping job %s/%s because of %s/%s", */
+                        /*           j->unit->id, job_type_to_string(j->type), */
+                        /*           j->object_list->subject ? j->object_list->subject->unit->id : "root", */
+                        /*           j->object_list->subject ? job_type_to_string(j->object_list->subject->type) : "root"); */
                         continue;
                 }
 
-                /*log_debug("Garbage collecting job %s/%s", j->unit->id, job_type_to_string(j->type));*/
+                /* log_debug("Garbage collecting job %s/%s", j->unit->id, job_type_to_string(j->type)); */
                 transaction_delete_job(tr, j, true);
                 goto rescan;
         }
@@ -787,7 +786,7 @@ static Job* transaction_add_one_job(Transaction *tr, JobType type, Unit *unit, b
         if (is_new)
                 *is_new = true;
 
-       /* log_debug("Added job %s/%s to transaction.", unit->id, job_type_to_string(type)); */
+        /* log_debug("Added job %s/%s to transaction.", unit->id, job_type_to_string(type)); */
 
         return j;
 }
@@ -848,10 +847,10 @@ int transaction_add_job_and_dependencies(
         assert(type < _JOB_TYPE_MAX_IN_TRANSACTION);
         assert(unit);
 
-        /*log_debug("Pulling in %s/%s from %s/%s",
-                   unit->id, job_type_to_string(type),
-                   by ? by->unit->id : "NA",
-                   by ? job_type_to_string(by->type) : "NA"); */
+        /* log_debug("Pulling in %s/%s from %s/%s", */
+        /*           unit->id, job_type_to_string(type), */
+        /*           by ? by->unit->id : "NA", */
+        /*           by ? job_type_to_string(by->type) : "NA"); */
 
         if (unit->load_state != UNIT_LOADED &&
             unit->load_state != UNIT_ERROR &&

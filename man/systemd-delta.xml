@@ -21,7 +21,7 @@
   along with systemd; If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<refentry id="systemd-delta" conditional="ENABLE_DELTA">
+<refentry id="systemd-delta">
 
         <refentryinfo>
                 <title>systemd-delta</title>

@@ -540,7 +540,7 @@ static int check_hierarchy(const char *p) {
         assert(p);
 
         /* Check if this controller actually really exists */
-        cc = alloca(strlen("/sys/fs/cgroup/") + strlen(p) + 1);
+        cc = alloca(sizeof("/sys/fs/cgroup/") + strlen(p));
         strcpy(stpcpy(cc, "/sys/fs/cgroup/"), p);
         if (access(cc, F_OK) < 0)
                 return -errno;

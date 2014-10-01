@@ -58,7 +58,7 @@ static int ask_password_plymouth(
                 const char *flag_file,
                 bool accept_cached,
                 char ***_passphrases) {
-#ifdef ENABLE_PLYMOUTH
+
         int fd = -1, notify = -1;
         union sockaddr_union sa = {};
         char *packet = NULL;
@@ -243,9 +243,6 @@ finish:
         free(packet);
 
         return r;
-#else
-        return 0;
-#endif
 }
 
 static int parse_password(const char *filename, char **wall) {
@@ -707,12 +704,8 @@ static int parse_argv(int argc, char *argv[]) {
                         break;
 
                 case ARG_PLYMOUTH:
-                #ifdef ENABLE_PLYMOUTH
                         arg_plymouth = true;
-                #else
-                        log_error("We've been built without Plymouth support.");
-                        return 0;
-                #endif
+                        break;
 
                 case ARG_CONSOLE:
                         arg_console = true;

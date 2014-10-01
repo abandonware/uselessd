@@ -201,7 +201,6 @@ int main(int argc, char *argv[]) {
                 need_swapoff = false;
                 need_dm_detach = false;
                 need_loop_detach = false;
-                need_umount = false;
         }
 
         /* Unmount all mountpoints, swaps, and loopback devices */
@@ -242,7 +241,7 @@ int main(int argc, char *argv[]) {
                                 need_loop_detach = false;
                                 log_info("All loop devices detached.");
                         } else if (r > 0)
-                                log_info("Not all loop devices detached.");
+                                log_info("Not all loop devices detached, %d left.", r);
                         else
                                 log_error("Failed to detach loop devices: %s", strerror(-r));
                 }
@@ -254,7 +253,7 @@ int main(int argc, char *argv[]) {
                                 need_dm_detach = false;
                                 log_info("All DM devices detached.");
                         } else if (r > 0)
-                                log_info("Not all DM devices detached.");
+                                log_info("Not all DM devices detached, %d left.", r);
                         else
                                 log_error("Failed to detach DM devices: %s", strerror(-r));
                 }

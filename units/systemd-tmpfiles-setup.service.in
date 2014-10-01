@@ -9,11 +9,14 @@
 Description=Recreate Volatile Files and Directories
 Documentation=man:tmpfiles.d(5) man:systemd-tmpfiles(8)
 DefaultDependencies=no
+Wants=local-fs.target
 Conflicts=shutdown.target
 After=local-fs.target
 Before=sysinit.target shutdown.target
-RefuseManualStart=yes
-RefuseManualStop=yes
+ConditionDirectoryNotEmpty=|/usr/lib/tmpfiles.d
+ConditionDirectoryNotEmpty=|/usr/local/lib/tmpfiles.d
+ConditionDirectoryNotEmpty=|/etc/tmpfiles.d
+ConditionDirectoryNotEmpty=|/run/tmpfiles.d
 
 [Service]
 Type=oneshot

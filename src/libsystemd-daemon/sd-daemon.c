@@ -410,20 +410,15 @@ _sd_export_ int sd_is_mq(int fd, const char *path) {
 #endif
 }
 
-_sd_export_ int sd_pid_notify(pid_t pid, int unset_environment, const char *state) {
+_sd_export_ int sd_notify(int unset_environment, const char *state) {
 #if defined(DISABLE_SYSTEMD) || !defined(__linux__) || !defined(SOCK_CLOEXEC)
         return 0;
 #else
-        union sockaddr_union sockaddr = {};
-        int fd = -1;
-        struct msghdr msghdr = {};
-        struct iovec iovec = {};
+        int fd = -1, r;
+        struct msghdr msghdr;
+        struct iovec iovec;
+        union sockaddr_union sockaddr;
         const char *e;
-        union {
-                struct cmsghdr cmsghdr;
-                uint8_t buf[CMSG_SPACE(sizeof(struct ucred))];
-        } control = {};
-        int r;
 
         if (!state) {
                 r = -EINVAL;
@@ -446,15 +441,18 @@ _sd_export_ int sd_pid_notify(pid_t pid, int unset_environment, const char *stat
                 goto finish;
         }
 
+        memset(&sockaddr, 0, sizeof(sockaddr));
         sockaddr.sa.sa_family = AF_UNIX;
         strncpy(sockaddr.un.sun_path, e, sizeof(sockaddr.un.sun_path));
 
         if (sockaddr.un.sun_path[0] == '@')
                 sockaddr.un.sun_path[0] = 0;
 
+        memset(&iovec, 0, sizeof(iovec));
         iovec.iov_base = (char*) state;
         iovec.iov_len = strlen(state);
 
+        memset(&msghdr, 0, sizeof(msghdr));
         msghdr.msg_name = &sockaddr;
         msghdr.msg_namelen = offsetof(struct sockaddr_un, sun_path) + strlen(e);
 
@@ -464,80 +462,21 @@ _sd_export_ int sd_pid_notify(pid_t pid, int unset_environment, const char *stat
         msghdr.msg_iov = &iovec;
         msghdr.msg_iovlen = 1;
 
-        if (pid != 0 && pid != getpid()) {
-                struct cmsghdr *cmsg;
-                struct ucred ucred = {};
-
-                msghdr.msg_control = &control;
-                msghdr.msg_controllen = sizeof(control);
-
-                cmsg = CMSG_FIRSTHDR(&msghdr);
-                cmsg->cmsg_level = SOL_SOCKET;
-                cmsg->cmsg_type = SCM_CREDENTIALS;
-                cmsg->cmsg_len = CMSG_LEN(sizeof(struct ucred));
-
-                ucred.pid = pid;
-                ucred.uid = getuid();
-                ucred.gid = getgid();
-
-                memcpy(CMSG_DATA(cmsg), &ucred, sizeof(struct ucred));
-                msghdr.msg_controllen = cmsg->cmsg_len;
-        }
-
-        /* First try with fake ucred data, as requested */
-        if (sendmsg(fd, &msghdr, MSG_NOSIGNAL) >= 0) {
-                r = 1;
+        if (sendmsg(fd, &msghdr, MSG_NOSIGNAL) < 0) {
+                r = -errno;
                 goto finish;
         }
 
-        /* If that failed, try with our own instead */
-        if (msghdr.msg_control) {
-                msghdr.msg_control = NULL;
-                msghdr.msg_controllen = 0;
-
-                if (sendmsg(fd, &msghdr, MSG_NOSIGNAL) >= 0) {
-                        r = 1;
-                        goto finish;
-                }
-        }
-
-        r = -errno;
+        r = 1;
 
 finish:
         if (unset_environment)
                 unsetenv("NOTIFY_SOCKET");
 
+        if (fd >= 0)
+                close(fd);
+
         return r;
-#endif
-}
-
-_sd_export_ int sd_pid_notifyf(pid_t pid, int unset_environment, const char *format, ...) {
-#if defined(DISABLE_SYSTEMD) || !defined(__linux__)
-        return 0;
-#else
-        char *p = NULL;
-        int r;
-
-        if (format) {
-                va_list ap;
-
-                va_start(ap, format);
-                r = vasprintf(&p, format, ap);
-                va_end(ap);
-
-                if (r < 0 || !p)
-                        return -ENOMEM;
-        }
-
-        return sd_pid_notify(pid, unset_environment, p);
-#endif
-}
-
-_sd_export_ int sd_notify(int unset_environment, const char *state) {
-#if defined(DISABLE_SYSTEMD) || !defined(__linux__) || !defined(SOCK_CLOEXEC)
-        return 0;
-#else
-        return sd_pid_notify(0, unset_environment, state);
 #endif
 }
 
@@ -545,21 +484,21 @@ _sd_export_ int sd_notifyf(int unset_environment, const char *format, ...) {
 #if defined(DISABLE_SYSTEMD) || !defined(__linux__)
         return 0;
 #else
+        va_list ap;
         char *p = NULL;
         int r;
 
-        if (format) {
-                va_list ap;
+        va_start(ap, format);
+        r = vasprintf(&p, format, ap);
+        va_end(ap);
 
-                va_start(ap, format);
-                r = vasprintf(&p, format, ap);
-                va_end(ap);
+        if (r < 0 || !p)
+                return -ENOMEM;
 
-                if (r < 0 || !p)
-                        return -ENOMEM;
-        }
+        r = sd_notify(unset_environment, p);
+        free(p);
 
-        return sd_pid_notify(0, unset_environment, p);
+        return r;
 #endif
 }
 

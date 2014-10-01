@@ -24,7 +24,6 @@
 #include <errno.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <string.h>
 
 #include <systemd/sd-daemon.h>
@@ -195,7 +194,7 @@ int main(int argc, char* argv[]) {
         }
 
         if ((r = sd_notify(false, n)) < 0) {
-                log_error("Failed to notify init daemon: %s", strerror(-r));
+                log_error("Failed to notify init system: %s", strerror(-r));
                 goto finish;
         }
 

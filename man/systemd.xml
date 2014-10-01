@@ -1197,7 +1197,7 @@
         </refsect1>
 
         <refsect1>
-                <title>Sockets, FIFOs and Files</title>
+                <title>Sockets and FIFOs</title>
 
                 <variablelist>
                         <varlistentry>
@@ -1233,19 +1233,6 @@
                                 is private to systemd and should not
                                 be used in external
                                 projects.</para></listitem>
-                        </varlistentry>
-
-                        <varlistentry>
-                                <term><filename>/run/systemd/condition-job-failure</filename></term>
-
-                                <listitem><para>When containing 1, true or Y, this file
-                                will set a global flag for all Condition*= unit options,
-                                where upon a condition failing, instead of simply skipping
-                                the job, a hard job failure will be emitted.
-
-                                This is similar to systemd-git (presumably 218)'s Assert*=
-                                options, except implemented as a global volatile flag on
-                                the file system rather than individual corollary options.</para></listitem>
                         </varlistentry>
 
                         <varlistentry>

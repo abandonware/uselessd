@@ -426,19 +426,13 @@ fail:
 
 int strv_push(char ***l, char *value) {
         char **c;
-        unsigned n, m;
+        unsigned n;
 
         if (!value)
                 return 0;
 
         n = strv_length(*l);
-
-        /* Increase and check for overflow. */
-        m = n + 2;
-        if (m < n)
-                return -ENOMEM;
-
-        c = realloc(*l, sizeof(char*) * (size_t) m);
+        c = realloc(*l, sizeof(char*) * (n + 2));
         if (!c)
                 return -ENOMEM;
 

@@ -265,8 +265,7 @@ static int acquire_time_data(DBusConnection *bus, struct unit_times **out) {
         return c;
 
 fail:
-        if (unit_times)
-                free_unit_times(unit_times, (unsigned) c);
+        free_unit_times(unit_times, (unsigned) c);
         return r;
 }
 

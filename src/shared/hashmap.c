@@ -194,7 +194,7 @@ Hashmap *hashmap_new(hash_func_t hash_func, compare_func_t compare_func) {
                 if (!h)
                         return NULL;
 
-                memzero(h, size);
+                memset(h, 0, size);
         } else {
                 h = malloc0(size);
 

@@ -677,7 +677,6 @@ int config_parse_strv(const char *unit,
                 if (!utf8_is_valid(n)) {
                         log_syntax(unit, LOG_ERR, filename, line, EINVAL,
                                    "String is not UTF-8 clean, ignoring: %s", rvalue);
-                        free(n);
                         continue;
                 }
 

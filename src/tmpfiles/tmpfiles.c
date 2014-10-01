@@ -98,8 +98,6 @@ typedef struct Item {
         bool age_set:1;
 
         bool keep_first_level:1;
-
-        bool done:1;
 } Item;
 
 static Hashmap *items = NULL, *globs = NULL;
@@ -242,7 +240,7 @@ static int dir_is_mount_point(DIR *d, const char *subdir) {
 
         /* got only one handle; assume different mount points if one
          * of both queries was not supported by the filesystem */
-        if (r_p == -ENOSYS || r_p == -EOPNOTSUPP || r == -ENOSYS || r == -EOPNOTSUPP)
+        if (r_p == -ENOSYS || r_p == -ENOTSUP || r == -ENOSYS || r == -ENOTSUP)
                 return true;
 
         /* return error */
@@ -433,9 +431,7 @@ finish:
 }
 
 static int item_set_perms_full(Item *i, const char *path, bool ignore_enoent) {
-	    int r;
-	    assert(i);
-	    assert(path);
+        int r;
 
         /* not using i->path directly because it may be a glob */
         if (i->mode_set)
@@ -469,12 +465,12 @@ static int write_one_file(Item *i, const char *path) {
         int r, e, fd, flags;
         struct stat st;
 
-        flags = i->type == CREATE_FILE ? O_CREAT|O_APPEND|O_NOFOLLOW :
-                i->type == TRUNCATE_FILE ? O_CREAT|O_TRUNC|O_NOFOLLOW : 0;
+        flags = i->type == CREATE_FILE ? O_CREAT|O_APPEND :
+                i->type == TRUNCATE_FILE ? O_CREAT|O_TRUNC : 0;
 
-        RUN_WITH_UMASK(0000) {
+        RUN_WITH_UMASK(0) {
                 label_context_set(path, S_IFREG);
-                fd = open(path, flags|O_NDELAY|O_CLOEXEC|O_WRONLY|O_NOCTTY, i->mode);
+                fd = open(path, flags|O_NDELAY|O_CLOEXEC|O_WRONLY|O_NOCTTY|O_NOFOLLOW, i->mode);
                 e = errno;
                 label_context_clear();
                 errno = e;
@@ -489,12 +485,13 @@ static int write_one_file(Item *i, const char *path) {
         }
 
         if (i->argument) {
-			    _cleanup_free_ char *unescaped;
                 ssize_t n;
                 size_t l;
+                _cleanup_free_ char *unescaped;
 
                 unescaped = cunescape(i->argument);
-                if (!unescaped) {
+                if (unescaped == NULL) {
+                        close_nointr_nofail(fd);
                         return log_oom();
                 }
 
@@ -503,6 +500,7 @@ static int write_one_file(Item *i, const char *path) {
 
                 if (n < 0 || (size_t) n < l) {
                         log_error("Failed to write file %s: %s", path, n < 0 ? strerror(-n) : "Short write");
+                        close_nointr_nofail(fd);
                         return n < 0 ? n : -EIO;
                 }
         }
@@ -676,12 +674,12 @@ static int create_item(Item *i) {
 
                 RUN_WITH_UMASK(0000) {
                         mkdir_parents_label(i->path, 0755);
-                        r = mkdir_label(i->path, i->mode);
+                        r = mkdir(i->path, i->mode);
                 }
 
-                if (r < 0 && r != -EEXIST) {
-                        log_error("Failed to create directory %s: %s", i->path, strerror(-r));
-                        return r;
+                if (r < 0 && errno != EEXIST) {
+                        log_error("Failed to create directory %s: %m", i->path);
+                        return -errno;
                 }
 
                 if (stat(i->path, &st) < 0) {
@@ -781,18 +779,10 @@ static int create_item(Item *i) {
                         errno = e;
                 }
 
-                if (r < 0) {
-					     if (errno == EPERM) {
-							 log_debug("We lack permissions, possibly because of cgroup configuration; "
-							           "skipping creation of device node %s.", i->path);
-							 return 0;
-					     }
-
-					     if (errno != EEXIST) {
-							 log_error("Failed to create device node %s: %m", i->path);
-							 return -errno;
-						 }
-			    }
+                if (r < 0 && errno != EEXIST) {
+                        log_error("Failed to create device node %s: %m", i->path);
+                        return -errno;
+                }
 
                 if (stat(i->path, &st) < 0) {
                         log_error("stat(%s) failed: %m", i->path);
@@ -981,22 +971,8 @@ static int clean_item(Item *i) {
 
 static int process_item(Item *i) {
         int r, q, p;
-        char prefix[PATH_MAX];
 
         assert(i);
-
-        if (i->done)
-               return 0;
-
-        i->done = true;
-
-        PATH_FOREACH_PREFIX(prefix, i->path) {
-			    Item *j;
-
-			    j = hashmap_get(items, prefix);
-			    if (j)
-			            process_item(j);
-		}
 
         r = arg_create ? create_item(i) : 0;
         q = arg_remove ? remove_item(i) : 0;
@@ -1343,12 +1319,12 @@ static int parse_argv(int argc, char *argv[]) {
                         break;
 
                 case ARG_PREFIX:
-                        if (strv_push(&include_prefixes, optarg) < 0)
+                        if (strv_extend(&include_prefixes, optarg) < 0)
                                 return log_oom();
                         break;
 
                 case ARG_EXCLUDE_PREFIX:
-                        if (strv_push(&exclude_prefixes, optarg) < 0)
+                        if (strv_extend(&exclude_prefixes, optarg) < 0)
                                 return log_oom();
                         break;
 

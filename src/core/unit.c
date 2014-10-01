@@ -541,22 +541,15 @@ static void merge_dependencies(Unit *u, Unit *other, UnitDependency d) {
         SET_FOREACH(back, other->dependencies[d], i) {
                 UnitDependency k;
 
-                for (k = 0; k < _UNIT_DEPENDENCY_MAX; k++) {
-                        /* Do not add dependencies between u and itself */
-                        if (back == u) {
-							    set_remove(back->dependencies[k], other);
-					    } else {
-							    r = set_remove_and_put(back->dependencies[k], other, u);
+                for (k = 0; k < _UNIT_DEPENDENCY_MAX; k++)
+                        if ((r = set_remove_and_put(back->dependencies[k], other, u)) < 0) {
+
                                 if (r == -EEXIST)
                                         set_remove(back->dependencies[k], other);
                                 else
-                                        assert(r >= 0 || r == -ENOENT);
+                                        assert(r == -ENOENT);
                         }
-			   }
-		}
-
-        /* Also do not move dependencies on u to itself. */
-        set_remove(other->dependencies[d], u);
+        }
 
         complete_move(&u->dependencies[d], &other->dependencies[d]);
 
@@ -1126,10 +1119,6 @@ int unit_start(Unit *u) {
          * but we don't want to recheck the condition in that case. */
         if (state != UNIT_ACTIVATING &&
             !unit_condition_test(u)) {
-				if (test_job_failure_mode() > 0) {
-					log_warning_unit(u->id, "Starting of %s requested but condition failed with /run/systemd/condition-job-failure mode set.", u->id);
-					return -1;
-				}
                 log_debug_unit(u->id, "Starting of %s requested but condition failed. Ignoring.", u->id);
                 return -EALREADY;
         }
@@ -2918,7 +2907,7 @@ int unit_kill_context(
                 }
         }
 
-        if ((c->kill_mode == KILL_CONTROL_GROUP || (c->kill_mode == KILL_MIXED && sigkill)) && u->cgroup_path) {
+        if (c->kill_mode == KILL_CONTROL_GROUP && u->cgroup_path) {
                 _cleanup_set_free_ Set *pid_set = NULL;
 
                 /* Exclude the main/control pids from being killed via the cgroup */

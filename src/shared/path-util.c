@@ -411,16 +411,7 @@ int path_is_read_only_fs(const char *path) {
         if (statvfs(path, &st) < 0)
                 return -errno;
 
-        if (st.f_flag & ST_RDONLY)
-                return true;
-
-        /* On NFS, statvfs() might not reflect whether
-         * we can actually write to the remote share.
-         * Use access(W_OK) as a workaround. */
-         if (access(path, W_OK) < 0 && errno == EROFS)
-                return true;
-
-         return false;
+        return !!(st.f_flag & ST_RDONLY);
 }
 
 int path_is_os_tree(const char *path) {

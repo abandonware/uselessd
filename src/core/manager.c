@@ -434,12 +434,9 @@ static int manager_setup_signals(Manager *m) {
                         SIGRTMIN+22, /* systemd: set log level to LOG_DEBUG */
                         SIGRTMIN+23, /* systemd: set log level to LOG_INFO */
                         SIGRTMIN+24, /* systemd: Immediate exit (--user only) */
-#if !defined(__hppa64__) && !defined(__hppa__)
-
                         SIGRTMIN+27, /* systemd: set log target to console */
                         SIGRTMIN+28, /* systemd: set log target to kmsg */
                         SIGRTMIN+29, /* systemd: set log target to syslog-or-kmsg */
-#endif
                         -1);
         assert_se(sigprocmask(SIG_SETMASK, &mask, NULL) == 0);
 
@@ -818,7 +815,7 @@ int manager_coldplug(Manager *m) {
 
 static void manager_build_unit_path_cache(Manager *m) {
         char **i;
-        _cleanup_closedir_ DIR *d = NULL;
+        _cleanup_free_ DIR *d = NULL;
         int r;
 
         assert(m);
@@ -1457,20 +1454,15 @@ static int manager_process_signal_fd(Manager *m) {
                                  * original sysvinit */
                                 m->exit_code = MANAGER_REEXECUTE;
                                 break;
-                        } else {
-							    m->exit_code = MANAGER_EXIT;
-					    }
+                        }
 
                         /* Fall through */
 
                 case SIGINT:
-                        if (m->running_as == SYSTEMD_SYSTEM && getpid() == 1) {
+                        if (m->running_as == SYSTEMD_SYSTEM) {
                                 manager_start_target(m, SPECIAL_CTRL_ALT_DEL_TARGET, JOB_REPLACE_IRREVERSIBLY);
                                 break;
-                        } else {
-							    m->exit_code = MANAGER_EXIT;
-							    break;
-						}
+                        }
 
                         /* Run the exit target if there is one, if not, just exit. */
                         if (manager_start_target(m, SPECIAL_EXIT_TARGET, JOB_REPLACE) < 0) {
@@ -1940,8 +1932,6 @@ void manager_send_unit_audit(Manager *m, Unit *u, int type, bool success) {
 }
 
 void manager_send_unit_plymouth(Manager *m, Unit *u) {
-
-#ifdef ENABLE_PLYMOUTH
         int fd = -1;
         union sockaddr_union sa;
         int n = 0;
@@ -2006,8 +1996,6 @@ finish:
                 close_nointr_nofail(fd);
 
         free(message);
-#endif
-
 }
 
 void manager_dispatch_bus_name_owner_changed(
@@ -2526,12 +2514,8 @@ void manager_check_finished(Manager *m) {
 }
 
 static int create_generator_dir(Manager *m, char **generator, const char *name) {
-	    char *p;
+        char *p;
         int r;
-
-#ifndef ENABLE_INIT
-        return 0;
-#endif
 
         assert(m);
         assert(generator);
@@ -2571,9 +2555,6 @@ static int create_generator_dir(Manager *m, char **generator, const char *name) 
 }
 
 static void trim_generator_dir(Manager *m, char **generator) {
-#ifndef ENABLE_INIT
-        return;
-#endif
         assert(m);
         assert(generator);
 
@@ -2589,14 +2570,10 @@ static void trim_generator_dir(Manager *m, char **generator) {
 }
 
 void manager_run_generators(Manager *m) {
-	    const char *generator_path;
+        DIR *d = NULL;
+        const char *generator_path;
         const char *argv[5];
         int r;
-        DIR *d = NULL;
-
-#ifndef ENABLE_INIT
-        return;
-#endif
 
         assert(m);
 
@@ -2643,9 +2620,6 @@ finish:
 }
 
 static void remove_generator_dir(Manager *m, char **generator) {
-#ifndef ENABLE_INIT
-        return;
-#endif
         assert(m);
         assert(generator);
 
@@ -2660,9 +2634,6 @@ static void remove_generator_dir(Manager *m, char **generator) {
 }
 
 void manager_undo_generators(Manager *m) {
-#ifndef ENABLE_INIT
-        return;
-#endif
         assert(m);
 
         remove_generator_dir(m, &m->generator_unit_path);

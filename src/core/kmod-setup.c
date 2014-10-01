@@ -23,10 +23,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <errno.h>
-
-#ifdef HAVE_KMOD
 #include <libkmod.h>
-#endif
 
 #include "macro.h"
 #include "execute.h"
@@ -36,7 +33,6 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wformat-nonliteral"
 
-#ifdef HAVE_KMOD
 static void systemd_kmod_log(
                 void *data,
                 int priority,
@@ -48,12 +44,11 @@ static void systemd_kmod_log(
         /* library logging is enabled at debug only */
         log_metav(LOG_DEBUG, file, line, fn, format, args);
 }
-#endif
 
 #pragma GCC diagnostic pop
 
 int kmod_setup(void) {
-#ifdef HAVE_KMOD
+
         static const char kmod_table[] =
                 /* This one we need to load explicitly, since
                  * auto-loading on use doesn't work before udev
@@ -110,6 +105,6 @@ int kmod_setup(void) {
 
         if (ctx)
                 kmod_unref(ctx);
-#endif
+
         return 0;
 }

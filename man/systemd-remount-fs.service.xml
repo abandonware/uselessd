@@ -19,7 +19,7 @@
   You should have received a copy of the GNU Lesser General Public License
   along with systemd; If not, see <http://www.gnu.org/licenses/>.
 -->
-<refentry id="systemd-remount-fs.service" conditional="ENABLE_REMOUNT_FS">
+<refentry id="systemd-remount-fs.service">
 
         <refentryinfo>
                 <title>systemd-remount-fs.service</title>

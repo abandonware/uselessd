@@ -25,63 +25,74 @@
 <refentry id="systemd-suspend.service">
 
         <refentryinfo>
-                <title>uselessd-suspend.service</title>
-                <productname>uselessd</productname>
+                <title>systemd-suspend.service</title>
+                <productname>systemd</productname>
 
                 <authorgroup>
                         <author>
                                 <contrib>Developer</contrib>
-                                <firstname>The Initfinder</firstname>
-                                <surname>General</surname>
-                                <email>wat@meworry.com</email>
+                                <firstname>Lennart</firstname>
+                                <surname>Poettering</surname>
+                                <email>lennart@poettering.net</email>
                         </author>
                 </authorgroup>
         </refentryinfo>
 
         <refmeta>
-                <refentrytitle>uselessd-suspend.service</refentrytitle>
+                <refentrytitle>systemd-suspend.service</refentrytitle>
                 <manvolnum>8</manvolnum>
         </refmeta>
 
         <refnamediv>
-                <refname>uselessd-suspend.service</refname>
-                <refname>uselessd-hibernate.service</refname>
-                <refname>uselessd-hybrid-sleep.service</refname>
-                <refname>uselessd-sleep</refname>
+                <refname>systemd-suspend.service</refname>
+                <refname>systemd-hibernate.service</refname>
+                <refname>systemd-hybrid-sleep.service</refname>
+                <refname>systemd-sleep</refname>
                 <refpurpose>System sleep state logic</refpurpose>
         </refnamediv>
 
         <refsynopsisdiv>
-                <para><filename>uselessd-suspend.service</filename></para>
-                <para><filename>uselessd-hibernate.service</filename></para>
-                <para><filename>uselessd-hybrid-sleep.service</filename></para>
-                <para><filename>/usr/lib/systemd/system-sleep</filename></para>
+                <para><filename>systemd-suspend.service</filename></para>
+                <para><filename>systemd-hibernate.service</filename></para>
+                <para><filename>systemd-hybrid-sleep.service</filename></para>
+                <para><filename>/usr/lib/systemd/systemd-sleep</filename></para>
         </refsynopsisdiv>
 
         <refsect1>
                 <title>Description</title>
 
-                <para><filename>uselessd-suspend.service</filename> is
+                <para><filename>systemd-suspend.service</filename> is
                 a system service that is pulled in by
                 <filename>suspend.target</filename> and is responsible
                 for the actual system suspend. Similarly,
-                <filename>uselessd-hibernate.service</filename> is
+                <filename>systemd-hibernate.service</filename> is
                 pulled in by <filename>hibernate.target</filename> to
                 execute the actual hibernation. Finally,
-                <filename>uselessd-hybrid-sleep.service</filename> is
+                <filename>systemd-hybrid-sleep.service</filename> is
                 pulled in by <filename>hybrid-sleep.target</filename>
                 to execute hybrid hibernation with system
                 suspend.</para>
 
                 <para>Immediately before entering system suspend
                 and/or hibernation
-                <filename>uselessd-suspend.service</filename> (and the
+                <filename>systemd-suspend.service</filename> (and the
                 other mentioned units, respectively) will run all
-                shell scripts with the .sh extension in
-                <filename>/usr/lib/systemd/system-sleep/.</filename>
-                </para>
+                executables in
+                <filename>/usr/lib/systemd/system-sleep/</filename>
+                and pass two arguments to them. The first argument
+                will be <literal>pre</literal>, the second either
+                <literal>suspend</literal>,
+                <literal>hibernate</literal>, or
+                <literal>hybrid-sleep</literal> depending on the
+                chosen action. Immediately after leaving system
+                suspend and/or hibernation the same executables are run,
+                but the first argument is now
+                <literal>post</literal>. All executables in this
+                directory are executed in parallel, and execution of
+                the action is not continued until all executables
+                have finished.</para>
 
-                <para>Note that scripts dropped in
+                <para>Note that scripts or binaries dropped in
                 <filename>/usr/lib/systemd/system-sleep/</filename>
                 are intended for local use only and should be
                 considered hacks. If applications want to be notified
@@ -89,9 +100,9 @@
                 much nicer interfaces available.</para>
 
                 <para>Note that
-                <filename>uselessd-suspend.service</filename>,
-                <filename>uselessd-hibernate.service</filename>, and
-                <filename>uselessd-hybrid-sleep.service</filename>
+                <filename>systemd-suspend.service</filename>,
+                <filename>systemd-hibernate.service</filename>, and
+                <filename>systemd-hybrid-sleep.service</filename>
                 should never be executed directly. Instead, trigger
                 system sleep states with a command such as
                 <literal>systemctl suspend</literal> or
@@ -110,7 +121,7 @@
         <refsect1>
                 <title>Options</title>
 
-                <para><command>uselessd-sleep</command> understands the
+                <para><command>systemd-sleep</command> understands the
                 following commands:</para>
 
                 <variablelist>

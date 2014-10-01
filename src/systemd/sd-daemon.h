@@ -263,18 +263,6 @@ int sd_notify(int unset_environment, const char *state);
 int sd_notifyf(int unset_environment, const char *format, ...) _sd_printf_attr_(2,3);
 
 /*
-  Similar to sd_notify(), but send the message on behalf of another
-  process, if the appropriate permissions are available.
-*/
-int sd_pid_notify(pid_t pid, int unset_environment, const char *state);
-
-/*
-  Similar to sd_notifyf(), but send the message on behalf of another
-  process, if the appropriate permissions are available.
-*/
-int sd_pid_notifyf(pid_t pid, int unset_environment, const char *format, ...) _sd_printf_attr_(3,4);
-
-/*
   Returns > 0 if the system was booted with systemd. Returns < 0 on
   error. Returns 0 if the system was not booted with systemd. Note
   that all of the functions above handle non-systemd boots just

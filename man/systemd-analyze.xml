@@ -21,7 +21,7 @@
   along with systemd; If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<refentry id="systemd-analyze" conditional="ENABLE_ANALYZE">
+<refentry id="systemd-analyze">
 
         <refentryinfo>
                 <title>systemd-analyze</title>

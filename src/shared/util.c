@@ -205,23 +205,10 @@ int unlink_noerrno(const char *path) {
 int parse_boolean(const char *v) {
         assert(v);
 
-        if (streq(v, "1")
-           || v[0] == 'y'
-           || v[0] == 'Y'
-           || v[0] == 't'
-           || v[0] == 'T'
-           || strcaseeq(v, "on"))
-
-                     return 1;
-
-        else if (streq(v, "0")
-           || v[0] == 'n'
-           || v[0] == 'N'
-           || v[0] == 'f'
-           || v[0] == 'F'
-           || strcaseeq(v, "off"))
-
-                     return 0;
+        if (streq(v, "1") || v[0] == 'y' || v[0] == 'Y' || v[0] == 't' || v[0] == 'T' || strcaseeq(v, "on"))
+                return 1;
+        else if (streq(v, "0") || v[0] == 'n' || v[0] == 'N' || v[0] == 'f' || v[0] == 'F' || strcaseeq(v, "off"))
+                return 0;
 
         return -EINVAL;
 }
@@ -1054,7 +1041,7 @@ int unhexchar(char c) {
         if (c >= 'A' && c <= 'F')
                 return c - 'A' + 10;
 
-        return -EINVAL;
+        return -1;
 }
 
 char *hexmem(const void *p, size_t l) {
@@ -1109,7 +1096,7 @@ int unoctchar(char c) {
         if (c >= '0' && c <= '7')
                 return c - '0';
 
-        return -EINVAL;
+        return -1;
 }
 
 char decchar(int x) {
@@ -1121,7 +1108,7 @@ int undecchar(char c) {
         if (c >= '0' && c <= '9')
                 return c - '0';
 
-        return -EINVAL;
+        return -1;
 }
 
 char *cescape(const char *s) {
@@ -1465,7 +1452,6 @@ _pure_ static bool ignore_file_allow_backup(const char *filename) {
                 endswith(filename, ".rpmorig") ||
                 endswith(filename, ".dpkg-old") ||
                 endswith(filename, ".dpkg-new") ||
-                endswith(filename, ".dpkg-tmp") ||
                 endswith(filename, ".swp");
 }
 
@@ -1603,19 +1589,12 @@ bool fstype_is_network(const char *fstype) {
         static const char table[] =
                 "cifs\0"
                 "smbfs\0"
-                "sshfs\0"
                 "ncpfs\0"
                 "ncp\0"
                 "nfs\0"
                 "nfs4\0"
                 "gfs\0"
-                "gfs2\0"
-                "glusterfs\0";
-
-        const char *x;
-        x = startswith(fstype, "fuse.");
-        if (x)
-               fstype = x;
+                "gfs2\0";
 
         return nulstr_contains(table, fstype);
 }
@@ -1689,9 +1668,8 @@ int read_one_char(FILE *f, char *ret, usec_t t, bool *need_nl) {
                 if (fd_wait_for_event(fileno(f), POLLIN, t) <= 0)
                         return -ETIMEDOUT;
 
-        errno = 0;
         if (!fgets(line, sizeof(line), f))
-                return errno ? -errno : -EIO;
+                return -EIO;
 
         truncate_nl(line);
 
@@ -1860,6 +1838,9 @@ int open_terminal(const char *name, int mode) {
                 usleep(50 * USEC_PER_MSEC);
                 c++;
         }
+
+        if (fd < 0)
+                return -errno;
 
         r = isatty(fd);
         if (r < 0) {
@@ -2488,7 +2469,7 @@ void rename_process(const char name[8]) {
                         if (!saved_argv[i])
                                 break;
 
-                        memzero(saved_argv[i], strlen(saved_argv[i]));
+                        memset(saved_argv[i], 0, strlen(saved_argv[i]));
                 }
         }
 }
@@ -3581,6 +3562,9 @@ char *fstab_node_to_udev_node(const char *p) {
 bool tty_is_vc(const char *tty) {
         assert(tty);
 
+        if (startswith(tty, "/dev/"))
+                tty += 5;
+
         return vtnr_from_tty(tty) >= 0;
 }
 
@@ -4193,7 +4177,7 @@ int socket_from_display(const char *display, char **path) {
 
         k = strspn(display+1, "0123456789");
 
-        f = new(char, strlen("/tmp/.X11-unix/X") + k + 1);
+        f = new(char, sizeof("/tmp/.X11-unix/X") + k);
         if (!f)
                 return -ENOMEM;
 
@@ -4829,8 +4813,7 @@ int signal_from_string(const char *s) {
                 if (signo > 0 && signo < _NSIG)
                         return signo;
         }
-
-        return -EINVAL;
+        return -1;
 }
 
 bool kexec_loaded(void) {
@@ -4842,7 +4825,6 @@ bool kexec_loaded(void) {
                        loaded = true;
                free(s);
        }
-
        return loaded;
 }
 
@@ -4861,7 +4843,6 @@ int strdup_or_null(const char *a, char **b) {
                 return -ENOMEM;
 
         *b = c;
-
         return 0;
 }
 
@@ -5296,9 +5277,6 @@ bool string_is_safe(const char *p) {
                 if (*t > 0 && *t < ' ')
                         return false;
 
-                if (*t == 127)
-                        return false;
-
                 if (strchr("\\\"\'", *t))
                         return false;
         }
@@ -5315,13 +5293,9 @@ bool string_has_cc(const char *p) {
 
         assert(p);
 
-        for (t = p; *t; t++) {
+        for (t = p; *t; t++)
                 if (*t > 0 && *t < ' ' && *t != '\t')
                         return true;
-
-                if (*t == 127)
-                        return true;
-        }
 
         return false;
 }

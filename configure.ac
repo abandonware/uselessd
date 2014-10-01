@@ -20,7 +20,7 @@
 AC_PREREQ([2.64])
 
 AC_INIT([uselessd],
-        [8],
+        [3],
         [https://bitbucket.org/bcsd/uselessd/issues],
         [uselessd],
         [http://uselessd.darknedgy.net])
@@ -114,19 +114,6 @@ AS_IF([test "x$enable_address_sanitizer" = "xyes"], [
             address_sanitizer_ldflags="-Wc,-fsanitize=address"
       ])
 
-mudflap_cflags=
-mudflap_cppflags=
-mudflap_ldflags=
-AC_ARG_ENABLE(mudflap, AS_HELP_STRING([--enable-mudflap], [enable -fmudflap instrumentation (GCC <4.9)]))
-AS_IF([test "x$enable_mudflap" = "xyes"], [
-            CC_CHECK_FLAG_APPEND([with_as_cflags], [CFLAGS], [-fmudflap])
-            AS_IF([test -z "$with_as_cflags"],
-                  [AC_MSG_ERROR([*** -fmudflap is not supported])])
-            address_sanitizer_cflags="$with_as_cflags"
-            address_sanitizer_cppflags=""
-            address_sanitizer_ldflags="-Wl,-fmudflap,-Wl,-lmudflap"
-      ])
-
 CC_CHECK_FLAGS_APPEND([with_cflags], [CFLAGS], [\
         -pipe \
         -Wall \
@@ -170,13 +157,13 @@ CC_CHECK_FLAGS_APPEND([with_cflags], [CFLAGS], [\
         -fno-stack-protector \
         -fPIE \
         --param=ssp-buffer-size=4])
-AC_SUBST([OUR_CFLAGS], "$with_cflags $address_sanitizer_cflags $mudflap_cflags")
+AC_SUBST([OUR_CFLAGS], "$with_cflags $address_sanitizer_cflags")
 
 AS_CASE([$CFLAGS], [*-O[[12345g\ ]]*],
         [CC_CHECK_FLAGS_APPEND([with_cppflags], [CPPFLAGS], [\
                -Wp,-D_FORTIFY_SOURCE=2])],
         [AC_MSG_RESULT([skipping -D_FORTIFY_SOURCE, optimization not enabled])])
-AC_SUBST([OUR_CPPFLAGS], "$with_cppflags $address_sanitizer_cppflags $mudflap_cppflags")
+AC_SUBST([OUR_CPPFLAGS], "$with_cppflags $address_sanitizer_cppflags")
 
 CC_CHECK_FLAGS_APPEND([with_ldflags], [LDFLAGS], [\
         -Wl,--as-needed \
@@ -185,13 +172,13 @@ CC_CHECK_FLAGS_APPEND([with_ldflags], [LDFLAGS], [\
         -Wl,-z,relro \
         -pie \
         -Wl,-z,now])
-AC_SUBST([OUR_LDFLAGS], "$with_ldflags $address_sanitizer_ldflags $mudflap_ldflags")
+AC_SUBST([OUR_LDFLAGS], "$with_ldflags $address_sanitizer_ldflags")
 
 # ------------------------------------------------------------------------------
 # we use python to build the man page index, and for systemd-python
 have_python=no
 AC_ARG_WITH([python],
-        [AS_HELP_STRING([--without-python], [disable building the man page index and systemd-python (default: test)])])
+        [AS_HELP_STRING([--without-python], [Disable building the man page index and systemd-python (default: test)])])
 
 AS_IF([test "x$with_python" != "xno"], [
         AM_PATH_PYTHON(,, [:])
@@ -242,6 +229,7 @@ RT_LIBS="$LIBS"
 AC_SUBST(RT_LIBS)
 LIBS="$save_LIBS"
 
+AC_CHECK_FUNCS([fanotify_init fanotify_mark])
 AC_CHECK_DECLS([gettid, pivot_root, name_to_handle_at], [], [], [[#include <sys/types.h>
 #include <unistd.h>
 #include <sys/mount.h>
@@ -251,6 +239,7 @@ AC_CHECK_DECLS([gettid, pivot_root, name_to_handle_at], [], [], [[#include <sys/
 m4_pattern_forbid([^_?PKG_[A-Z_]+$],[*** pkg.m4 missing, please install pkg-config])
 
 PKG_CHECK_MODULES(DBUS, [dbus-1 >= 1.3.2])
+
 
 # ------------------------------------------------------------------------------
 have_coverage=no
@@ -305,7 +294,7 @@ AM_CONDITIONAL(HAVE_BLKID, [test "$have_blkid" = "yes"])
 
 # ------------------------------------------------------------------------------
 have_chkconfig=yes
-AC_ARG_ENABLE([chkconfig], AS_HELP_STRING([--disable-chkconfig],[disable optional chkconfig support]),
+AC_ARG_ENABLE([chkconfig], AS_HELP_STRING([--disable-chkconfig],[Disable optional chkconfig support]),
                 [case "${enableval}" in
                         yes) have_chkconfig=yes ;;
                         no) have_chkconfig=no ;;
@@ -324,7 +313,7 @@ fi
 
 # ------------------------------------------------------------------------------
 AC_ARG_ENABLE([pam],
-        AS_HELP_STRING([--disable-pam],[disable optional PAM support]),
+        AS_HELP_STRING([--disable-pam],[Disable optional PAM support]),
                 [case "${enableval}" in
                         yes) have_pam=yes ;;
                         no) have_pam=no ;;
@@ -362,7 +351,7 @@ AM_CONDITIONAL([HAVE_PAM], [test "x$have_pam" != xno])
 
 # ------------------------------------------------------------------------------
 AC_ARG_ENABLE([acl],
-        AS_HELP_STRING([--disable-acl],[disable optional libacl support]),
+        AS_HELP_STRING([--disable-acl],[Disable optional ACL support]),
                 [case "${enableval}" in
                         yes) have_acl=yes ;;
                         no) have_acl=no ;;
@@ -400,7 +389,7 @@ AM_CONDITIONAL([HAVE_ACL], [test "x$have_acl" != xno])
 
 # ------------------------------------------------------------------------------
 AC_ARG_ENABLE([xattr],
-        AS_HELP_STRING([--disable-xattr],[disable optional libxattr support]),
+        AS_HELP_STRING([--disable-xattr],[Disable optional XATTR support]),
                 [case "${enableval}" in
                         yes) have_xattr=yes ;;
                         no) have_xattr=no ;;
@@ -438,7 +427,7 @@ AM_CONDITIONAL([HAVE_XATTR], [test "x$have_xattr" != xno])
 
 # ------------------------------------------------------------------------------
 AC_ARG_ENABLE([audit],
-        AS_HELP_STRING([--disable-audit],[disable optional libaudit support]),
+        AS_HELP_STRING([--disable-audit],[Disable optional AUDIT support]),
                 [case "${enableval}" in
                         yes) have_audit=yes ;;
                         no) have_audit=no ;;
@@ -472,21 +461,6 @@ else
         AUDIT_LIBS=
 fi
 AC_SUBST(AUDIT_LIBS)
-
-# ------------------------------------------------------------------------------
-have_plymouth=no
-AC_ARG_ENABLE(plymouth, AS_HELP_STRING([--disable-plymouth], [disable optional Plymouth integration]))
-if test "x$enable_plymouth" != "xno"; then
-        have_plymouth=yes
-fi
-AM_CONDITIONAL(ENABLE_PLYMOUTH, [test "$have_plymouth" = "yes"])
-# ------------------------------------------------------------------------------
-have_initd=no
-AC_ARG_ENABLE(initd, AS_HELP_STRING([--disable-initd], [disable PID1/init functionality]))
-if test "x$enable_initd" != "xno"; then
-        have_initd=yes
-fi
-AM_CONDITIONAL(ENABLE_INIT, [test "$have_initd" = "yes"])
 
 # ------------------------------------------------------------------------------
 have_tmpfiles=no
@@ -527,77 +501,6 @@ if test "x$enable_loopback_setup" != "xno"; then
         have_loopback_setup=yes
 fi
 AM_CONDITIONAL(ENABLE_LOOPBACK_SETUP, [test "$have_loopback_setup" = "yes"])
-
-# ------------------------------------------------------------------------------
-have_analyze=no
-AC_ARG_ENABLE(analyze, AS_HELP_STRING([--disable-analyze], [disable systemd-analyze tool]))
-if test "x$enable_analyze" != "xno"; then
-        have_analyze=yes
-fi
-AM_CONDITIONAL(ENABLE_ANALYZE, [test "$have_analyze" = "yes"])
-
-# ------------------------------------------------------------------------------
-have_activate=no
-AC_ARG_ENABLE(activate, AS_HELP_STRING([--disable-activate], [disable systemd-activate tool]))
-if test "x$enable_activate" != "xno"; then
-        have_activate=yes
-fi
-AM_CONDITIONAL(ENABLE_ACTIVATE, [test "$have_activate" = "yes"])
-
-# ------------------------------------------------------------------------------
-have_cgtop=no
-AC_ARG_ENABLE(cgtop, AS_HELP_STRING([--disable-cgtop], [disable systemd-cgtop tool]))
-if test "x$enable_cgtop" != "xno"; then
-        have_cgtop=yes
-fi
-AM_CONDITIONAL(ENABLE_CGTOP, [test "$have_cgtop" = "yes"])
-# ------------------------------------------------------------------------------
-have_cgls=no
-AC_ARG_ENABLE(cgls, AS_HELP_STRING([--disable-cgls], [disable uselessd-cgls tool]))
-if test "x$enable_cgls" != "xno"; then
-        have_cgls=yes
-fi
-AM_CONDITIONAL(ENABLE_CGLS, [test "$have_cgls" = "yes"])
-
-# ------------------------------------------------------------------------------
-have_delta=no
-AC_ARG_ENABLE(delta, AS_HELP_STRING([--disable-delta], [disable systemd-delta tool]))
-if test "x$enable_delta" != "xno"; then
-        have_delta=yes
-fi
-AM_CONDITIONAL(ENABLE_DELTA, [test "$have_delta" = "yes"])
-
-# ------------------------------------------------------------------------------
-have_password_agents=no
-AC_ARG_ENABLE(password_agents, AS_HELP_STRING([--disable-password-agents], [disable password querying tools]))
-if test "x$enable_password_agents" != "xno"; then
-        have_password_agents=yes
-fi
-AM_CONDITIONAL(ENABLE_PASSWORD_AGENTS, [test "$have_password_agents" = "yes"])
-
-# ------------------------------------------------------------------------------
-have_remount_fs=no
-AC_ARG_ENABLE(remount_fs, AS_HELP_STRING([--disable-remount-fs], [disable systemd-remount-fs tool]))
-if test "x$enable_remount_fs" != "xno"; then
-        have_remount_fs=yes
-fi
-AM_CONDITIONAL(ENABLE_REMOUNT_FS, [test "$have_remount_fs" = "yes"])
-
-# ------------------------------------------------------------------------------
-have_sleep=no
-AC_ARG_ENABLE(sleep, AS_HELP_STRING([--disable-sleep], [disable uselessd-sleep modes: suspend, hibernate, hybrid-sleep]))
-if test "x$enable_sleep" != "xno"; then
-        have_sleep=yes
-fi
-AM_CONDITIONAL(ENABLE_SLEEP, [test "$have_sleep" = "yes"])
-
-# ------------------------------------------------------------------------------
-have_update_utmp=no
-AC_ARG_ENABLE(update_utmp, AS_HELP_STRING([--disable-update-utmp], [disable update-utmp tool]))
-if test "x$enable_update_utmp" != "xno"; then
-        have_update_utmp=yes
-fi
-AM_CONDITIONAL(ENABLE_UPDATE_UTMP, [test "$have_update_utmp" = "yes"])
 
 # ------------------------------------------------------------------------------
 have_polkit=no
@@ -839,22 +742,8 @@ AC_MSG_RESULT([
         ACL:                     ${have_acl}
         XATTR:                   ${have_xattr}
         CHKCONFIG:               ${have_chkconfig}
-        plymouth:                ${have_plymouth}
-        init daemon:             ${have_initd}
         tmpfiles:                ${have_tmpfiles}
         randomseed:              ${have_randomseed}
-        machine-id-setup:        ${have_machine_id_setup}
-        hostname-setup:          ${have_hostname_setup}
-        loopback-setup:          ${have_loopback_setup}
-        systemd-analyze:         ${have_analyze}
-        systemd-activate:        ${have_activate}
-        cgtop:                   ${have_cgtop}
-        uselessd-cgls:           ${have_cgls}
-        systemd-delta:           ${have_delta}
-        password agents:         ${have_password_agents}
-        remount-fs:              ${have_remount_fs}
-        uselessd-sleep:          ${have_sleep}
-        update-utmp:             ${have_update_utmp}
         polkit:                  ${have_polkit}
         efi:                     ${have_efi}
         kmod:                    ${have_kmod}

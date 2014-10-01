@@ -1,5 +1,5 @@
 uselessd System and Service Manager [original description do not steal]
-     -----------------------------------------
+-----------------------------------------
 
     WEB SITE + DETAILS:
         http://uselessd.darknedgy.net [read it]
@@ -65,6 +65,8 @@ uselessd System and Service Manager [original description do not steal]
         libacl (optional)
         libattr (optional)
         libselinux (optional)
+        liblzma (optional)
+        libgcrypt (optional)
         libpython (optional)
         make, gcc, and similar tools
 

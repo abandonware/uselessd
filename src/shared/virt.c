@@ -221,9 +221,6 @@ int detect_container(const char **id) {
         } else if (streq(e, "systemd-nspawn")) {
                 if (id)
                         *id = "systemd-nspawn";
-        } else if (streq(e, "docker")) {
-			    if (id)
-			            *id = "docker";
         } else {
                 if (id)
                         *id = "other";

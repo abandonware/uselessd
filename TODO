@@ -6,10 +6,11 @@ Look for units to tweak.
 Decouple stuff from PID1.
 ...
 
-	Consider moving *-setup.c files to shared. ??? systemd-shutdown's
-	files, as well.
+	Consider moving *-setup.c files to shared. ???
 
-	Make update-utmp configurable out of the build.
+	Make -initctl, -sleep, -remount-fs, -sysctl, -delta, -cgtop
+	-activate, -update-utmp and the password agents configurable out
+	of the build.
 
 	Refactor core and shared files. Merge or decouple where needed.
 
@@ -27,60 +28,5 @@ Decouple stuff from PID1.
 	system.
 
 	Remove i18n/NLS/.po entirely.
-
-	Make the syntax for shell invocations from Exec*= less quirky.
-	Will help with launching scripts easier.
-
-	Implement ConditionArchitecture=, CPUShares=,
-	ProtectHome=, ProtectSystem= ?
-
-	Consider mounting /sys/fs/cgroup read-only?
-
-	uselessd-kmod-setup? uselessd-manager-setup-tweak?
-
-	[done?]Look into the log output in the transaction manager.
-
-	Import more tests.
-
-	Remove dead code.
-
-	?Make systemd-initctl, normally invoked only by init, safely work
-	without that constraint. Making it non-reliant on a bus and only
-	on raw domain sockets would also be useful.
-	Perhaps enable CHANGECONS for initctl by calling chvt()?
-
-	!!Port back inhibitor locks. OS X caffeinate?
-
-	Rewrite systemd-remount-fs as a shell script?
-
-	Change <productname> in manpages to uselessd.
-
-	/* Backwards compatibility breaking.
-
-	Consider refactoring some of the individual Condition*= boolean
-	options into a singular ConditionExists= that takes multiple
-	parameters.
-
-	Perhaps write a systemd-to-uselessd unit conversion script if the
-	discrepancies get large enough.
-
-	*/
-
-	Make the unit file parser a separate process, potentially with
-	hooks for defining custom unit options.
-
-	(done?)Check out source of "All * devices unmounted, 256 left" bug.
-
-	Look into reliable fscking.
-
-	Update systemd-tmpfiles.
-
-	Simplify main and main-no-init some more.
-
-	Find a way to use sd_pid_notify() in systemd-notify.
-
-	Reject invalid quoted strings.
-
-	Make dry runs with uselessd --test --system easier to perform.
 
 	REMINDER: Backport bugfixes from systemd-stable.
