@@ -1,0 +1,8 @@
+<manifest>
+ <request>
+    <domain name="_"/>
+ </request>
+ <assign>
+   <filesystem path="/etc/locale.conf" label="System::Shared" />
+ </assign>
+</manifest>
