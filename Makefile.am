@@ -252,9 +252,7 @@ rootbin_PROGRAMS = \
 	systemd-tty-ask-password-agent
 
 bin_PROGRAMS = \
-	systemd-cgtop \
-	systemd-delta \
-	systemd-analyze
+	systemd-delta
 
 rootlibexec_PROGRAMS = \
 	uselessd \
@@ -271,24 +269,11 @@ rootlibexec_PROGRAMS = \
 systemgenerator_PROGRAMS = \
 	systemd-getty-generator
 
-systemd_analyze_SOURCES = \
-	src/analyze/systemd-analyze.c
-
-systemd_analyze_CFLAGS = \
-	$(AM_CFLAGS) \
-	$(DBUS_CFLAGS)
-
-systemd_analyze_LDADD = \
-	libsystemd-shared.la \
-	libsystemd-dbus.la
-
 dist_bashcompletion_DATA = \
-	shell-completion/bash/systemctl \
-	shell-completion/bash/systemd-analyze
+	shell-completion/bash/systemctl
 
 dist_zshcompletion_DATA = \
 	shell-completion/zsh/_systemctl \
-	shell-completion/zsh/_systemd-analyze \
 	shell-completion/zsh/_sd_hosts_or_user_at_host \
 	shell-completion/zsh/_systemd-delta
 
@@ -449,6 +434,33 @@ nodist_systemunit_DATA += \
 
 EXTRA_DIST += \
 	units/uselessd-loopback-setup.service.in
+endif
+
+if ENABLE_ANALYZE
+bin_PROGRAMS += \
+	systemd-analyze
+
+systemd_analyze_SOURCES = \
+	src/analyze/systemd-analyze.c
+
+systemd_analyze_CFLAGS = \
+	$(AM_CFLAGS) \
+	$(DBUS_CFLAGS)
+
+systemd_analyze_LDADD = \
+	libsystemd-shared.la \
+	libsystemd-dbus.la
+
+dist_bashcompletion_DATA += \
+	shell-completion/bash/systemd-analyze
+
+dist_zshcompletion_DATA += \
+	shell-completion/zsh/_systemd-analyze
+endif
+
+if ENABLE_CGTOP
+bin_PROGRAMS += \
+	systemd-cgtop
 endif
 
 if HAVE_SYSV_COMPAT
@@ -1544,11 +1556,13 @@ systemd_reply_password_LDADD = \
 	libsystemd-shared.la
 
 # ------------------------------------------------------------------------------
+if ENABLE_CGTOP
 systemd_cgtop_SOURCES = \
 	src/cgtop/cgtop.c
 
 systemd_cgtop_LDADD = \
 	libsystemd-shared.la
+endif
 
 # ------------------------------------------------------------------------------
 systemd_tty_ask_password_agent_SOURCES = \
@@ -1664,7 +1678,7 @@ EXTRA_DIST += \
 	src/libsystemd-id128/libsystemd-id128.sym
 
 # ------------------------------------------------------------------------------
-
+if ENABLE_ACTIVATE
 rootlibexec_PROGRAMS += \
 	systemd-activate
 
@@ -1674,6 +1688,7 @@ systemd_activate_SOURCES = \
 systemd_activate_LDADD = \
 	libsystemd-shared.la \
 	libsystemd-daemon.la
+endif
 
 # ------------------------------------------------------------------------------
 if ENABLE_RANDOMSEED
