@@ -2524,6 +2524,10 @@ static int service_start(Unit *u) {
         s->main_pid_alien = false;
         s->forbid_restart = false;
 
+        /* flush status text from previous restarts */
+        free(s->status_text);
+        s->status_text = NULL;
+
         service_enter_start_pre(s);
         return 0;
 }
