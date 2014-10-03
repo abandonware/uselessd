@@ -503,6 +503,29 @@ fi
 AM_CONDITIONAL(ENABLE_LOOPBACK_SETUP, [test "$have_loopback_setup" = "yes"])
 
 # ------------------------------------------------------------------------------
+have_analyze=no
+AC_ARG_ENABLE(analyze, AS_HELP_STRING([--disable-analyze], [disable systemd-analyze tool]))
+if test "x$enable_analyze" != "xno"; then
+        have_analyze=yes
+fi
+AM_CONDITIONAL(ENABLE_ANALYZE, [test "$have_analyze" = "yes"])
+
+# ------------------------------------------------------------------------------
+have_activate=no
+AC_ARG_ENABLE(activate, AS_HELP_STRING([--disable-activate], [disable systemd-activate tool]))
+if test "x$enable_activate" != "xno"; then
+        have_activate=yes
+fi
+AM_CONDITIONAL(ENABLE_ACTIVATE, [test "$have_activate" = "yes"])
+# ------------------------------------------------------------------------------
+have_cgtop=no
+AC_ARG_ENABLE(cgtop, AS_HELP_STRING([--disable-cgtop], [disable systemd-cgtop tool]))
+if test "x$enable_cgtop" != "xno"; then
+        have_cgtop=yes
+fi
+AM_CONDITIONAL(ENABLE_CGTOP, [test "$have_cgtop" = "yes"])
+
+# ------------------------------------------------------------------------------
 have_polkit=no
 AC_ARG_ENABLE(polkit, AS_HELP_STRING([--disable-polkit], [disable PolicyKit support]))
 if test "x$enable_polkit" != "xno"; then
@@ -747,6 +770,9 @@ AC_MSG_RESULT([
         machine-id-setup:        ${have_machine_id_setup}
         hostname-setup:          ${have_hostname_setup}
         loopback-setup:          ${have_loopback_setup}
+        systemd-analyze:         ${have_analyze}
+        systemd-activate:        ${have_activate}
+        cgtop:                   ${have_cgtop}
         polkit:                  ${have_polkit}
         efi:                     ${have_efi}
         kmod:                    ${have_kmod}
