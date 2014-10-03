@@ -1589,6 +1589,7 @@ bool fstype_is_network(const char *fstype) {
         static const char table[] =
                 "cifs\0"
                 "smbfs\0"
+                "sshfs\0"
                 "ncpfs\0"
                 "ncp\0"
                 "nfs\0"
@@ -1668,8 +1669,9 @@ int read_one_char(FILE *f, char *ret, usec_t t, bool *need_nl) {
                 if (fd_wait_for_event(fileno(f), POLLIN, t) <= 0)
                         return -ETIMEDOUT;
 
+        errno = 0;
         if (!fgets(line, sizeof(line), f))
-                return -EIO;
+                return errno ? -errno : -EIO;
 
         truncate_nl(line);
 
@@ -5277,6 +5279,9 @@ bool string_is_safe(const char *p) {
                 if (*t > 0 && *t < ' ')
                         return false;
 
+                if (*t == 127)
+                        return false;
+
                 if (strchr("\\\"\'", *t))
                         return false;
         }
@@ -5293,9 +5298,13 @@ bool string_has_cc(const char *p) {
 
         assert(p);
 
-        for (t = p; *t; t++)
+        for (t = p; *t; t++) {
                 if (*t > 0 && *t < ' ' && *t != '\t')
                         return true;
+
+                if (*t == 127)
+                        return true;
+        }
 
         return false;
 }
