@@ -744,6 +744,9 @@ AC_MSG_RESULT([
         CHKCONFIG:               ${have_chkconfig}
         tmpfiles:                ${have_tmpfiles}
         randomseed:              ${have_randomseed}
+        machine-id-setup:        ${have_machine_id_setup}
+        hostname-setup:          ${have_hostname_setup}
+        loopback-setup:          ${have_loopback_setup}
         polkit:                  ${have_polkit}
         efi:                     ${have_efi}
         kmod:                    ${have_kmod}
