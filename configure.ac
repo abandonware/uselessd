@@ -517,6 +517,7 @@ if test "x$enable_activate" != "xno"; then
         have_activate=yes
 fi
 AM_CONDITIONAL(ENABLE_ACTIVATE, [test "$have_activate" = "yes"])
+
 # ------------------------------------------------------------------------------
 have_cgtop=no
 AC_ARG_ENABLE(cgtop, AS_HELP_STRING([--disable-cgtop], [disable systemd-cgtop tool]))
@@ -524,6 +525,14 @@ if test "x$enable_cgtop" != "xno"; then
         have_cgtop=yes
 fi
 AM_CONDITIONAL(ENABLE_CGTOP, [test "$have_cgtop" = "yes"])
+
+# ------------------------------------------------------------------------------
+have_delta=no
+AC_ARG_ENABLE(delta, AS_HELP_STRING([--disable-delta], [disable systemd-delta tool]))
+if test "x$enable_delta" != "xno"; then
+        have_delta=yes
+fi
+AM_CONDITIONAL(ENABLE_DELTA, [test "$have_delta" = "yes"])
 
 # ------------------------------------------------------------------------------
 have_polkit=no
