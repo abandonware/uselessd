@@ -24,7 +24,6 @@ MANPAGES += \
 	man/systemctl.1 \
 	man/systemd-ask-password-console.service.8 \
 	man/systemd-ask-password.1 \
-	man/systemd-delta.1 \
 	man/systemd-fsck@.service.8 \
 	man/systemd-getty-generator.8 \
 	man/systemd-halt.service.8 \
@@ -353,5 +352,11 @@ endif
 if ENABLE_CGTOP
 MANPAGES += \
 	man/systemd-cgtop.1
+
+endif
+
+if ENABLE_DELTA
+MANPAGES += \
+	man/systemd-delta.1
 
 endif
