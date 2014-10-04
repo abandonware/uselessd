@@ -131,7 +131,6 @@ AM_CPPFLAGS = \
 	-DSYSTEMD_TTY_ASK_PASSWORD_AGENT_BINARY_PATH=\"$(rootbindir)/systemd-tty-ask-password-agent\" \
 	-DROOTPREFIX=\"$(rootprefix)\" \
 	-DRANDOM_SEED=\"$(localstatedir)/lib/systemd/random-seed\" \
-	-DSYSTEMD_CRYPTSETUP_PATH=\"$(rootlibexecdir)/systemd-cryptsetup\" \
 	-DSYSTEM_GENERATOR_PATH=\"$(systemgeneratordir)\" \
 	-DUSER_GENERATOR_PATH=\"$(usergeneratordir)\" \
 	-DSYSTEM_SHUTDOWN_PATH=\"$(systemshutdowndir)\" \
@@ -139,7 +138,6 @@ AM_CPPFLAGS = \
 	-DSYSTEMD_KBD_MODEL_MAP=\"$(pkgdatadir)/kbd-model-map\" \
 	-DX_SERVER=\"$(bindir)/X\" \
 	-DPOLKIT_AGENT_BINARY_PATH=\"$(bindir)/pkttyagent\" \
-	-DQUOTACHECK=\"$(QUOTACHECK)\" \
 	-DKEXEC=\"$(KEXEC)\" \
 	-I $(top_srcdir)/src \
 	-I $(top_srcdir)/src/shared \
@@ -251,12 +249,10 @@ rootbin_PROGRAMS = \
 	systemd-ask-password \
 	systemd-tty-ask-password-agent
 
-bin_PROGRAMS = \
-	systemd-delta
+bin_PROGRAMS =
 
 rootlibexec_PROGRAMS = \
 	uselessd \
-	systemd-initctl \
 	systemd-update-utmp \
 	systemd-shutdownd \
 	systemd-shutdown \
@@ -274,8 +270,7 @@ dist_bashcompletion_DATA = \
 
 dist_zshcompletion_DATA = \
 	shell-completion/zsh/_systemctl \
-	shell-completion/zsh/_sd_hosts_or_user_at_host \
-	shell-completion/zsh/_systemd-delta
+	shell-completion/zsh/_sd_hosts_or_user_at_host
 
 dist_sysctl_DATA = \
 	sysctl.d/50-default.conf
@@ -320,7 +315,6 @@ dist_systemunit_DATA = \
 	units/slices.target \
 	units/system.slice \
 	units/x-.slice \
-	units/systemd-initctl.socket \
 	units/systemd-shutdownd.socket \
 	units/syslog.socket \
 	units/printer.target \
@@ -336,7 +330,6 @@ nodist_systemunit_DATA = \
 	units/serial-getty@.service \
 	units/console-shell.service \
 	units/console-getty.service \
-	units/systemd-initctl.service \
 	units/systemd-shutdownd.service \
 	units/systemd-remount-fs.service \
 	units/systemd-update-utmp.service \
@@ -373,7 +366,6 @@ EXTRA_DIST += \
 	units/console-shell.service.m4.in \
 	units/console-getty.service.m4.in \
 	units/rescue.service.m4.in \
-	units/systemd-initctl.service.in \
 	units/systemd-shutdownd.service.in \
 	units/systemd-remount-fs.service.in \
 	units/systemd-update-utmp.service.in \
@@ -463,10 +455,28 @@ bin_PROGRAMS += \
 	systemd-cgtop
 endif
 
+if ENABLE_DELTA
+bin_PROGRAMS += \
+	systemd-delta
+
+dist_zshcompletion_DATA += \
+	shell-completion/zsh/_systemd-delta
+endif
+
 if HAVE_SYSV_COMPAT
 nodist_systemunit_DATA += \
 	units/rc-local.service \
-	units/halt-local.service
+	units/halt-local.service \
+	units/systemd-initctl.service
+
+dist_systemunit_DATA += \
+	units/systemd-initctl.socket
+
+EXTRA_DIST += \
+	units/systemd-initctl.service.in
+
+rootlibexec_PROGRAMS += \
+	systemd-initctl
 
 systemgenerator_PROGRAMS += \
 	systemd-rc-local-generator
@@ -1339,6 +1349,7 @@ lcov-run lcov-report:
 endif
 
 # ------------------------------------------------------------------------------
+if HAVE_SYSV_COMPAT
 systemd_initctl_SOURCES = \
 	src/initctl/initctl.c
 
@@ -1350,6 +1361,7 @@ systemd_initctl_LDADD = \
 	libsystemd-shared.la \
 	libsystemd-daemon.la \
 	libsystemd-dbus.la
+endif
 
 # ------------------------------------------------------------------------------
 systemd_update_utmp_SOURCES = \
@@ -1440,6 +1452,7 @@ EXTRA_DIST += \
 	units/systemd-tmpfiles-clean.service.in
 
 # ------------------------------------------------------------------------------
+if ENABLE_MACHINE_ID_SETUP
 systemd_machine_id_setup_SOURCES = \
 	src/machine-id-setup/machine-id-setup-main.c
 
@@ -1447,20 +1460,25 @@ systemd_machine_id_setup_LDADD = \
 	libsystemd-label.la \
 	libsystemd-shared.la \
 	libsystemd-id128-internal.la
+endif
 
 # ------------------------------------------------------------------------------
+if ENABLE_HOSTNAME_SETUP
 uselessd_hostname_setup_SOURCES = \
 	src/hostname-setup/hostname-setup.c
 
 uselessd_hostname_setup_LDADD = \
 	libsystemd-shared.la
+endif
 
 # ------------------------------------------------------------------------------
+if ENABLE_LOOPBACK_SETUP
 uselessd_loopback_setup_SOURCES = \
 	src/loopback-setup/loopback-setup.c
 
 uselessd_loopback_setup_LDADD = \
 	libsystemd-shared.la
+endif
 
 # ------------------------------------------------------------------------------
 systemd_sysctl_SOURCES = \
@@ -1484,11 +1502,13 @@ systemd_ac_power_LDADD = \
 	libsystemd-shared.la
 
 # ------------------------------------------------------------------------------
+if ENABLE_DELTA
 systemd_delta_SOURCES = \
 	src/delta/delta.c
 
 systemd_delta_LDADD = \
 	libsystemd-shared.la
+endif
 
 # ------------------------------------------------------------------------------
 systemd_getty_generator_SOURCES = \
