@@ -1,5 +1,24 @@
 uselessd System and Service Manager
 
+Version 4 (2014-10-06)
+----------------------
+   *  systemd-analyze, -activate, -cgtop and -delta can now be
+      configured out of the build.
+
+   *  systemd-initctl is now only installed when the HAVE_SYSV_COMPAT
+      conditional evaluates to true.
+
+   *  The infamous /proc/cmdline "debug" argument fiasco has been
+      addressed by renaming it to "systemd.debug", so that it uses
+      an exclusive namespace. Currently, upstream systemd resolves
+      the issue by keeping the generic term "debug", but simply
+      redirecting output to journald as soon as it is available.
+      As we do not have it, we implement this.
+
+   *  Various bugfixes from systemd-stable have been backported, like
+      basic.target and sysinit.target no longer having a
+      RefuseManualStart option.
+
 Version 3 (2014-09-30)
 ----------------------
    *  The systemd-machine-id-setup tool is now entirely standalone

@@ -6,11 +6,10 @@ Look for units to tweak.
 Decouple stuff from PID1.
 ...
 
-	Consider moving *-setup.c files to shared. ???
+	Consider moving *-setup.c files to shared. ??? systemd-shutdown's
+	files, as well.
 
-	Make -initctl, -sleep, -remount-fs, -sysctl, -delta, -cgtop
-	-activate, -update-utmp and the password agents configurable out
-	of the build.
+	Make update-utmp configurable out of the build.
 
 	Refactor core and shared files. Merge or decouple where needed.
 
