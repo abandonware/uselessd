@@ -951,8 +951,13 @@ src/core/syscall-to-name.h: src/core/syscall-list.txt Makefile
 	$(AM_V_GEN)$(AWK) 'BEGIN{ print "const char* const syscall_names[] = { "} { printf "[SYSCALL_TO_INDEX(__NR_%s)] = \"%s\",\n", $$1, $$1 } END{print "};"}' < $< > $@
 
 # ------------------------------------------------------------------------------
+if ENABLE_NO_INIT
+uselessd_SOURCES = \
+	src/core/main-minimal.c
+else
 uselessd_SOURCES = \
 	src/core/main.c
+endif
 
 uselessd_CFLAGS = \
 	$(AM_CFLAGS) \

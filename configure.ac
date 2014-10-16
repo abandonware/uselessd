@@ -463,6 +463,14 @@ fi
 AC_SUBST(AUDIT_LIBS)
 
 # ------------------------------------------------------------------------------
+have_initd=no
+AC_ARG_ENABLE(initd, AS_HELP_STRING([--disable-initd], [disable PID1/init functionality]))
+if test "x$enable_initd" != "xno"; then
+        have_initd=yes
+fi
+AM_CONDITIONAL(ENABLE_NO_INIT, [test "$have_initd" = "yes"])
+
+# ------------------------------------------------------------------------------
 have_tmpfiles=no
 AC_ARG_ENABLE(tmpfiles, AS_HELP_STRING([--disable-tmpfiles], [disable tmpfiles support]))
 if test "x$enable_tmpfiles" != "xno"; then
