@@ -43,6 +43,7 @@
 #include "conf-parser.h"
 #include "dbus-common.h"
 #include "missing.h"
+#include "mkdir.h"
 #include "label.h"
 #include "build.h"
 #include "strv.h"
@@ -196,33 +197,6 @@ static void install_crash_handler(void) {
         };
 
         sigaction_many(&sa, SIGNALS_CRASH_HANDLER, -1);
-}
-
-static int console_setup(bool do_reset) {
-        int tty_fd, r;
-
-        /* If we are init, we connect stdin/stdout/stderr to /dev/null
-         * and make sure we don't have a controlling tty. */
-
-        release_terminal();
-
-        if (!do_reset)
-                return 0;
-
-        tty_fd = open_terminal("/dev/console", O_WRONLY|O_NOCTTY|O_CLOEXEC);
-        if (tty_fd < 0) {
-                log_error("Failed to open /dev/console: %s", strerror(-tty_fd));
-                return -tty_fd;
-        }
-
-        /* We don't want to force text mode.
-         * plymouth may be showing pictures already from initrd. */
-        r = reset_terminal_fd(tty_fd, false);
-        if (r < 0)
-                log_error("Failed to reset /dev/console: %s", strerror(-r));
-
-        close_nointr_nofail(tty_fd);
-        return r;
 }
 
 static int set_default_unit(const char *u) {
@@ -1262,10 +1236,6 @@ int main(int argc, char *argv[]) {
 
         log_show_color(isatty(STDERR_FILENO) > 0);
 
-        /* Disable the umask logic */
-        if (getpid() == 1)
-                umask(0);
-
         /* Initialize default unit */
         r = set_default_unit(SPECIAL_DEFAULT_TARGET);
         if (r < 0) {
@@ -1276,6 +1246,9 @@ int main(int argc, char *argv[]) {
         r = initialize_join_controllers();
         if (r < 0)
                 goto finish;
+
+        mkdir_label("/run/systemd/system", 0755);
+        mkdir_label("/run/systemd/inaccessible", 0000);
 
         /* Reset all signal handlers. */
         assert_se(reset_all_signal_handlers() == 0);
@@ -1588,7 +1561,7 @@ finish:
                 free(arg_default_rlimit[j]);
 
         free(arg_default_unit);
-        //free_join_controllers();
+        free_join_controllers();
 
         dbus_shutdown();
         label_finish();
