@@ -468,7 +468,7 @@ AC_ARG_ENABLE(initd, AS_HELP_STRING([--disable-initd], [disable PID1/init functi
 if test "x$enable_initd" != "xno"; then
         have_initd=yes
 fi
-AM_CONDITIONAL(ENABLE_NO_INIT, [test "$have_initd" = "yes"])
+AM_CONDITIONAL(ENABLE_INIT, [test "$have_initd" = "yes"])
 
 # ------------------------------------------------------------------------------
 have_tmpfiles=no
@@ -782,6 +782,7 @@ AC_MSG_RESULT([
         ACL:                     ${have_acl}
         XATTR:                   ${have_xattr}
         CHKCONFIG:               ${have_chkconfig}
+        init daemon:             ${have_initd}
         tmpfiles:                ${have_tmpfiles}
         randomseed:              ${have_randomseed}
         machine-id-setup:        ${have_machine_id_setup}
