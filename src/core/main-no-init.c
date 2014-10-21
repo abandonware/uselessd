@@ -1146,11 +1146,6 @@ int main(int argc, char *argv[]) {
         mkdir_label("/run/systemd/system", 0755);
         mkdir_label("/run/systemd/inaccessible", 0000);
 
-        /* Reset all signal handlers. */
-        assert_se(reset_all_signal_handlers() == 0);
-
-        ignore_signals(SIGNALS_IGNORE, -1);
-
         if (parse_config_file() < 0)
                 goto finish;
 
