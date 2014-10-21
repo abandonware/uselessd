@@ -5862,12 +5862,6 @@ int main(int argc, char*argv[]) {
                 goto finish;
         }
 
-        if (running_in_chroot() > 0 && arg_action != ACTION_SYSTEMCTL) {
-                log_info("Running in chroot, ignoring request.");
-                retval = 0;
-                goto finish;
-        }
-
         if (!avoid_bus()) {
                 if (arg_transport == TRANSPORT_NORMAL)
                         bus_connect(arg_scope == UNIT_FILE_SYSTEM ? DBUS_BUS_SYSTEM : DBUS_BUS_SESSION, &bus, &private_bus, &error);
