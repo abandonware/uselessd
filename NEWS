@@ -1,5 +1,16 @@
 uselessd System and Service Manager
 
+Version 5 (2014-10-22)
+----------------------
+   * Preliminary experimental support for running a system-wide
+     instance of uselessd without being PID1 (init) has been
+     introduced.
+     See http://uselessd.darknedgy.net/PidNone for details.
+
+   * Don't allow enabling of masked units.
+
+   * More vigorous overflow checking in strv_push().
+
 Version 4 (2014-10-06)
 ----------------------
    *  systemd-analyze, -activate, -cgtop and -delta can now be
