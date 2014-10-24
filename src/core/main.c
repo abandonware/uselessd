@@ -1299,11 +1299,6 @@ int main(int argc, char *argv[]) {
                                  * until we reach the real system.
                                  */
                                 hwclock_reset_timezone();
-
-                                /* Tell the kernel our timezone */
-                                r = hwclock_set_timezone(NULL);
-                                if (r < 0)
-                                        log_error("Failed to set the kernel's timezone, ignoring: %s", strerror(-r));
                         }
                 }
 
