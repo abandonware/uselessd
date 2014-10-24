@@ -14,6 +14,7 @@ User=%I
 PAMName=systemd-user
 Type=notify
 Environment=SHELL=%s
-ExecStart=-@rootlibexecdir@/systemd --user
+ExecStart=-@rootlibexecdir@/uselessd --user
 Environment=DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/%I/dbus/user_bus_socket
 Slice=user-%i.slice
+KillMode=mixed

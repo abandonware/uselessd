@@ -2907,7 +2907,7 @@ int unit_kill_context(
                 }
         }
 
-        if (c->kill_mode == KILL_CONTROL_GROUP && u->cgroup_path) {
+        if ((c->kill_mode == KILL_CONTROL_GROUP || (c->kill_mode == KILL_MIXED && sigkill)) && u->cgroup_path) {
                 _cleanup_set_free_ Set *pid_set = NULL;
 
                 /* Exclude the main/control pids from being killed via the cgroup */
