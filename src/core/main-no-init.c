@@ -1217,7 +1217,7 @@ int main(int argc, char *argv[]) {
                 log_debug(PACKAGE_STRING " running in user mode. (" SYSTEMD_FEATURES ")");
 
         if (arg_running_as == SYSTEMD_SYSTEM && !skip_setup) {
-                if (arg_show_status || plymouth_running())
+                if (arg_show_status)
                         status_welcome();
 
                 test_mtab();
