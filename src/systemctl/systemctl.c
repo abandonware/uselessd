@@ -4510,6 +4510,7 @@ static int systemctl_help(void) {
                "     --no-legend      Do not print a legend (column headers and hints)\n"
                "     --no-ask-password\n"
                "                      Do not ask for system passwords\n"
+               "     --avoid-bus      Bypass system bus\n"
                "     --system         Connect to system manager\n"
                "     --user           Connect to user service manager\n"
                "     --global         Enable/disable unit files globally\n"
@@ -4696,7 +4697,8 @@ static int systemctl_parse_argv(int argc, char *argv[]) {
                 ARG_RUNTIME,
                 ARG_FORCE,
                 ARG_PLAIN,
-                ARG_STATE
+                ARG_STATE,
+                ARG_AVOID_BUS
         };
 
         static const struct option options[] = {
@@ -4735,6 +4737,7 @@ static int systemctl_parse_argv(int argc, char *argv[]) {
                 { "output",              required_argument, NULL, 'o'                     },
                 { "plain",               no_argument,       NULL, ARG_PLAIN               },
                 { "state",               required_argument, NULL, ARG_STATE               },
+                { "avoid-bus",           no_argument,       NULL, ARG_AVOID_BUS           },
                 { NULL,                  0,                 NULL, 0                       }
         };
 
@@ -4978,6 +4981,10 @@ static int systemctl_parse_argv(int argc, char *argv[]) {
                         }
                         break;
                 }
+
+                case ARG_AVOID_BUS:
+                        avoid_bus();
+                        break;
 
                 case '?':
                         return -EINVAL;
