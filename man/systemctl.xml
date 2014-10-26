@@ -348,6 +348,16 @@ along with systemd; If not, see <http://www.gnu.org/licenses/>.
 
       </varlistentry>
 
+     <varlistentry>
+        <term><option>--avoid-bus</option></term>
+
+        <listitem>
+        <para>Bypass system bus checks and communicate with private
+        IPC socket directly (where passive, unprivileged or otherwise
+        permitted).</para>
+        </listitem>
+     </varlistentry>
+
       <varlistentry>
         <term><option>--kill-who=</option></term>
 
