@@ -28,4 +28,19 @@ Decouple stuff from PID1.
 
 	Remove i18n/NLS/.po entirely.
 
+	Make the syntax for shell invocations from Exec*= less quirky.
+	Will help with launching scripts easier.
+
+	Implement ConditionArchitecture=, CPUShares=,
+	ProtectHome=, ProtectSystem= ?
+
+	Consider mounting /sys/fs/cgroup read-only?
+
+	Remove Plymouth enabling (on second thought, it has legitimate use
+	amongst password agents). Think over.
+
+	Add --disable-password-agents.
+
+	uselessd-kmod-setup?
+
 	REMINDER: Backport bugfixes from systemd-stable.
