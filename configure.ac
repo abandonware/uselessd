@@ -114,6 +114,19 @@ AS_IF([test "x$enable_address_sanitizer" = "xyes"], [
             address_sanitizer_ldflags="-Wc,-fsanitize=address"
       ])
 
+mudflap_cflags=
+mudflap_cppflags=
+mudflap_ldflags=
+AC_ARG_ENABLE(mudflap, AS_HELP_STRING([--enable-mudflap], [enable -fmudflap instrumentation (GCC <4.9)]))
+AS_IF([test "x$enable_mudflap" = "xyes"], [
+            CC_CHECK_FLAG_APPEND([with_as_cflags], [CFLAGS], [-fmudflap])
+            AS_IF([test -z "$with_as_cflags"],
+                  [AC_MSG_ERROR([*** -fmudflap is not supported])])
+            address_sanitizer_cflags="$with_as_cflags"
+            address_sanitizer_cppflags=""
+            address_sanitizer_ldflags="-Wl,-fmudflap,-Wl,-lmudflap"
+      ])
+
 CC_CHECK_FLAGS_APPEND([with_cflags], [CFLAGS], [\
         -pipe \
         -Wall \
@@ -157,13 +170,13 @@ CC_CHECK_FLAGS_APPEND([with_cflags], [CFLAGS], [\
         -fno-stack-protector \
         -fPIE \
         --param=ssp-buffer-size=4])
-AC_SUBST([OUR_CFLAGS], "$with_cflags $address_sanitizer_cflags")
+AC_SUBST([OUR_CFLAGS], "$with_cflags $address_sanitizer_cflags $mudflap_cflags")
 
 AS_CASE([$CFLAGS], [*-O[[12345g\ ]]*],
         [CC_CHECK_FLAGS_APPEND([with_cppflags], [CPPFLAGS], [\
                -Wp,-D_FORTIFY_SOURCE=2])],
         [AC_MSG_RESULT([skipping -D_FORTIFY_SOURCE, optimization not enabled])])
-AC_SUBST([OUR_CPPFLAGS], "$with_cppflags $address_sanitizer_cppflags")
+AC_SUBST([OUR_CPPFLAGS], "$with_cppflags $address_sanitizer_cppflags $mudflap_cppflags")
 
 CC_CHECK_FLAGS_APPEND([with_ldflags], [LDFLAGS], [\
         -Wl,--as-needed \
@@ -172,7 +185,7 @@ CC_CHECK_FLAGS_APPEND([with_ldflags], [LDFLAGS], [\
         -Wl,-z,relro \
         -pie \
         -Wl,-z,now])
-AC_SUBST([OUR_LDFLAGS], "$with_ldflags $address_sanitizer_ldflags")
+AC_SUBST([OUR_LDFLAGS], "$with_ldflags $address_sanitizer_ldflags $mudflap_ldflags")
 
 # ------------------------------------------------------------------------------
 # we use python to build the man page index, and for systemd-python
