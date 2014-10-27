@@ -39,8 +39,8 @@ Decouple stuff from PID1.
 	Remove Plymouth enabling (on second thought, it has legitimate use
 	amongst password agents). Think over.
 
-	Add --disable-password-agents.
-
 	uselessd-kmod-setup?
+
+	Import more tests.
 
 	REMINDER: Backport bugfixes from systemd-stable.
