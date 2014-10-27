@@ -245,9 +245,7 @@ AM_V_LN_0 = @echo "  LN      " $@;
 # ------------------------------------------------------------------------------
 rootbin_PROGRAMS = \
 	systemctl \
-	systemd-notify \
-	systemd-ask-password \
-	systemd-tty-ask-password-agent
+	systemd-notify
 
 bin_PROGRAMS =
 
@@ -257,7 +255,6 @@ rootlibexec_PROGRAMS = \
 	systemd-shutdownd \
 	systemd-shutdown \
 	systemd-remount-fs \
-	systemd-reply-password \
 	systemd-ac-power \
 	systemd-sysctl \
 	systemd-sleep
@@ -334,8 +331,6 @@ nodist_systemunit_DATA = \
 	units/systemd-remount-fs.service \
 	units/systemd-update-utmp.service \
 	units/systemd-update-utmp-runlevel.service \
-	units/systemd-ask-password-wall.service \
-	units/systemd-ask-password-console.service \
 	units/systemd-sysctl.service \
 	units/emergency.service \
 	units/rescue.service \
@@ -370,8 +365,6 @@ EXTRA_DIST += \
 	units/systemd-remount-fs.service.in \
 	units/systemd-update-utmp.service.in \
 	units/systemd-update-utmp-runlevel.service.in \
-	units/systemd-ask-password-wall.service.in \
-	units/systemd-ask-password-console.service.in \
 	units/systemd-sysctl.service.in \
 	units/emergency.service.in \
 	units/systemd-halt.service.in \
@@ -461,6 +454,23 @@ bin_PROGRAMS += \
 
 dist_zshcompletion_DATA += \
 	shell-completion/zsh/_systemd-delta
+endif
+
+if ENABLE_PASSWORD_AGENTS
+rootbin_PROGRAMS += \
+	systemd-tty-ask-password-agent \
+	systemd-ask-password
+
+rootlibexec_PROGRAMS += \
+	systemd-reply-password
+
+nodist_systemunit_DATA += \
+	units/systemd-ask-password-wall.service \
+	units/systemd-ask-password-console.service
+
+EXTRA_DIST += \
+	units/systemd-ask-password-wall.service.in \
+	units/systemd-ask-password-console.service.in
 endif
 
 if HAVE_SYSV_COMPAT
@@ -1566,6 +1576,7 @@ systemd_notify_LDADD = \
 	libsystemd-daemon.la
 
 # ------------------------------------------------------------------------------
+if ENABLE_PASSWORD_AGENTS
 systemd_ask_password_SOURCES = \
 	src/ask-password/ask-password.c
 
@@ -1573,12 +1584,19 @@ systemd_ask_password_LDADD = \
 	libsystemd-label.la \
 	libsystemd-shared.la
 
-# ------------------------------------------------------------------------------
 systemd_reply_password_SOURCES = \
 	src/reply-password/reply-password.c
 
 systemd_reply_password_LDADD = \
 	libsystemd-shared.la
+
+systemd_tty_ask_password_agent_SOURCES = \
+	src/tty-ask-password-agent/tty-ask-password-agent.c
+
+systemd_tty_ask_password_agent_LDADD = \
+	libsystemd-label.la \
+	libsystemd-shared.la
+endif
 
 # ------------------------------------------------------------------------------
 if ENABLE_CGTOP
@@ -1588,14 +1606,6 @@ systemd_cgtop_SOURCES = \
 systemd_cgtop_LDADD = \
 	libsystemd-shared.la
 endif
-
-# ------------------------------------------------------------------------------
-systemd_tty_ask_password_agent_SOURCES = \
-	src/tty-ask-password-agent/tty-ask-password-agent.c
-
-systemd_tty_ask_password_agent_LDADD = \
-	libsystemd-label.la \
-	libsystemd-shared.la
 
 # ------------------------------------------------------------------------------
 libsystemd_daemon_la_SOURCES = \
