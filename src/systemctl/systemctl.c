@@ -134,6 +134,7 @@ static bool private_bus = false;
 static int daemon_reload(DBusConnection *bus, char **args);
 static void halt_now(enum action a);
 
+#ifdef ENABLE_PASSWORD_AGENTS
 static void ask_password_agent_open_if_enabled(void) {
 
         /* Open the password agent as a child process if necessary */
@@ -146,6 +147,7 @@ static void ask_password_agent_open_if_enabled(void) {
 
         ask_password_agent_open();
 }
+#endif
 
 static int translate_bus_error_to_exit_status(int r, const DBusError *error) {
         assert(error);
@@ -1902,7 +1904,9 @@ static int start_unit(DBusConnection *bus, char **args) {
 
         assert(bus);
 
+#ifdef ENABLE_PASSWORD_AGENTS
         ask_password_agent_open_if_enabled();
+#endif
 
         if (arg_action == ACTION_SYSTEMCTL) {
                 enum action action;
@@ -5760,7 +5764,8 @@ static int halt_main(DBusConnection *bus) {
         if (geteuid() != 0) {
                 /* Try logind if we are a normal user and no special
                  * mode applies. Maybe PolicyKit allows us to shutdown
-                 * the machine. */
+                 * the machine.
+                 * logind is a noop here. */
 
                 if (arg_when <= 0 &&
                     !arg_dry &&
