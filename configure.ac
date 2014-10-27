@@ -556,6 +556,14 @@ fi
 AM_CONDITIONAL(ENABLE_DELTA, [test "$have_delta" = "yes"])
 
 # ------------------------------------------------------------------------------
+have_password_agents=no
+AC_ARG_ENABLE(password_agents, AS_HELP_STRING([--disable-password-agents], [disable password querying tools]))
+if test "x$enable_password_agents" != "xno"; then
+        have_password_agents=yes
+fi
+AM_CONDITIONAL(ENABLE_PASSWORD_AGENTS, [test "$have_password_agents" = "yes"])
+
+# ------------------------------------------------------------------------------
 have_polkit=no
 AC_ARG_ENABLE(polkit, AS_HELP_STRING([--disable-polkit], [disable PolicyKit support]))
 if test "x$enable_polkit" != "xno"; then
