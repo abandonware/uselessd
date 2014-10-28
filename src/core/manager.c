@@ -1935,6 +1935,8 @@ void manager_send_unit_audit(Manager *m, Unit *u, int type, bool success) {
 }
 
 void manager_send_unit_plymouth(Manager *m, Unit *u) {
+
+#ifdef ENABLE_PLYMOUTH
         int fd = -1;
         union sockaddr_union sa;
         int n = 0;
@@ -1999,6 +2001,8 @@ finish:
                 close_nointr_nofail(fd);
 
         free(message);
+#endif
+
 }
 
 void manager_dispatch_bus_name_owner_changed(
