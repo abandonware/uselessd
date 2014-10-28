@@ -191,7 +191,7 @@ AC_SUBST([OUR_LDFLAGS], "$with_ldflags $address_sanitizer_ldflags $mudflap_ldfla
 # we use python to build the man page index, and for systemd-python
 have_python=no
 AC_ARG_WITH([python],
-        [AS_HELP_STRING([--without-python], [Disable building the man page index and systemd-python (default: test)])])
+        [AS_HELP_STRING([--without-python], [disable building the man page index and systemd-python (default: test)])])
 
 AS_IF([test "x$with_python" != "xno"], [
         AM_PATH_PYTHON(,, [:])
@@ -306,7 +306,7 @@ AM_CONDITIONAL(HAVE_BLKID, [test "$have_blkid" = "yes"])
 
 # ------------------------------------------------------------------------------
 have_chkconfig=yes
-AC_ARG_ENABLE([chkconfig], AS_HELP_STRING([--disable-chkconfig],[Disable optional chkconfig support]),
+AC_ARG_ENABLE([chkconfig], AS_HELP_STRING([--disable-chkconfig],[disable optional chkconfig support]),
                 [case "${enableval}" in
                         yes) have_chkconfig=yes ;;
                         no) have_chkconfig=no ;;
@@ -325,7 +325,7 @@ fi
 
 # ------------------------------------------------------------------------------
 AC_ARG_ENABLE([pam],
-        AS_HELP_STRING([--disable-pam],[Disable optional PAM support]),
+        AS_HELP_STRING([--disable-pam],[disable optional PAM support]),
                 [case "${enableval}" in
                         yes) have_pam=yes ;;
                         no) have_pam=no ;;
@@ -363,7 +363,7 @@ AM_CONDITIONAL([HAVE_PAM], [test "x$have_pam" != xno])
 
 # ------------------------------------------------------------------------------
 AC_ARG_ENABLE([acl],
-        AS_HELP_STRING([--disable-acl],[Disable optional ACL support]),
+        AS_HELP_STRING([--disable-acl],[disable optional libacl support]),
                 [case "${enableval}" in
                         yes) have_acl=yes ;;
                         no) have_acl=no ;;
@@ -401,7 +401,7 @@ AM_CONDITIONAL([HAVE_ACL], [test "x$have_acl" != xno])
 
 # ------------------------------------------------------------------------------
 AC_ARG_ENABLE([xattr],
-        AS_HELP_STRING([--disable-xattr],[Disable optional XATTR support]),
+        AS_HELP_STRING([--disable-xattr],[disable optional libxattr support]),
                 [case "${enableval}" in
                         yes) have_xattr=yes ;;
                         no) have_xattr=no ;;
@@ -439,7 +439,7 @@ AM_CONDITIONAL([HAVE_XATTR], [test "x$have_xattr" != xno])
 
 # ------------------------------------------------------------------------------
 AC_ARG_ENABLE([audit],
-        AS_HELP_STRING([--disable-audit],[Disable optional AUDIT support]),
+        AS_HELP_STRING([--disable-audit],[disable optional libaudit support]),
                 [case "${enableval}" in
                         yes) have_audit=yes ;;
                         no) have_audit=no ;;
@@ -474,6 +474,13 @@ else
 fi
 AC_SUBST(AUDIT_LIBS)
 
+# ------------------------------------------------------------------------------
+have_plymouth=no
+AC_ARG_ENABLE(plymouth, AS_HELP_STRING([--disable-plymouth], [disable optional Plymouth integration]))
+if test "x$enable_plymouth" != "xno"; then
+        have_plymouth=yes
+fi
+AM_CONDITIONAL(ENABLE_PLYMOUTH, [test "$have_plymouth" = "yes"])
 # ------------------------------------------------------------------------------
 have_initd=no
 AC_ARG_ENABLE(initd, AS_HELP_STRING([--disable-initd], [disable PID1/init functionality]))
@@ -802,6 +809,7 @@ AC_MSG_RESULT([
         ACL:                     ${have_acl}
         XATTR:                   ${have_xattr}
         CHKCONFIG:               ${have_chkconfig}
+        plymouth:                ${have_plymouth}
         init daemon:             ${have_initd}
         tmpfiles:                ${have_tmpfiles}
         randomseed:              ${have_randomseed}
@@ -811,6 +819,8 @@ AC_MSG_RESULT([
         systemd-analyze:         ${have_analyze}
         systemd-activate:        ${have_activate}
         cgtop:                   ${have_cgtop}
+        systemd-delta:           ${have_delta}
+        password agents:         ${have_password_agents}
         polkit:                  ${have_polkit}
         efi:                     ${have_efi}
         kmod:                    ${have_kmod}
