@@ -1,15 +1,46 @@
 uselessd System and Service Manager
 
+Version 6 (2014-10-29)
+----------------------
+   *  Three new configure options have been added:
+
+      --enable-mudflap for building with GCC Mudflap compiler
+      instrumentation on compilers that support it.
+
+      --disable-plymouth for turning off Plymouth event integration
+      in units and tty-ask-password-agent.
+
+      --disable-password-agents to strip the systemd-ask-password,
+      systemd-reply-password and systemd-tty-ask-password-agent tools
+      out of the build. Note that the path units will still be shipped
+      if HAVE_SYSV_COMPAT evaluates to true.
+
+   *  The KillMode=mixed unit option for sending SIGTERM to the main
+      process of the control group and then a SIGKILL to all the
+      remaining ones in the same group, has been backported. The exact
+      kill signals are configurable, see man 5 systemd.kill for details.
+
+   *  systemctl has gained an --avoid-bus option which will head
+      straight for the /run/systemd/private IPC socket and not do
+      any system bus checks, where such a condition is allowed.
+      This is a small preliminary step for an intended future
+      overhaul of the IPC system.
+
+   *  Some dead code has been removed, shutdownd will no longer
+      run an unmount in containers (instead relying on the kernel's
+      namespace destructors), main-no-init no longer checks for
+      Plymouth running.
+
 Version 5 (2014-10-22)
 ----------------------
-   * Preliminary experimental support for running a system-wide
-     instance of uselessd without being PID1 (init) has been
-     introduced.
-     See http://uselessd.darknedgy.net/PidNone for details.
+   *  Preliminary experimental support for running a system-wide
+      instance of uselessd without being PID1 (init) has been
+      introduced.
+      See http://uselessd.darknedgy.net/PidNone for details.
 
-   * Don't allow enabling of masked units.
+   *  Don't allow enabling of masked units.
 
-   * More vigorous overflow checking in strv_push().
+   *  More vigorous overflow checking in strv_push().
 
 Version 4 (2014-10-06)
 ----------------------
