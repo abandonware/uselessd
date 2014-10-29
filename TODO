@@ -36,11 +36,20 @@ Decouple stuff from PID1.
 
 	Consider mounting /sys/fs/cgroup read-only?
 
-	Remove Plymouth enabling (on second thought, it has legitimate use
-	amongst password agents). Think over.
+	uselessd-kmod-setup? uselessd-manager-setup-tweak?
 
-	uselessd-kmod-setup?
+	Look into the log output in the transaction manager.
 
 	Import more tests.
+
+	Remove dead code.
+
+	Make systemd-initctl and systemd-update-utmp, normally invoked
+	only by init, safely work without that constraint. Making them
+	non-reliant on a bus and only on raw domain sockets would also be
+	useful.
+
+	Port back systemd-cgls. Perhaps even rewrite it as a shell script,
+	given its relatively simple operation.
 
 	REMINDER: Backport bugfixes from systemd-stable.
