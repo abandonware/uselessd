@@ -1,0 +1,75 @@
+#!/bin/sh
+# This file is part of uselessd.
+
+# Copyright 2014 The Initfinder General
+
+# uselessd is free software; you can redistribute it and/or modify it
+# under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation; either version 2.1 of the License, or
+# (at your option) any later version.
+
+# uselessd is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# Lesser General Public License for more details.
+
+# You should have received a copy of the GNU Lesser General Public License
+# along with uselessd; If not, see <http://www.gnu.org/licenses/>.
+
+show_help() {
+    cat << EOF
+uselessd-cgls [OPTIONS...]
+
+Show control group contents.
+
+Options:
+-t            List hierarchy in tree format (default).
+-k            Show PIDs and comms of kernel threads only.
+-s            Show PIDs and comms of services in the system slice.
+-h, --help    Show this help message.
+EOF
+}
+
+list_tree() {
+	find /sys/fs/cgroup/systemd -type d | sed -e 's/[^-][^\/]*\//- /g;s/--/ |-/'
+}
+
+show_kernel_threads() {
+	cat /sys/fs/cgroup/systemd/tasks | xargs ps -T -o pid,comm
+}
+
+show_system_slice() {
+	for i in /sys/fs/cgroup/systemd/system.slice/*.service; do
+	head -n 1 $i/tasks
+	done | uniq | xargs ps -o pid,comm
+}
+
+while :; do
+    case $1 in
+        -h|-\?|--help)
+           show_help
+           exit 0
+           ;;
+         -k)
+           show_kernel_threads
+           break
+           ;;
+         -s)
+           show_system_slice
+           break
+           ;;
+         -t)
+           list_tree
+           break
+           ;;
+         -?*)
+           echo Unknown option, mate.
+           show_help
+           exit 1
+           ;;
+         *)
+           list_tree
+           break
+
+     esac
+done
