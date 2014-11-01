@@ -1,0 +1,122 @@
+<?xml version="1.0"?>
+<!--*-nxml-*-->
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN" "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+<!--
+  This file is part of uselessd.
+
+  Copyright 2014 The Initfinder General
+
+  uselessd is free software; you can redistribute it and/or modify it
+  under the terms of the GNU Lesser General Public License as published by
+  the Free Software Foundation; either version 2.1 of the License, or
+  (at your option) any later version.
+
+  uselessd is distributed in the hope that it will be useful, but
+  WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public License
+  along with uselessd; If not, see <http://www.gnu.org/licenses/>.
+-->
+<refentry id="uselessd-cgls" conditional="ENABLE_CGLS">
+
+        <refentryinfo>
+                <title>uselessd-cgls</title>
+                <productname>uselessd</productname>
+
+                <authorgroup>
+                        <author>
+                                <contrib>Developer</contrib>
+                                <firstname>The Initfinder</firstname>
+                                <surname>General</surname>
+                                <email>wat@meworry.com</email>
+                        </author>
+                </authorgroup>
+        </refentryinfo>
+
+        <refmeta>
+                <refentrytitle>uselessd-cgls</refentrytitle>
+                <manvolnum>1</manvolnum>
+        </refmeta>
+
+        <refnamediv>
+                <refname>uselessd-cgls</refname>
+                <refpurpose>Show control group contents</refpurpose>
+        </refnamediv>
+
+        <refsynopsisdiv>
+                 <cmdsynopsis>
+                        <command>uselessd-cgls</command>
+                        <arg choice="opt" rep="repeat">OPTIONS</arg>
+                </cmdsynopsis>
+        </refsynopsisdiv>
+
+        <refsect1>
+                <title>Description</title>
+
+                <para><command>uselessd-cgls</command> is a shell script,
+                similar in intent to systemd-cgls, which can either
+                display the cgroupfs hierarchy in a tree format, show
+                the kernel threads which are tasks in the root hierarchy,
+                or show the PIDs and comms of the services in the system slice.
+                </para>
+        </refsect1>
+
+        <refsect1>
+                <title>Options</title>
+
+                <para>The following options are understood:</para>
+
+                <variablelist>
+                        <varlistentry>
+                                <term><option>-h</option></term>
+                                <term><option>--help</option></term>
+
+                                <listitem><para>Prints a short help
+                                text and exits.</para></listitem>
+                        </varlistentry>
+
+                        <varlistentry>
+                                <term><option>-t</option></term>
+
+                                <listitem><para>Prints a listing of the
+                                cgroupfs hierarchy tree and breaks.</para></listitem>
+                        </varlistentry>
+
+                        <varlistentry>
+                                <term><option>-k</option></term>
+
+                                <listitem><para>Prints the PIDs and comms
+                                of the kernel threads in the root hierarchy
+                                and breaks.</para></listitem>
+                        </varlistentry>
+
+                        <varlistentry>
+                                <term><option>-s</option></term>
+
+                                <listitem><para>Prints the PIDs and comms
+                                of the services monitored in the system slice.
+                                </para></listitem>
+                        </varlistentry>
+                </variablelist>
+        </refsect1>
+
+        <refsect1>
+                <title>Exit status</title>
+
+                <para>On success 0 is returned, a non-zero failure
+                code otherwise.</para>
+        </refsect1>
+
+        <refsect1>
+                <title>See Also</title>
+                <para>
+                        <citerefentry><refentrytitle>systemd</refentrytitle><manvolnum>1</manvolnum></citerefentry>,
+                        <citerefentry><refentrytitle>systemd-cgtop</refentrytitle><manvolnum>1</manvolnum></citerefentry>,
+                        <citerefentry><refentrytitle>systemctl</refentrytitle><manvolnum>1</manvolnum></citerefentry>,
+                        <citerefentry><refentrytitle>ps</refentrytitle><manvolnum>1</manvolnum></citerefentry>
+                </para>
+        </refsect1>
+
+</refentry>

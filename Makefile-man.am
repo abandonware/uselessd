@@ -348,6 +348,12 @@ MANPAGES += \
 
 endif
 
+if ENABLE_CGLS
+MANPAGES += \
+	man/uselessd-cgls.1
+
+endif
+
 if ENABLE_DELTA
 MANPAGES += \
 	man/systemd-delta.1
