@@ -448,6 +448,11 @@ bin_PROGRAMS += \
 	systemd-cgtop
 endif
 
+if ENABLE_CGLS
+bin_PROGRAMS += \
+	src/cgls/uselessd-cgls
+endif
+
 if ENABLE_DELTA
 bin_PROGRAMS += \
 	systemd-delta
@@ -1607,6 +1612,7 @@ systemd_cgtop_LDADD = \
 endif
 
 # ------------------------------------------------------------------------------
+
 libsystemd_daemon_la_SOURCES = \
 	src/libsystemd-daemon/sd-daemon.c
 

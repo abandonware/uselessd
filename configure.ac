@@ -252,7 +252,6 @@ m4_pattern_forbid([^_?PKG_[A-Z_]+$],[*** pkg.m4 missing, please install pkg-conf
 
 PKG_CHECK_MODULES(DBUS, [dbus-1 >= 1.3.2])
 
-
 # ------------------------------------------------------------------------------
 have_coverage=no
 AC_ARG_ENABLE(coverage, AS_HELP_STRING([--enable-coverage], [enable test coverage]))
@@ -552,6 +551,13 @@ if test "x$enable_cgtop" != "xno"; then
         have_cgtop=yes
 fi
 AM_CONDITIONAL(ENABLE_CGTOP, [test "$have_cgtop" = "yes"])
+# ------------------------------------------------------------------------------
+have_cgls=no
+AC_ARG_ENABLE(cgls, AS_HELP_STRING([--disable-cgls], [disable uselessd-cgls tool]))
+if test "x$enable_cgls" != "xno"; then
+        have_cgls=yes
+fi
+AM_CONDITIONAL(ENABLE_CGLS, [test "$have_cgls" = "yes"])
 
 # ------------------------------------------------------------------------------
 have_delta=no
@@ -819,6 +825,7 @@ AC_MSG_RESULT([
         systemd-analyze:         ${have_analyze}
         systemd-activate:        ${have_activate}
         cgtop:                   ${have_cgtop}
+        uselessd-cgls:           ${have_cgls}
         systemd-delta:           ${have_delta}
         password agents:         ${have_password_agents}
         polkit:                  ${have_polkit}
