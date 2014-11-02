@@ -79,6 +79,9 @@ rootprefix=@rootprefix@
 rootbindir=$(rootprefix)/bin
 rootlibexecdir=$(rootprefix)/lib/systemd
 
+# scripts
+cglsdir=@rootbindir@
+
 CLEANFILES = $(BUILT_SOURCES)
 DISTCLEANFILES =
 EXTRA_DIST =
@@ -449,7 +452,7 @@ bin_PROGRAMS += \
 endif
 
 if ENABLE_CGLS
-bin_PROGRAMS += \
+dist_cgls_DATA = \
 	src/cgls/uselessd-cgls
 endif
 
