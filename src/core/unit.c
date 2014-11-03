@@ -541,15 +541,22 @@ static void merge_dependencies(Unit *u, Unit *other, UnitDependency d) {
         SET_FOREACH(back, other->dependencies[d], i) {
                 UnitDependency k;
 
-                for (k = 0; k < _UNIT_DEPENDENCY_MAX; k++)
-                        if ((r = set_remove_and_put(back->dependencies[k], other, u)) < 0) {
-
+                for (k = 0; k < _UNIT_DEPENDENCY_MAX; k++) {
+                        /* Do not add dependencies between u and itself */
+                        if (back == u) {
+							    set_remove(back->dependencies[k], other);
+					    } else {
+							    r = set_remove_and_put(back->dependencies[k], other, u);
                                 if (r == -EEXIST)
                                         set_remove(back->dependencies[k], other);
                                 else
-                                        assert(r == -ENOENT);
+                                        assert(r >= 0 || r == -ENOENT);
                         }
-        }
+			   }
+		}
+
+        /* Also do not move dependencies on u to itself. */
+        set_remove(other->dependencies[d], u);
 
         complete_move(&u->dependencies[d], &other->dependencies[d]);
 
