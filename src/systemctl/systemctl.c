@@ -741,6 +741,11 @@ static int compare_unit_file_list(const void *a, const void *b) {
 static bool output_show_unit_file(const UnitFileList *u) {
         const char *dot;
 
+        if (!strv_isempty(arg_states)) {
+			    if (!strv_find(arg_states, unit_file_state_to_string(u->state)))
+			            return false;
+		}
+
         return !arg_types || ((dot = strrchr(u->path, '.')) && strv_find(arg_types, dot+1));
 }
 
@@ -829,6 +834,10 @@ static int list_unit_files(DBusConnection *bus, char **args) {
                 }
 
                 n_units = hashmap_size(h);
+
+                if (n_units == 0)
+					    return 0;
+
                 units = new(UnitFileList, n_units);
                 if (!units) {
                         unit_file_list_free(h);
