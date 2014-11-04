@@ -576,6 +576,14 @@ fi
 AM_CONDITIONAL(ENABLE_PASSWORD_AGENTS, [test "$have_password_agents" = "yes"])
 
 # ------------------------------------------------------------------------------
+have_remount_fs=no
+AC_ARG_ENABLE(remount_fs, AS_HELP_STRING([--disable-remount-fs], [disable systemd-remount-fs tool]))
+if test "x$enable_remount_fs" != "xno"; then
+        have_remount_fs=yes
+fi
+AM_CONDITIONAL(ENABLE_REMOUNT_FS, [test "$have_remount_fs" = "yes"])
+
+# ------------------------------------------------------------------------------
 have_polkit=no
 AC_ARG_ENABLE(polkit, AS_HELP_STRING([--disable-polkit], [disable PolicyKit support]))
 if test "x$enable_polkit" != "xno"; then

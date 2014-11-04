@@ -257,7 +257,6 @@ rootlibexec_PROGRAMS = \
 	systemd-update-utmp \
 	systemd-shutdownd \
 	systemd-shutdown \
-	systemd-remount-fs \
 	systemd-ac-power \
 	systemd-sysctl \
 	systemd-sleep
@@ -331,7 +330,6 @@ nodist_systemunit_DATA = \
 	units/console-shell.service \
 	units/console-getty.service \
 	units/systemd-shutdownd.service \
-	units/systemd-remount-fs.service \
 	units/systemd-update-utmp.service \
 	units/systemd-update-utmp-runlevel.service \
 	units/systemd-sysctl.service \
@@ -365,7 +363,6 @@ EXTRA_DIST += \
 	units/console-getty.service.m4.in \
 	units/rescue.service.m4.in \
 	units/systemd-shutdownd.service.in \
-	units/systemd-remount-fs.service.in \
 	units/systemd-update-utmp.service.in \
 	units/systemd-update-utmp-runlevel.service.in \
 	units/systemd-sysctl.service.in \
@@ -479,6 +476,17 @@ nodist_systemunit_DATA += \
 EXTRA_DIST += \
 	units/systemd-ask-password-wall.service.in \
 	units/systemd-ask-password-console.service.in
+endif
+
+if ENABLE_REMOUNT_FS
+rootlibexec_PROGRAMS += \
+	systemd-remount-fs
+
+nodist_systemunit_DATA += \
+	units/systemd-remount-fs.service
+
+EXTRA_DIST += \
+	units/systemd-remount-fs.service.in
 endif
 
 if HAVE_SYSV_COMPAT
@@ -1549,6 +1557,7 @@ systemd_rc_local_generator_LDADD = \
 	libsystemd-shared.la
 
 # ------------------------------------------------------------------------------
+if ENABLE_REMOUNT_FS
 systemd_remount_fs_SOURCES = \
 	src/remount-fs/remount-fs.c \
 	src/core/mount-setup.c \
@@ -1557,6 +1566,7 @@ systemd_remount_fs_SOURCES = \
 systemd_remount_fs_LDADD = \
 	libsystemd-label.la \
 	libsystemd-shared.la
+endif
 
 # ------------------------------------------------------------------------------
 systemctl_SOURCES = \
