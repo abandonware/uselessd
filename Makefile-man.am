@@ -28,7 +28,6 @@ MANPAGES += \
 	man/systemd-inhibit.1 \
 	man/systemd-initctl.service.8 \
 	man/systemd-notify.1 \
-	man/systemd-remount-fs.service.8 \
 	man/systemd-shutdownd.service.8 \
 	man/systemd-sleep.conf.5 \
 	man/systemd-suspend.service.8 \
@@ -92,7 +91,6 @@ MANPAGES_ALIAS += \
 	man/systemd-kexec.service.8 \
 	man/systemd-poweroff.service.8 \
 	man/systemd-reboot.service.8 \
-	man/systemd-remount-fs.8 \
 	man/systemd-shutdown.8 \
 	man/systemd-shutdownd.8 \
 	man/systemd-shutdownd.socket.8 \
@@ -141,7 +139,6 @@ man/systemd-initctl.socket.8: man/systemd-initctl.service.8
 man/systemd-kexec.service.8: man/systemd-halt.service.8
 man/systemd-poweroff.service.8: man/systemd-halt.service.8
 man/systemd-reboot.service.8: man/systemd-halt.service.8
-man/systemd-remount-fs.8: man/systemd-remount-fs.service.8
 man/systemd-shutdown.8: man/systemd-halt.service.8
 man/systemd-shutdownd.8: man/systemd-shutdownd.service.8
 man/systemd-shutdownd.socket.8: man/systemd-shutdownd.service.8
@@ -264,9 +261,6 @@ man/systemd-poweroff.service.html: man/systemd-halt.service.html
 man/systemd-reboot.service.html: man/systemd-halt.service.html
 	$(html-alias)
 
-man/systemd-remount-fs.html: man/systemd-remount-fs.service.html
-	$(html-alias)
-
 man/systemd-shutdown.html: man/systemd-halt.service.html
 	$(html-alias)
 
@@ -371,6 +365,20 @@ MANPAGES_ALIAS += \
 man/systemd-ask-password-wall.service.8: man/systemd-ask-password-console.service.8
 
 man/systemd-ask-password-wall.service.html: man/systemd-ask-password-console.service.html
+	$(html-alias)
+
+endif
+
+if ENABLE_REMOUNT_FS
+MANPAGES += \
+	man/systemd-remount-fs.service.8
+
+MANPAGES_ALIAS += \
+	man/systemd-remount-fs.8
+
+man/systemd-remount-fs.8: man/systemd-remount-fs.service.8
+
+man/systemd-remount-fs.html: man/systemd-remount-fs.service.html
 	$(html-alias)
 
 endif
