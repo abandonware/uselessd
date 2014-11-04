@@ -44,12 +44,14 @@ Decouple stuff from PID1.
 
 	Remove dead code.
 
-	Make systemd-initctl and systemd-update-utmp, normally invoked
-	only by init, safely work without that constraint. Making them
-	non-reliant on a bus and only on raw domain sockets would also be
-	useful.
+	?Make systemd-initctl, normally invoked only by init, safely work
+	without that constraint. Making it non-reliant on a bus and only
+	on raw domain sockets would also be useful.
 
-	Port back systemd-cgls. Perhaps even rewrite it as a shell script,
-	given its relatively simple operation.
+	!!Port back inhibitor locks.
+
+	Rewrite systemd-sleep as a shell script, much like uselessd-cgls?
+	Look into parse_sleep_config() and sleep-config.c
+	^ As well as systemd-remount-fs.
 
 	REMINDER: Backport bugfixes from systemd-stable.
