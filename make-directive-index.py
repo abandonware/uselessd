@@ -28,7 +28,7 @@ TEMPLATE = '''\
 
         <refentryinfo>
                 <title>systemd.directives</title>
-                <productname>systemd</productname>
+                <productname>uselessd</productname>
 
                 <authorgroup>
                         <author>
