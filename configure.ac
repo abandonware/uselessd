@@ -584,6 +584,14 @@ fi
 AM_CONDITIONAL(ENABLE_REMOUNT_FS, [test "$have_remount_fs" = "yes"])
 
 # ------------------------------------------------------------------------------
+have_sleep=no
+AC_ARG_ENABLE(sleep, AS_HELP_STRING([--disable-sleep], [disable systemd-sleep modes: suspend, hibernate, hybrid-sleep]))
+if test "x$enable_sleep" != "xno"; then
+        have_sleep=yes
+fi
+AM_CONDITIONAL(ENABLE_SLEEP, [test "$have_sleep" = "yes"])
+
+# ------------------------------------------------------------------------------
 have_polkit=no
 AC_ARG_ENABLE(polkit, AS_HELP_STRING([--disable-polkit], [disable PolicyKit support]))
 if test "x$enable_polkit" != "xno"; then
@@ -836,6 +844,8 @@ AC_MSG_RESULT([
         uselessd-cgls:           ${have_cgls}
         systemd-delta:           ${have_delta}
         password agents:         ${have_password_agents}
+        remount-fs:              ${have_remount_fs}
+        systemd-sleep:           ${have_sleep}
         polkit:                  ${have_polkit}
         efi:                     ${have_efi}
         kmod:                    ${have_kmod}

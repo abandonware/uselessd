@@ -258,8 +258,7 @@ rootlibexec_PROGRAMS = \
 	systemd-shutdownd \
 	systemd-shutdown \
 	systemd-ac-power \
-	systemd-sysctl \
-	systemd-sleep
+	systemd-sysctl
 
 systemgenerator_PROGRAMS = \
 	systemd-getty-generator
@@ -336,9 +335,6 @@ nodist_systemunit_DATA = \
 	units/emergency.service \
 	units/rescue.service \
 	units/user@.service \
-	units/systemd-hibernate.service \
-	units/systemd-hybrid-sleep.service \
-	units/systemd-suspend.service \
 	units/systemd-halt.service \
 	units/systemd-poweroff.service \
 	units/systemd-reboot.service \
@@ -375,9 +371,6 @@ EXTRA_DIST += \
 	units/systemd-fsck@.service.in \
 	units/user@.service.in \
 	units/debug-shell.service.in \
-	units/systemd-hibernate.service.in \
-	units/systemd-hybrid-sleep.service.in \
-	units/systemd-suspend.service.in \
 	units/initrd-parse-etc.service.in \
 	units/initrd-cleanup.service.in \
 	units/initrd-switch-root.service.in \
@@ -487,6 +480,21 @@ nodist_systemunit_DATA += \
 
 EXTRA_DIST += \
 	units/systemd-remount-fs.service.in
+endif
+
+if ENABLE_SLEEP
+rootlibexec_PROGRAMS += \
+	systemd-sleep
+
+nodist_systemunit_DATA += \
+	units/systemd-hibernate.service \
+	units/systemd-hybrid-sleep.service \
+	units/systemd-suspend.service
+
+EXTRA_DIST += \
+	units/systemd-hibernate.service.in \
+	units/systemd-hybrid-sleep.service.in \
+	units/systemd-suspend.service.in
 endif
 
 if HAVE_SYSV_COMPAT
@@ -1518,11 +1526,13 @@ systemd_sysctl_LDADD = \
 	libsystemd-shared.la
 
 # ------------------------------------------------------------------------------
+if ENABLE_SLEEP
 systemd_sleep_SOURCES = \
 	src/sleep/sleep.c
 
 systemd_sleep_LDADD = \
 	libsystemd-shared.la
+endif
 
 # ------------------------------------------------------------------------------
 systemd_ac_power_SOURCES = \
