@@ -5734,6 +5734,7 @@ done:
 }
 
 static _noreturn_ void halt_now(enum action a) {
+	    sync();
 
        /* Make sure C-A-D is handled by the kernel from this
          * point on... */
