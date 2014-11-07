@@ -79,8 +79,8 @@ rootprefix=@rootprefix@
 rootbindir=$(rootprefix)/bin
 rootlibexecdir=$(rootprefix)/lib/systemd
 
-# scripts
-cglsdir=@rootbindir@
+# Scripts
+cglsdir=@rootprefix@
 
 CLEANFILES = $(BUILT_SOURCES)
 DISTCLEANFILES =
