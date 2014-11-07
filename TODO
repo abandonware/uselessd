@@ -48,10 +48,31 @@ Decouple stuff from PID1.
 	without that constraint. Making it non-reliant on a bus and only
 	on raw domain sockets would also be useful.
 
-	!!Port back inhibitor locks.
+	!!Port back inhibitor locks. OS X caffeinate?
 
 	Rewrite systemd-sleep as a shell script, much like uselessd-cgls?
 	Look into parse_sleep_config() and sleep-config.c
 	^ As well as systemd-remount-fs.
+
+	Change <productname> in manpages to uselessd.
+
+	/* Backwards compatibility breaking.
+
+	Introduce the new Assert*= options from upstream systemd. Perhaps
+	just create a ConditionJobFailureMode=true or something similar
+	in order to enable an implicit global condition for all Condition*=
+	options?
+
+	Or perhaps make all Condition*= options hard job failures instead
+	of job skips?
+
+	Consider refactoring some of the individual Condition*= boolean
+	options into a singular ConditionExists= that takes multiple
+	parameters.
+
+	Perhaps write a systemd-to-uselessd unit conversion script if the
+	discrepancies get large enough.
+
+	*/
 
 	REMINDER: Backport bugfixes from systemd-stable.

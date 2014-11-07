@@ -1,5 +1,21 @@
 uselessd System and Service Manager
 
+Version 7 (2014-11-07)
+----------------------
+   *  A new program has been introduced - uselessd-cgls, which
+      is a lightweight alternative to systemd-cgls written in
+      Bourne shell. It can be configured out of the build with
+      --disable-cgls and comes with a manpage.
+
+   *  Two other new configure switches have been introduced:
+      --disable-remount-fs and --disable-sleep, to, respectively
+      strip out the systemd-remount-fs tool for rescanning /etc/fstab,
+      and the systemd-sleep tool for controlling sleep mode from sysfs
+      plus applying user configuration (as well as all respective units
+      and manpages).
+
+   *  A wide variety of bugfixes.
+
 Version 6 (2014-10-29)
 ----------------------
    *  Three new configure options have been added:
