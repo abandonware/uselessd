@@ -372,9 +372,9 @@ MANPAGES += \
 	man/systemd-suspend.service.8
 
 MANPAGES_ALIAS += \
+	man/systemd-sleep.8 \
 	man/systemd-hibernate.service.8 \
 	man/systemd-hybrid-sleep.service.8
-	man/systemd-sleep.8
 
 man/systemd-hibernate.service.8: man/systemd-suspend.service.8
 man/systemd-hybrid-sleep.service.8: man/systemd-suspend.service.8
