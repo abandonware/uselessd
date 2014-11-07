@@ -53,6 +53,8 @@
 #include "env-util.h"
 #include "cgroup.h"
 
+#define FOLLOW_MAX 8
+
 #ifndef HAVE_SYSV_COMPAT
 int config_parse_warn_compat(const char *unit,
                              const char *filename,
@@ -2244,8 +2246,6 @@ int config_parse_blockio_bandwidth(
 
         return 0;
 }
-
-#define FOLLOW_MAX 8
 
 static int open_follow(char **filename, FILE **_f, Set *names, char **_final) {
         unsigned c = 0;
