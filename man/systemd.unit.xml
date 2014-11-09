@@ -1289,6 +1289,25 @@
         </refsect1>
 
         <refsect1>
+                <title>Files</title>
+
+                <variablelist>
+                              <varlistentry>
+                                <term><filename>/run/systemd/condition-job-failure</filename></term>
+
+                                <listitem><para>When containing 1, true or Y, this file
+                                will set a global flag for all Condition*= unit options,
+                                where upon a condition failing, instead of simply skipping
+                                the job, a hard job failure will be emitted.
+
+                                This is similar to systemd-git (presumably 218)'s Assert*=
+                                options, except implemented as a global volatile flag on
+                                the file system rather than individual corollary options.</para></listitem>
+                        </varlistentry>
+                </variablelist>
+        </refsect1>
+
+        <refsect1>
                 <title>See Also</title>
                 <para>
                         <citerefentry><refentrytitle>systemd</refentrytitle><manvolnum>1</manvolnum></citerefentry>,
