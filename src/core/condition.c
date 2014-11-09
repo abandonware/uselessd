@@ -242,6 +242,17 @@ static bool test_ac_power(const char *parameter) {
         return (on_ac_power() != 0) == !!r;
 }
 
+bool test_job_failure_mode(void) {
+        int r;
+        _cleanup_free_ char *p = NULL;
+
+        r = read_one_line_file("/run/systemd/condition-job-failure", &p);
+        if (r < 0)
+                return false;
+
+        return parse_boolean(p) > 0;
+}
+
 static bool condition_test(Condition *c) {
         assert(c);
 

@@ -70,3 +70,5 @@ void condition_dump_list(Condition *c, FILE *f, const char *prefix);
 
 const char* condition_type_to_string(ConditionType t) _const_;
 int condition_type_from_string(const char *s) _pure_;
+
+bool test_job_failure_mode(void);
