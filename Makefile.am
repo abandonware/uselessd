@@ -374,7 +374,7 @@ EXTRA_DIST += \
 	units/initrd-parse-etc.service.in \
 	units/initrd-cleanup.service.in \
 	units/initrd-switch-root.service.in \
-	introspect.awk
+	tools/introspect.awk
 
 CLEANFILES += \
 	units/console-shell.service.m4 \
@@ -596,16 +596,16 @@ XML_GLOB = $(wildcard $(top_srcdir)/man/*.xml $(top_builddir)/man/*.xml)
 NON_INDEX_XML_FILES = $(filter-out man/systemd.index.xml,$(XML_FILES))
 SOURCE_XML_FILES = $(filter-out man/systemd.directives.xml,$(NON_INDEX_XML_FILES))
 
-update-man-list: make-man-rules.py $(XML_GLOB)
+update-man-list: tools/make-man-rules.py $(XML_GLOB)
 	$(AM_V_GEN)$(PYTHON) $^ > $(top_srcdir)/Makefile-man.tmp
 	$(AM_V_at)mv $(top_srcdir)/Makefile-man.tmp $(top_srcdir)/Makefile-man.am
 	@echo "Makefile-man.am has been regenerated"
 
-man/systemd.index.xml: make-man-index.py $(NON_INDEX_XML_FILES)
+man/systemd.index.xml: tools/make-man-index.py $(NON_INDEX_XML_FILES)
 	$(AM_V_at)$(MKDIR_P) $(dir $@)
 	$(AM_V_GEN)$(PYTHON) $< $@ $(filter-out $<,$^)
 
-man/systemd.directives.xml: make-directive-index.py $(SOURCE_XML_FILES)
+man/systemd.directives.xml: tools/make-directive-index.py $(SOURCE_XML_FILES)
 	$(AM_V_at)$(MKDIR_P) $(dir $@)
 	$(AM_V_GEN)$(PYTHON) $< $@ $(filter-out $<,$^)
 
@@ -627,9 +627,9 @@ EXTRA_DIST += \
 	$(HTML_FILES) \
 	$(HTML_ALIAS) \
 	$(man_MANS) \
-	make-man-index.py \
-	make-directive-index.py \
-	xml_helper.py
+	tools/make-man-index.py \
+	tools/make-directive-index.py \
+	tools/xml_helper.py
 
 # ------------------------------------------------------------------------------
 noinst_LTLIBRARIES += \
@@ -1027,7 +1027,7 @@ polkitpolicy_in_in_files += \
 
 org.freedesktop.systemd1.%.xml: uselessd
 	$(AM_V_GEN)$(LIBTOOL) --mode=execute $(OBJCOPY) -O binary -j introspect.$* $< $@.tmp && \
-		$(STRINGS) $@.tmp | $(AWK) -f $(srcdir)/introspect.awk | \
+		$(STRINGS) $@.tmp | $(AWK) -f $(srcdir)/tools/introspect.awk | \
 		$(DBUS_PREPROCESS) -o $@ - && rm $@.tmp
 
 pkgconfigdata_DATA = \
