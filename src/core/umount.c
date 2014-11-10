@@ -326,7 +326,7 @@ int swapoff_all(bool *changed) {
 
         r = swap_points_list_off(&swap_list_head, changed);
 
-  end:
+end:
         mount_points_list_free(&swap_list_head);
 
         return r;
@@ -335,36 +335,36 @@ int swapoff_all(bool *changed) {
 /* Calls losetup(8) from util-linux directly.
  * Used to originally employ libudev. */
 int loopback_detach_all(void) {
-           int r;
-           int s;
-           sigset_t mask;
-           sigfillset(&mask);
+        int r;
+        int s;
+        sigset_t mask;
+        sigfillset(&mask);
 
-           s = sigprocmask(SIG_SETMASK, &mask, NULL);
-           if (s < 0)
-                 log_error("Setting blocking signal mask failed.");
+        s = sigprocmask(SIG_SETMASK, &mask, NULL);
+        if (s < 0)
+               log_error("Setting blocking signal mask failed.");
 	   
-	       r = system("/sbin/losetup -D");
-	       if (r < 0)
-	             log_error("Detaching loopback devices with losetup(8) failed.");
+	    r = system("/sbin/losetup -D");
+	    if (r < 0)
+	           log_error("Detaching loopback devices with losetup(8) failed.");
 	         
-	   return r;
+	    return r;
 }
 
 /* Call dmsetup(8) directly. Originally called libudev. */
 int dm_detach_all(void) {
-           int r;
-           int s;
-           sigset_t mask;
-           sigfillset(&mask);
+        int r;
+        int s;
+        sigset_t mask;
+        sigfillset(&mask);
 
-           s = sigprocmask(SIG_SETMASK, &mask, NULL);
-           if (s < 0)
-                 log_error("Setting blocking signal mask failed.");
+        s = sigprocmask(SIG_SETMASK, &mask, NULL);
+        if (s < 0)
+               log_error("Setting blocking signal mask failed.");
 
-           r = system("/sbin/dmsetup remove_all");
-           if (r < 0)
-                  log_error("Detaching DM devices with dmsetup(8) failed.");
+        r = system("/sbin/dmsetup remove_all");
+        if (r < 0)
+               log_error("Detaching DM devices with dmsetup(8) failed.");
 
-           return r;
+        return r;
 }
