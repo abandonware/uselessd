@@ -1319,12 +1319,12 @@ static int parse_argv(int argc, char *argv[]) {
                         break;
 
                 case ARG_PREFIX:
-                        if (strv_extend(&include_prefixes, optarg) < 0)
+                        if (strv_push(&include_prefixes, optarg) < 0)
                                 return log_oom();
                         break;
 
                 case ARG_EXCLUDE_PREFIX:
-                        if (strv_extend(&exclude_prefixes, optarg) < 0)
+                        if (strv_push(&exclude_prefixes, optarg) < 0)
                                 return log_oom();
                         break;
 
