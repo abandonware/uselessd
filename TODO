@@ -38,7 +38,7 @@ Decouple stuff from PID1.
 
 	uselessd-kmod-setup? uselessd-manager-setup-tweak?
 
-	Look into the log output in the transaction manager.
+	[done?]Look into the log output in the transaction manager.
 
 	Import more tests.
 
@@ -58,14 +58,6 @@ Decouple stuff from PID1.
 
 	/* Backwards compatibility breaking.
 
-	Introduce the new Assert*= options from upstream systemd. Perhaps
-	just create a ConditionJobFailureMode=true or something similar
-	in order to enable an implicit global condition for all Condition*=
-	options?
-
-	Or perhaps make all Condition*= options hard job failures instead
-	of job skips?
-
 	Consider refactoring some of the individual Condition*= boolean
 	options into a singular ConditionExists= that takes multiple
 	parameters.
@@ -74,5 +66,14 @@ Decouple stuff from PID1.
 	discrepancies get large enough.
 
 	*/
+
+	Make the unit file parser a separate process, potentially with
+	hooks for defining custom unit options.
+
+	(done?)Check out source of "All * devices unmounted, 256 left" bug.
+
+	Look into reliable fscking.
+
+	Update systemd-tmpfiles.
 
 	REMINDER: Backport bugfixes from systemd-stable.
