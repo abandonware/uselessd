@@ -431,6 +431,8 @@ finish:
 }
 
 static int item_set_perms_full(Item *i, const char *path, bool ignore_enoent) {
+	    assert(i);
+	    assert(path);
         int r;
 
         /* not using i->path directly because it may be a glob */
@@ -485,9 +487,9 @@ static int write_one_file(Item *i, const char *path) {
         }
 
         if (i->argument) {
+			    _cleanup_free_ char *unescaped;
                 ssize_t n;
                 size_t l;
-                _cleanup_free_ char *unescaped;
 
                 unescaped = cunescape(i->argument);
                 if (unescaped == NULL) {
