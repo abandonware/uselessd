@@ -779,10 +779,18 @@ static int create_item(Item *i) {
                         errno = e;
                 }
 
-                if (r < 0 && errno != EEXIST) {
-                        log_error("Failed to create device node %s: %m", i->path);
-                        return -errno;
-                }
+                if (r < 0) {
+					     if (errno == EPERM) {
+							 log_debug("We lack permissions, possibly because of cgroup configuration; "
+							           "skipping creation of device node %s.", i->path);
+							 return 0;
+					     }
+
+					     if (errno != EEXIST) {
+							 log_error("Failed to create device node %s: %m", i->path);
+							 return -errno;
+						 }
+			    }
 
                 if (stat(i->path, &st) < 0) {
                         log_error("stat(%s) failed: %m", i->path);
