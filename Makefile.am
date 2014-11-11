@@ -81,6 +81,7 @@ rootlibexecdir=$(rootprefix)/lib/systemd
 
 # Scripts
 cglsdir=@rootprefix@
+sleepdir=@rootprefix@
 
 CLEANFILES = $(BUILT_SOURCES)
 DISTCLEANFILES =
@@ -483,8 +484,8 @@ EXTRA_DIST += \
 endif
 
 if ENABLE_SLEEP
-rootlibexec_PROGRAMS += \
-	systemd-sleep
+dist_sleep_DATA += \
+	src/sleep/uselessd-sleep
 
 nodist_systemunit_DATA += \
 	units/systemd-hibernate.service \
