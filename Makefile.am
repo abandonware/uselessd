@@ -1066,7 +1066,6 @@ tests += \
 	test-utf8 \
 	test-util \
 	test-date \
-	test-sleep \
 	test-replace-var \
 	test-sched-prio \
 	test-strip-tab-ansi \
@@ -1243,12 +1242,6 @@ test_date_SOURCES = \
 	src/test/test-date.c
 
 test_date_LDADD = \
-	libsystemd-core.la
-
-test_sleep_SOURCES = \
-	src/test/test-sleep.c
-
-test_sleep_LDADD = \
 	libsystemd-core.la
 
 test_replace_var_SOURCES = \
