@@ -47,12 +47,11 @@ Decouple stuff from PID1.
 	?Make systemd-initctl, normally invoked only by init, safely work
 	without that constraint. Making it non-reliant on a bus and only
 	on raw domain sockets would also be useful.
+	Perhaps enable CHANGECONS for initctl by calling chvt()?
 
 	!!Port back inhibitor locks. OS X caffeinate?
 
-	Rewrite systemd-sleep as a shell script, much like uselessd-cgls?
-	Look into parse_sleep_config() and sleep-config.c
-	^ As well as systemd-remount-fs.
+	Rewrite systemd-remount-fs as shell script?
 
 	Change <productname> in manpages to uselessd.
 
@@ -75,5 +74,7 @@ Decouple stuff from PID1.
 	Look into reliable fscking.
 
 	Update systemd-tmpfiles.
+
+	Simplify main and main-no-init some more.
 
 	REMINDER: Backport bugfixes from systemd-stable.
