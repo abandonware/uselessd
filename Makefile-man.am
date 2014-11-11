@@ -373,12 +373,14 @@ MANPAGES += \
 
 MANPAGES_ALIAS += \
 	man/systemd-sleep.8 \
+	man/uselessd-sleep.8 \
 	man/systemd-hibernate.service.8 \
 	man/systemd-hybrid-sleep.service.8
 
 man/systemd-hibernate.service.8: man/systemd-suspend.service.8
 man/systemd-hybrid-sleep.service.8: man/systemd-suspend.service.8
 man/systemd-sleep.8: man/systemd-suspend.service.8
+man/uselessd-sleep.8: man/systemd-suspend.service.8
 
 man/systemd-hibernate.service.html: man/systemd-suspend.service.html
 	$(html-alias)
@@ -387,6 +389,9 @@ man/systemd-hybrid-sleep.service.html: man/systemd-suspend.service.html
 	$(html-alias)
 
 man/systemd-sleep.html: man/systemd-suspend.service.html
+	$(html-alias)
+
+man/uselessd-sleep.html: man/systemd-suspend.service.html
 	$(html-alias)
 
 endif

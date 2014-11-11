@@ -26,14 +26,14 @@
 
         <refentryinfo>
                 <title>systemd-suspend.service</title>
-                <productname>systemd</productname>
+                <productname>uselessd</productname>
 
                 <authorgroup>
                         <author>
                                 <contrib>Developer</contrib>
-                                <firstname>Lennart</firstname>
-                                <surname>Poettering</surname>
-                                <email>lennart@poettering.net</email>
+                                <firstname>The Initfinder</firstname>
+                                <surname>General</surname>
+                                <email>wat@meworry.com</email>
                         </author>
                 </authorgroup>
         </refentryinfo>
@@ -47,7 +47,7 @@
                 <refname>systemd-suspend.service</refname>
                 <refname>systemd-hibernate.service</refname>
                 <refname>systemd-hybrid-sleep.service</refname>
-                <refname>systemd-sleep</refname>
+                <refname>uselessd-sleep</refname>
                 <refpurpose>System sleep state logic</refpurpose>
         </refnamediv>
 
@@ -77,20 +77,9 @@
                 and/or hibernation
                 <filename>systemd-suspend.service</filename> (and the
                 other mentioned units, respectively) will run all
-                executables in
-                <filename>/usr/lib/systemd/system-sleep/</filename>
-                and pass two arguments to them. The first argument
-                will be <literal>pre</literal>, the second either
-                <literal>suspend</literal>,
-                <literal>hibernate</literal>, or
-                <literal>hybrid-sleep</literal> depending on the
-                chosen action. Immediately after leaving system
-                suspend and/or hibernation the same executables are run,
-                but the first argument is now
-                <literal>post</literal>. All executables in this
-                directory are executed in parallel, and execution of
-                the action is not continued until all executables
-                have finished.</para>
+                shell scripts in
+                <filename>/usr/lib/systemd/system-sleep/.</filename>
+                </para>
 
                 <para>Note that scripts or binaries dropped in
                 <filename>/usr/lib/systemd/system-sleep/</filename>
@@ -121,7 +110,7 @@
         <refsect1>
                 <title>Options</title>
 
-                <para><command>systemd-sleep</command> understands the
+                <para><command>uselessd-sleep</command> understands the
                 following commands:</para>
 
                 <variablelist>
