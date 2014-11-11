@@ -25,7 +25,7 @@
 <refentry id="systemd-suspend.service" conditional="ENABLE_SLEEP">
 
         <refentryinfo>
-                <title>systemd-suspend.service</title>
+                <title>uselessd-suspend.service</title>
                 <productname>uselessd</productname>
 
                 <authorgroup>
@@ -39,43 +39,43 @@
         </refentryinfo>
 
         <refmeta>
-                <refentrytitle>systemd-suspend.service</refentrytitle>
+                <refentrytitle>uselessd-suspend.service</refentrytitle>
                 <manvolnum>8</manvolnum>
         </refmeta>
 
         <refnamediv>
-                <refname>systemd-suspend.service</refname>
-                <refname>systemd-hibernate.service</refname>
-                <refname>systemd-hybrid-sleep.service</refname>
+                <refname>uselessd-suspend.service</refname>
+                <refname>uselessd-hibernate.service</refname>
+                <refname>uselessd-hybrid-sleep.service</refname>
                 <refname>uselessd-sleep</refname>
                 <refpurpose>System sleep state logic</refpurpose>
         </refnamediv>
 
         <refsynopsisdiv>
-                <para><filename>systemd-suspend.service</filename></para>
-                <para><filename>systemd-hibernate.service</filename></para>
-                <para><filename>systemd-hybrid-sleep.service</filename></para>
+                <para><filename>uselessd-suspend.service</filename></para>
+                <para><filename>uselessd-hibernate.service</filename></para>
+                <para><filename>uselessd-hybrid-sleep.service</filename></para>
                 <para><filename>/usr/lib/systemd/system-sleep</filename></para>
         </refsynopsisdiv>
 
         <refsect1>
                 <title>Description</title>
 
-                <para><filename>systemd-suspend.service</filename> is
+                <para><filename>uselessd-suspend.service</filename> is
                 a system service that is pulled in by
                 <filename>suspend.target</filename> and is responsible
                 for the actual system suspend. Similarly,
-                <filename>systemd-hibernate.service</filename> is
+                <filename>uselessd-hibernate.service</filename> is
                 pulled in by <filename>hibernate.target</filename> to
                 execute the actual hibernation. Finally,
-                <filename>systemd-hybrid-sleep.service</filename> is
+                <filename>uselessd-hybrid-sleep.service</filename> is
                 pulled in by <filename>hybrid-sleep.target</filename>
                 to execute hybrid hibernation with system
                 suspend.</para>
 
                 <para>Immediately before entering system suspend
                 and/or hibernation
-                <filename>systemd-suspend.service</filename> (and the
+                <filename>uselessd-suspend.service</filename> (and the
                 other mentioned units, respectively) will run all
                 shell scripts in
                 <filename>/usr/lib/systemd/system-sleep/.</filename>
@@ -89,9 +89,9 @@
                 much nicer interfaces available.</para>
 
                 <para>Note that
-                <filename>systemd-suspend.service</filename>,
-                <filename>systemd-hibernate.service</filename>, and
-                <filename>systemd-hybrid-sleep.service</filename>
+                <filename>uselessd-suspend.service</filename>,
+                <filename>uselessd-hibernate.service</filename>, and
+                <filename>uselessd-hybrid-sleep.service</filename>
                 should never be executed directly. Instead, trigger
                 system sleep states with a command such as
                 <literal>systemctl suspend</literal> or

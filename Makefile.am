@@ -488,14 +488,14 @@ dist_sleep_DATA = \
 	src/sleep/uselessd-sleep
 
 nodist_systemunit_DATA += \
-	units/systemd-hibernate.service \
-	units/systemd-hybrid-sleep.service \
-	units/systemd-suspend.service
+	units/uselessd-hibernate.service \
+	units/uselessd-hybrid-sleep.service \
+	units/uselessd-suspend.service
 
 EXTRA_DIST += \
-	units/systemd-hibernate.service.in \
-	units/systemd-hybrid-sleep.service.in \
-	units/systemd-suspend.service.in
+	units/uselessd-hibernate.service.in \
+	units/uselessd-hybrid-sleep.service.in \
+	units/uselessd-suspend.service.in
 endif
 
 if HAVE_SYSV_COMPAT
