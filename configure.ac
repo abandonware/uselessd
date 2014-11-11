@@ -585,7 +585,7 @@ AM_CONDITIONAL(ENABLE_REMOUNT_FS, [test "$have_remount_fs" = "yes"])
 
 # ------------------------------------------------------------------------------
 have_sleep=no
-AC_ARG_ENABLE(sleep, AS_HELP_STRING([--disable-sleep], [disable systemd-sleep modes: suspend, hibernate, hybrid-sleep]))
+AC_ARG_ENABLE(sleep, AS_HELP_STRING([--disable-sleep], [disable uselessd-sleep modes: suspend, hibernate, hybrid-sleep]))
 if test "x$enable_sleep" != "xno"; then
         have_sleep=yes
 fi
@@ -845,7 +845,7 @@ AC_MSG_RESULT([
         systemd-delta:           ${have_delta}
         password agents:         ${have_password_agents}
         remount-fs:              ${have_remount_fs}
-        systemd-sleep:           ${have_sleep}
+        uselessd-sleep:          ${have_sleep}
         polkit:                  ${have_polkit}
         efi:                     ${have_efi}
         kmod:                    ${have_kmod}
