@@ -17,7 +17,7 @@
 # along with uselessd; If not, see <http://www.gnu.org/licenses/>.
 
 show_help() {
-    cat << EOF
+       cat << EOF
 uselessd-sleep COMMAND
 
 Suspend the system, hibernate the system, or both.
@@ -31,21 +31,21 @@ EOF
 }
 
 parse_sleep_config() {
-	 SuspendMode=$(sed -n -e 's/^\s*SuspendMode\s*=\s*//p' /etc/systemd/sleep.conf)
-	 HibernateMode=$(sed -n -e 's/^\s*HibernateMode\s*=\s*//p' /etc/systemd/sleep.conf)
-	 HybridSleepMode=$(sed -n -e 's/^\s*HybridSleepMode\s*=\s*//p' /etc/systemd/sleep.conf)
-	 SuspendState=$(sed -n -e 's/^\s*SuspendState\s*=\s*//p' /etc/systemd/sleep.conf)
-	 HibernateState=$(sed -n -e 's/^\s*HibernateState\s*=\s*//p' /etc/systemd/sleep.conf)
-	 HybridSleepState=$(sed -n -e 's/^\s*HybridSleepState\s*=\s*//p' /etc/systemd/sleep.conf)
+	    SuspendMode=$(sed -n -e 's/^\s*SuspendMode\s*=\s*//p' /etc/systemd/sleep.conf)
+	    HibernateMode=$(sed -n -e 's/^\s*HibernateMode\s*=\s*//p' /etc/systemd/sleep.conf)
+	    HybridSleepMode=$(sed -n -e 's/^\s*HybridSleepMode\s*=\s*//p' /etc/systemd/sleep.conf)
+	    SuspendState=$(sed -n -e 's/^\s*SuspendState\s*=\s*//p' /etc/systemd/sleep.conf)
+	    HibernateState=$(sed -n -e 's/^\s*HibernateState\s*=\s*//p' /etc/systemd/sleep.conf)
+	    HybridSleepState=$(sed -n -e 's/^\s*HybridSleepState\s*=\s*//p' /etc/systemd/sleep.conf)
 }
 
 check_availability() {
-	  touch -a -c /sys/power/state || exit 1
-	  touch -a -c /sys/power/disk || exit 1
+	    touch -a -c /sys/power/state || exit 1
+	    touch -a -c /sys/power/disk || exit 1
 }
 
 exec_sleep_directory() {
-      find /lib/systemd/system-sleep -maxdepth 1 -type f -name '*.sh' -exec sh "{}" \;
+        find /lib/systemd/system-sleep -maxdepth 1 -type f -name '*.sh' -exec sh "{}" \;
 }
 
 while :; do
