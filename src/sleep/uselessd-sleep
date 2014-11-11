@@ -1,0 +1,89 @@
+#!/bin/sh
+# This file is part of uselessd.
+
+# Copyright 2014 The Initfinder General
+
+# uselessd is free software; you can redistribute it and/or modify it
+# under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation; either version 2.1 of the License, or
+# (at your option) any later version.
+
+# uselessd is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# Lesser General Public License for more details.
+
+# You should have received a copy of the GNU Lesser General Public License
+# along with uselessd; If not, see <http://www.gnu.org/licenses/>.
+
+show_help() {
+    cat << EOF
+uselessd-sleep COMMAND
+
+Suspend the system, hibernate the system, or both.
+
+Commands:
+  -h --help            Show this help and exit
+  suspend              Suspend the system
+  hibernate            Hibernate the system
+  hybrid-sleep         Both hibernate and suspend the system
+EOF
+}
+
+parse_sleep_config() {
+	 SuspendMode=$(sed -n -e 's/^\s*SuspendMode\s*=\s*//p' /etc/systemd/sleep.conf)
+	 HibernateMode=$(sed -n -e 's/^\s*HibernateMode\s*=\s*//p' /etc/systemd/sleep.conf)
+	 HybridSleepMode=$(sed -n -e 's/^\s*HybridSleepMode\s*=\s*//p' /etc/systemd/sleep.conf)
+	 SuspendState=$(sed -n -e 's/^\s*SuspendState\s*=\s*//p' /etc/systemd/sleep.conf)
+	 HibernateState=$(sed -n -e 's/^\s*HibernateState\s*=\s*//p' /etc/systemd/sleep.conf)
+	 HybridSleepState=$(sed -n -e 's/^\s*HybridSleepState\s*=\s*//p' /etc/systemd/sleep.conf)
+}
+
+check_availability() {
+	  touch -a -c /sys/power/state || exit 1
+	  touch -a -c /sys/power/disk || exit 1
+}
+
+exec_sleep_directory() {
+      find /lib/systemd/system-sleep -maxdepth 1 -type f -name '*.sh' -exec sh "{}" \;
+}
+
+while :; do
+    case $1 in
+        -h|-\?|--help)
+            show_help
+            exit 0
+            ;;
+        hibernate)
+            check_availability
+            parse_sleep_config
+            echo $HibernateMode > /sys/power/disk
+            exec_sleep_directory
+            echo $HibernateState > /sys/power/state
+            break
+            ;;
+         suspend)
+            check_availability
+            parse_sleep_config
+            echo $SuspendMode > /sys/power/disk
+            exec_sleep_directory
+            echo $SuspendState > /sys/power/state
+            break
+            ;;
+         hybrid-sleep)
+            check_availability
+            parse_sleep_config
+            echo $HybridSleepMode > /sys/power/disk
+            exec_sleep_directory
+            echo $HybridSleepState > /sys/power/state
+            break
+            ;;
+         -?*)
+            show_help
+            exit 1
+            ;;
+          *)
+            show_help
+            exit 0
+    esac
+done
