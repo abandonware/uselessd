@@ -1004,7 +1004,8 @@ uselessd_LDADD = \
 
 dist_pkgsysconf_DATA += \
 	src/core/system.conf \
-	src/core/user.conf
+	src/core/user.conf \
+	src/core/sleep.conf
 
 dist_dbuspolicy_DATA += \
 	src/core/org.freedesktop.systemd1.conf
