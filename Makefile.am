@@ -484,7 +484,7 @@ EXTRA_DIST += \
 endif
 
 if ENABLE_SLEEP
-dist_sleep_DATA += \
+dist_sleep_DATA = \
 	src/sleep/uselessd-sleep
 
 nodist_systemunit_DATA += \
@@ -1526,15 +1526,6 @@ systemd_sysctl_SOURCES = \
 
 systemd_sysctl_LDADD = \
 	libsystemd-shared.la
-
-# ------------------------------------------------------------------------------
-if ENABLE_SLEEP
-systemd_sleep_SOURCES = \
-	src/sleep/sleep.c
-
-systemd_sleep_LDADD = \
-	libsystemd-shared.la
-endif
 
 # ------------------------------------------------------------------------------
 systemd_ac_power_SOURCES = \
