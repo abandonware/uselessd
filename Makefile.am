@@ -80,8 +80,8 @@ rootbindir=$(rootprefix)/bin
 rootlibexecdir=$(rootprefix)/lib/systemd
 
 # Scripts
-cglsdir=@rootprefix@
-sleepdir=@rootprefix@
+cglsdir=@rootprefix@/bin
+sleepdir=@rootprefix@/lib/systemd
 
 CLEANFILES = $(BUILT_SOURCES)
 DISTCLEANFILES =
