@@ -14,4 +14,4 @@ After=sleep.target
 
 [Service]
 Type=oneshot
-ExecStart=@rootlibexecdir@/systemd-sleep hybrid-sleep
+ExecStart=/bin/sh -c '@rootlibexecdir@/uselessd-sleep hybrid-sleep'

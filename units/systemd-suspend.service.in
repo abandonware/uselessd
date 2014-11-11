@@ -14,4 +14,4 @@ After=sleep.target
 
 [Service]
 Type=oneshot
-ExecStart=@rootlibexecdir@/systemd-sleep suspend
+ExecStart=/bin/sh -c '@rootlibexecdir@/uselessd-sleep suspend'
