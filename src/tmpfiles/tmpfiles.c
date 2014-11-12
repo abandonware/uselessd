@@ -431,9 +431,9 @@ finish:
 }
 
 static int item_set_perms_full(Item *i, const char *path, bool ignore_enoent) {
+	    int r;
 	    assert(i);
 	    assert(path);
-        int r;
 
         /* not using i->path directly because it may be a glob */
         if (i->mode_set)
