@@ -255,10 +255,14 @@ bin_PROGRAMS =
 
 rootlibexec_PROGRAMS = \
 	uselessd \
-	systemd-shutdownd \
-	systemd-shutdown \
 	systemd-ac-power \
 	systemd-sysctl
+
+if ENABLE_INIT
+rootlibexec_PROGRAMS += \
+	systemd-shutdownd \
+	systemd-shutdown
+endif
 
 systemgenerator_PROGRAMS = \
 	systemd-getty-generator
@@ -1419,6 +1423,7 @@ systemd_update_utmp_LDADD = \
 endif
 
 # ------------------------------------------------------------------------------
+if ENABLE_INIT
 systemd_shutdownd_SOURCES = \
 	src/shutdownd/shutdownd.c
 
@@ -1443,6 +1448,7 @@ systemd_shutdown_SOURCES = \
 systemd_shutdown_LDADD = \
 	libsystemd-label.la \
 	libsystemd-shared.la
+endif
 
 # ------------------------------------------------------------------------------
 if ENABLE_TMPFILES
