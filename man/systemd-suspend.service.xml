@@ -77,11 +77,11 @@
                 and/or hibernation
                 <filename>uselessd-suspend.service</filename> (and the
                 other mentioned units, respectively) will run all
-                shell scripts in
+                shell scripts with the .sh extension in
                 <filename>/usr/lib/systemd/system-sleep/.</filename>
                 </para>
 
-                <para>Note that scripts or binaries dropped in
+                <para>Note that scripts dropped in
                 <filename>/usr/lib/systemd/system-sleep/</filename>
                 are intended for local use only and should be
                 considered hacks. If applications want to be notified
