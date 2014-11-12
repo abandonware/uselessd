@@ -255,7 +255,6 @@ bin_PROGRAMS =
 
 rootlibexec_PROGRAMS = \
 	uselessd \
-	systemd-update-utmp \
 	systemd-shutdownd \
 	systemd-shutdown \
 	systemd-ac-power \
@@ -330,8 +329,6 @@ nodist_systemunit_DATA = \
 	units/console-shell.service \
 	units/console-getty.service \
 	units/systemd-shutdownd.service \
-	units/systemd-update-utmp.service \
-	units/systemd-update-utmp-runlevel.service \
 	units/systemd-sysctl.service \
 	units/emergency.service \
 	units/rescue.service \
@@ -360,8 +357,6 @@ EXTRA_DIST += \
 	units/console-getty.service.m4.in \
 	units/rescue.service.m4.in \
 	units/systemd-shutdownd.service.in \
-	units/systemd-update-utmp.service.in \
-	units/systemd-update-utmp-runlevel.service.in \
 	units/systemd-sysctl.service.in \
 	units/emergency.service.in \
 	units/systemd-halt.service.in \
@@ -496,6 +491,19 @@ EXTRA_DIST += \
 	units/uselessd-hibernate.service.in \
 	units/uselessd-hybrid-sleep.service.in \
 	units/uselessd-suspend.service.in
+endif
+
+if ENABLE_UPDATE_UTMP
+rootlibexec_PROGRAMS += \
+	systemd-update-utmp
+
+nodist_systemunit_DATA += \
+	units/systemd-update-utmp.service \
+	units/systemd-update-utmp-runlevel.service
+
+EXTRA_DIST += \
+	units/systemd-update-utmp.service.in \
+	units/systemd-update-utmp-runlevel.service.in
 endif
 
 if HAVE_SYSV_COMPAT
@@ -1395,6 +1403,7 @@ systemd_initctl_LDADD = \
 endif
 
 # ------------------------------------------------------------------------------
+if ENABLE_UPDATE_UTMP
 systemd_update_utmp_SOURCES = \
 	src/update-utmp/update-utmp.c
 
@@ -1407,6 +1416,7 @@ systemd_update_utmp_LDADD = \
 	libsystemd-shared.la \
 	libsystemd-dbus.la \
 	$(AUDIT_LIBS)
+endif
 
 # ------------------------------------------------------------------------------
 systemd_shutdownd_SOURCES = \
@@ -1945,6 +1955,7 @@ SOCKETS_TARGET_WANTS += \
 	systemd-initctl.socket \
 	systemd-shutdownd.socket
 
+if ENABLE_UPDATE_UTMP
 if HAVE_SYSV_COMPAT
 RUNLEVEL1_TARGET_WANTS += \
 	systemd-update-utmp-runlevel.service
@@ -1959,6 +1970,7 @@ RUNLEVEL5_TARGET_WANTS += \
 endif
 SYSINIT_TARGET_WANTS += \
 	systemd-update-utmp.service
+endif
 LOCAL_FS_TARGET_WANTS += \
 	systemd-remount-fs.service
 MULTI_USER_TARGET_WANTS += \

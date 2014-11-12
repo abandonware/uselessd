@@ -592,6 +592,14 @@ fi
 AM_CONDITIONAL(ENABLE_SLEEP, [test "$have_sleep" = "yes"])
 
 # ------------------------------------------------------------------------------
+have_update_utmp=no
+AC_ARG_ENABLE(update_utmp, AS_HELP_STRING([--disable-update-utmp], [disable update-utmp tool]))
+if test "x$enable_update_utmp" != "xno"; then
+        have_update_utmp=yes
+fi
+AM_CONDITIONAL(ENABLE_UPDATE_UTMP, [test "$have_update_utmp" = "yes"])
+
+# ------------------------------------------------------------------------------
 have_polkit=no
 AC_ARG_ENABLE(polkit, AS_HELP_STRING([--disable-polkit], [disable PolicyKit support]))
 if test "x$enable_polkit" != "xno"; then
@@ -846,6 +854,7 @@ AC_MSG_RESULT([
         password agents:         ${have_password_agents}
         remount-fs:              ${have_remount_fs}
         uselessd-sleep:          ${have_sleep}
+        update-utmp:             ${have_update_utmp}
         polkit:                  ${have_polkit}
         efi:                     ${have_efi}
         kmod:                    ${have_kmod}
