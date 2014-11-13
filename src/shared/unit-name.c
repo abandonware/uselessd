@@ -486,7 +486,7 @@ char *unit_name_mangle(const char *name) {
         /* We'll only escape the obvious characters here, to play
          * safe. */
 
-        r = new(char, strlen(name) * 4 + 1 + sizeof(".service")-1);
+        r = new(char, strlen(name) * 4 + strlen(".service") + 1);
         if (!r)
                 return NULL;
 
