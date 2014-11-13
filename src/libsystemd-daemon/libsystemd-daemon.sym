@@ -9,6 +9,7 @@
 ***/
 
 /* Original symbols from systemd v31 */
+/* FIXME: port systemd 213 pid_notify pid_notifyf back */
 
 LIBSYSTEMD_DAEMON_31 {
 global:

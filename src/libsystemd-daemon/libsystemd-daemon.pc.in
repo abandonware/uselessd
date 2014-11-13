@@ -11,8 +11,8 @@ exec_prefix=@exec_prefix@
 libdir=@libdir@
 includedir=@includedir@
 
-Name: systemd
-Description: systemd Daemon Utility Library
+Name: uselessd
+Description: systemd/uselessd Daemon Utility Library
 URL: @PACKAGE_URL@
 Version: @PACKAGE_VERSION@
 Libs: -L${libdir} -lsystemd-daemon
