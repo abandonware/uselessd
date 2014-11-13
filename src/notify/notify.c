@@ -194,8 +194,8 @@ int main(int argc, char* argv[]) {
                 goto finish;
         }
 
-        if ((r = sd_notify(false, n)) < 0) {
-                log_error("Failed to notify init system: %s", strerror(-r));
+        if ((r = sd_pid_notify(arg_pid, false, n)) < 0) {
+                log_error("Failed to notify init daemon: %s", strerror(-r));
                 goto finish;
         }
 
