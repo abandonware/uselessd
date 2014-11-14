@@ -105,22 +105,19 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 check_PROGRAMS =
-@ENABLE_TESTS_TRUE@noinst_PROGRAMS = $(am__EXEEXT_2) $(am__EXEEXT_3)
-@ENABLE_TESTS_TRUE@TESTS = $(am__EXEEXT_3)
+@ENABLE_TESTS_TRUE@noinst_PROGRAMS = $(am__EXEEXT_5) $(am__EXEEXT_6)
+@ENABLE_TESTS_TRUE@TESTS = $(am__EXEEXT_6)
 rootbin_PROGRAMS = systemctl$(EXEEXT) systemd-notify$(EXEEXT) \
-	systemd-ask-password$(EXEEXT) \
-	systemd-tty-ask-password-agent$(EXEEXT) $(am__EXEEXT_4) \
-	$(am__EXEEXT_5) $(am__EXEEXT_6) $(am__EXEEXT_7)
-bin_PROGRAMS = systemd-cgtop$(EXEEXT) systemd-delta$(EXEEXT) \
-	systemd-analyze$(EXEEXT)
-rootlibexec_PROGRAMS = uselessd$(EXEEXT) systemd-initctl$(EXEEXT) \
-	systemd-update-utmp$(EXEEXT) systemd-shutdownd$(EXEEXT) \
-	systemd-shutdown$(EXEEXT) systemd-remount-fs$(EXEEXT) \
-	systemd-reply-password$(EXEEXT) systemd-ac-power$(EXEEXT) \
-	systemd-sysctl$(EXEEXT) systemd-sleep$(EXEEXT) \
-	systemd-activate$(EXEEXT) $(am__EXEEXT_8)
+	$(am__EXEEXT_7) $(am__EXEEXT_8) $(am__EXEEXT_9) \
+	$(am__EXEEXT_10) $(am__EXEEXT_11)
+bin_PROGRAMS = $(am__EXEEXT_1) $(am__EXEEXT_2) $(am__EXEEXT_3)
+rootlibexec_PROGRAMS = uselessd$(EXEEXT) systemd-update-utmp$(EXEEXT) \
+	systemd-shutdownd$(EXEEXT) systemd-shutdown$(EXEEXT) \
+	systemd-ac-power$(EXEEXT) systemd-sysctl$(EXEEXT) \
+	$(am__EXEEXT_12) $(am__EXEEXT_13) $(am__EXEEXT_14) \
+	$(am__EXEEXT_15) $(am__EXEEXT_16) $(am__EXEEXT_17)
 systemgenerator_PROGRAMS = systemd-getty-generator$(EXEEXT) \
-	$(am__EXEEXT_9)
+	$(am__EXEEXT_18)
 @ENABLE_MACHINE_ID_SETUP_TRUE@am__append_1 = \
 @ENABLE_MACHINE_ID_SETUP_TRUE@	systemd-machine-id-setup
 
@@ -148,20 +145,87 @@ systemgenerator_PROGRAMS = systemd-getty-generator$(EXEEXT) \
 @ENABLE_LOOPBACK_SETUP_TRUE@am__append_9 = \
 @ENABLE_LOOPBACK_SETUP_TRUE@	units/uselessd-loopback-setup.service.in
 
-@HAVE_SYSV_COMPAT_TRUE@am__append_10 = \
-@HAVE_SYSV_COMPAT_TRUE@	units/rc-local.service \
-@HAVE_SYSV_COMPAT_TRUE@	units/halt-local.service
+@ENABLE_ANALYZE_TRUE@am__append_10 = \
+@ENABLE_ANALYZE_TRUE@	systemd-analyze
 
-@HAVE_SYSV_COMPAT_TRUE@am__append_11 = \
+@ENABLE_ANALYZE_TRUE@am__append_11 = \
+@ENABLE_ANALYZE_TRUE@	shell-completion/bash/systemd-analyze
+
+@ENABLE_ANALYZE_TRUE@am__append_12 = \
+@ENABLE_ANALYZE_TRUE@	shell-completion/zsh/_systemd-analyze
+
+@ENABLE_CGTOP_TRUE@am__append_13 = \
+@ENABLE_CGTOP_TRUE@	systemd-cgtop
+
+@ENABLE_DELTA_TRUE@am__append_14 = \
+@ENABLE_DELTA_TRUE@	systemd-delta
+
+@ENABLE_DELTA_TRUE@am__append_15 = \
+@ENABLE_DELTA_TRUE@	shell-completion/zsh/_systemd-delta
+
+@ENABLE_PASSWORD_AGENTS_TRUE@am__append_16 = \
+@ENABLE_PASSWORD_AGENTS_TRUE@	systemd-tty-ask-password-agent \
+@ENABLE_PASSWORD_AGENTS_TRUE@	systemd-ask-password
+
+@ENABLE_PASSWORD_AGENTS_TRUE@am__append_17 = \
+@ENABLE_PASSWORD_AGENTS_TRUE@	systemd-reply-password
+
+@ENABLE_PASSWORD_AGENTS_TRUE@am__append_18 = \
+@ENABLE_PASSWORD_AGENTS_TRUE@	units/systemd-ask-password-wall.service \
+@ENABLE_PASSWORD_AGENTS_TRUE@	units/systemd-ask-password-console.service
+
+@ENABLE_PASSWORD_AGENTS_TRUE@am__append_19 = \
+@ENABLE_PASSWORD_AGENTS_TRUE@	units/systemd-ask-password-wall.service.in \
+@ENABLE_PASSWORD_AGENTS_TRUE@	units/systemd-ask-password-console.service.in
+
+@ENABLE_REMOUNT_FS_TRUE@am__append_20 = \
+@ENABLE_REMOUNT_FS_TRUE@	systemd-remount-fs
+
+@ENABLE_REMOUNT_FS_TRUE@am__append_21 = \
+@ENABLE_REMOUNT_FS_TRUE@	units/systemd-remount-fs.service
+
+@ENABLE_REMOUNT_FS_TRUE@am__append_22 = \
+@ENABLE_REMOUNT_FS_TRUE@	units/systemd-remount-fs.service.in
+
+@ENABLE_SLEEP_TRUE@am__append_23 = \
+@ENABLE_SLEEP_TRUE@	systemd-sleep
+
+@ENABLE_SLEEP_TRUE@am__append_24 = \
+@ENABLE_SLEEP_TRUE@	units/systemd-hibernate.service \
+@ENABLE_SLEEP_TRUE@	units/systemd-hybrid-sleep.service \
+@ENABLE_SLEEP_TRUE@	units/systemd-suspend.service
+
+@ENABLE_SLEEP_TRUE@am__append_25 = \
+@ENABLE_SLEEP_TRUE@	units/systemd-hibernate.service.in \
+@ENABLE_SLEEP_TRUE@	units/systemd-hybrid-sleep.service.in \
+@ENABLE_SLEEP_TRUE@	units/systemd-suspend.service.in
+
+@HAVE_SYSV_COMPAT_TRUE@am__append_26 = \
+@HAVE_SYSV_COMPAT_TRUE@	units/rc-local.service \
+@HAVE_SYSV_COMPAT_TRUE@	units/halt-local.service \
+@HAVE_SYSV_COMPAT_TRUE@	units/systemd-initctl.service
+
+@HAVE_SYSV_COMPAT_TRUE@am__append_27 = \
+@HAVE_SYSV_COMPAT_TRUE@	units/systemd-initctl.socket
+
+@HAVE_SYSV_COMPAT_TRUE@am__append_28 = \
+@HAVE_SYSV_COMPAT_TRUE@	units/systemd-initctl.service.in
+
+@HAVE_SYSV_COMPAT_TRUE@am__append_29 = \
+@HAVE_SYSV_COMPAT_TRUE@	systemd-initctl
+
+@HAVE_SYSV_COMPAT_TRUE@am__append_30 = \
 @HAVE_SYSV_COMPAT_TRUE@	systemd-rc-local-generator
 
 DIST_COMMON = $(srcdir)/Makefile-man.am $(srcdir)/Makefile.in \
 	$(srcdir)/Makefile.am $(top_srcdir)/configure \
 	$(am__configure_deps) $(srcdir)/config.h.in \
-	$(top_srcdir)/build-aux/depcomp $(dist_bashcompletion_DATA) \
-	$(dist_dbuspolicy_DATA) $(dist_dbussystemservice_DATA) \
-	$(dist_doc_DATA) $(dist_pkgdata_DATA) $(dist_pkgsysconf_DATA) \
-	$(dist_sysctl_DATA) $(dist_systemunit_DATA) \
+	$(top_srcdir)/build-aux/depcomp \
+	$(am__dist_bashcompletion_DATA_DIST) \
+	$(am__dist_cgls_DATA_DIST) $(dist_dbuspolicy_DATA) \
+	$(dist_dbussystemservice_DATA) $(dist_doc_DATA) \
+	$(dist_pkgdata_DATA) $(dist_pkgsysconf_DATA) \
+	$(dist_sysctl_DATA) $(am__dist_systemunit_DATA_DIST) \
 	$(am__dist_tmpfiles_DATA_DIST) $(dist_userunit_DATA) \
 	$(am__dist_zshcompletion_DATA_DIST) $(include_HEADERS) \
 	$(pkginclude_HEADERS) $(top_srcdir)/build-aux/test-driver NEWS \
@@ -174,105 +238,147 @@ DIST_COMMON = $(srcdir)/Makefile-man.am $(srcdir)/Makefile.in \
 	$(top_srcdir)/build-aux/install-sh \
 	$(top_srcdir)/build-aux/ltmain.sh \
 	$(top_srcdir)/build-aux/missing
-@ENABLE_RANDOMSEED_TRUE@am__append_12 = \
+@ENABLE_RANDOMSEED_TRUE@am__append_31 = \
 @ENABLE_RANDOMSEED_TRUE@	man/systemd-random-seed.service.8
 
-@ENABLE_RANDOMSEED_TRUE@am__append_13 = \
+@ENABLE_RANDOMSEED_TRUE@am__append_32 = \
 @ENABLE_RANDOMSEED_TRUE@	man/systemd-random-seed.8
 
-@ENABLE_MACHINE_ID_SETUP_TRUE@am__append_14 = \
+@ENABLE_MACHINE_ID_SETUP_TRUE@am__append_33 = \
 @ENABLE_MACHINE_ID_SETUP_TRUE@	man/systemd-machine-id-setup.1 \
 @ENABLE_MACHINE_ID_SETUP_TRUE@	man/machine-id.5
 
-@ENABLE_HOSTNAME_SETUP_TRUE@am__append_15 = \
+@ENABLE_HOSTNAME_SETUP_TRUE@am__append_34 = \
 @ENABLE_HOSTNAME_SETUP_TRUE@	man/uselessd-hostname-setup.1
 
-@ENABLE_LOOPBACK_SETUP_TRUE@am__append_16 = \
+@ENABLE_LOOPBACK_SETUP_TRUE@am__append_35 = \
 @ENABLE_LOOPBACK_SETUP_TRUE@	man/uselessd-loopback-setup.1
 
-@ENABLE_MANPAGES_TRUE@am__append_17 = $(HTML_FILES) $(HTML_ALIAS) \
+@ENABLE_ANALYZE_TRUE@am__append_36 = \
+@ENABLE_ANALYZE_TRUE@	man/systemd-analyze.1
+
+@ENABLE_ACTIVATE_TRUE@am__append_37 = \
+@ENABLE_ACTIVATE_TRUE@	man/systemd-activate.8
+
+@ENABLE_CGTOP_TRUE@am__append_38 = \
+@ENABLE_CGTOP_TRUE@	man/systemd-cgtop.1
+
+@ENABLE_CGLS_TRUE@am__append_39 = \
+@ENABLE_CGLS_TRUE@	man/uselessd-cgls.1
+
+@ENABLE_DELTA_TRUE@am__append_40 = \
+@ENABLE_DELTA_TRUE@	man/systemd-delta.1
+
+@ENABLE_PASSWORD_AGENTS_TRUE@am__append_41 = \
+@ENABLE_PASSWORD_AGENTS_TRUE@	man/systemd-ask-password-console.service.8 \
+@ENABLE_PASSWORD_AGENTS_TRUE@	man/systemd-ask-password.1
+
+@ENABLE_PASSWORD_AGENTS_TRUE@am__append_42 = \
+@ENABLE_PASSWORD_AGENTS_TRUE@	man/systemd-ask-password-wall.service.8
+
+@ENABLE_REMOUNT_FS_TRUE@am__append_43 = \
+@ENABLE_REMOUNT_FS_TRUE@	man/systemd-remount-fs.service.8
+
+@ENABLE_REMOUNT_FS_TRUE@am__append_44 = \
+@ENABLE_REMOUNT_FS_TRUE@	man/systemd-remount-fs.8
+
+@ENABLE_SLEEP_TRUE@am__append_45 = \
+@ENABLE_SLEEP_TRUE@	man/systemd-sleep.conf.5 \
+@ENABLE_SLEEP_TRUE@	man/systemd-suspend.service.8
+
+@ENABLE_SLEEP_TRUE@am__append_46 = \
+@ENABLE_SLEEP_TRUE@	man/systemd-sleep.8 \
+@ENABLE_SLEEP_TRUE@	man/systemd-hibernate.service.8 \
+@ENABLE_SLEEP_TRUE@	man/systemd-hybrid-sleep.service.8
+
+@ENABLE_MANPAGES_TRUE@am__append_47 = $(HTML_FILES) $(HTML_ALIAS) \
 @ENABLE_MANPAGES_TRUE@	docs/html/man
-@ENABLE_MANPAGES_TRUE@am__append_18 = $(man_MANS) $(HTML_FILES) \
+@ENABLE_MANPAGES_TRUE@am__append_48 = $(man_MANS) $(HTML_FILES) \
 @ENABLE_MANPAGES_TRUE@	$(HTML_ALIAS) docs/html/man
-@ENABLE_MANPAGES_TRUE@@HAVE_PYTHON_TRUE@am__append_19 = \
+@ENABLE_MANPAGES_TRUE@@HAVE_PYTHON_TRUE@am__append_49 = \
 @ENABLE_MANPAGES_TRUE@@HAVE_PYTHON_TRUE@	man/index.html
 
-@ENABLE_MANPAGES_TRUE@@HAVE_PYTHON_TRUE@am__append_20 =  \
+@ENABLE_MANPAGES_TRUE@@HAVE_PYTHON_TRUE@am__append_50 =  \
 @ENABLE_MANPAGES_TRUE@@HAVE_PYTHON_TRUE@	man/index.html \
 @ENABLE_MANPAGES_TRUE@@HAVE_PYTHON_TRUE@	man/systemd.index.xml \
 @ENABLE_MANPAGES_TRUE@@HAVE_PYTHON_TRUE@	man/systemd.directives.xml
-@ENABLE_MANPAGES_TRUE@@HAVE_PYTHON_TRUE@am__append_21 = \
+@ENABLE_MANPAGES_TRUE@@HAVE_PYTHON_TRUE@am__append_51 = \
 @ENABLE_MANPAGES_TRUE@@HAVE_PYTHON_TRUE@	man/systemd.index.xml \
 @ENABLE_MANPAGES_TRUE@@HAVE_PYTHON_TRUE@	man/index.html \
 @ENABLE_MANPAGES_TRUE@@HAVE_PYTHON_TRUE@	man/systemd.directives.xml
 
 
 # ------------------------------------------------------------------------------
-@HAVE_ACL_TRUE@am__append_22 = \
+@HAVE_ACL_TRUE@am__append_52 = \
 @HAVE_ACL_TRUE@	libsystemd-acl.la
 
-@HAVE_KMOD_TRUE@am__append_23 = \
+@HAVE_KMOD_TRUE@am__append_53 = \
 @HAVE_KMOD_TRUE@	src/core/kmod-setup.c \
 @HAVE_KMOD_TRUE@	src/core/kmod-setup.h
 
-@ENABLE_EFI_TRUE@am__append_24 = \
+@ENABLE_EFI_TRUE@am__append_54 = \
 @ENABLE_EFI_TRUE@	test-boot-timestamp
 
-@ENABLE_TMPFILES_TRUE@am__append_25 = \
+@ENABLE_TMPFILES_TRUE@am__append_55 = \
 @ENABLE_TMPFILES_TRUE@	systemd-tmpfiles
 
-@ENABLE_TMPFILES_TRUE@am__append_26 = \
+@ENABLE_TMPFILES_TRUE@am__append_56 = \
 @ENABLE_TMPFILES_TRUE@	units/systemd-tmpfiles-setup-dev.service \
 @ENABLE_TMPFILES_TRUE@	units/systemd-tmpfiles-setup.service \
 @ENABLE_TMPFILES_TRUE@	units/systemd-tmpfiles-clean.service
 
-@ENABLE_TMPFILES_TRUE@@HAVE_SYSV_COMPAT_TRUE@am__append_27 = \
+@ENABLE_TMPFILES_TRUE@@HAVE_SYSV_COMPAT_TRUE@am__append_57 = \
 @ENABLE_TMPFILES_TRUE@@HAVE_SYSV_COMPAT_TRUE@	tmpfiles.d/legacy.conf
 
-@ENABLE_TMPFILES_TRUE@am__append_28 = \
+@ENABLE_TMPFILES_TRUE@am__append_58 = \
 @ENABLE_TMPFILES_TRUE@	systemd-tmpfiles-setup-dev.service \
 @ENABLE_TMPFILES_TRUE@	systemd-tmpfiles-setup.service
 
-@ENABLE_TMPFILES_TRUE@am__append_29 = \
+@ENABLE_TMPFILES_TRUE@am__append_59 = \
 @ENABLE_TMPFILES_TRUE@	shell-completion/zsh/_systemd-tmpfiles
 
-@ENABLE_TMPFILES_TRUE@am__append_30 = \
+@ENABLE_TMPFILES_TRUE@am__append_60 = \
 @ENABLE_TMPFILES_TRUE@	$(tmpfilesdir) \
 @ENABLE_TMPFILES_TRUE@	$(sysconfdir)/tmpfiles.d
 
 
 # ------------------------------------------------------------------------------
-@ENABLE_RANDOMSEED_TRUE@am__append_31 = \
+@ENABLE_ACTIVATE_TRUE@am__append_61 = \
+@ENABLE_ACTIVATE_TRUE@	systemd-activate
+
+
+# ------------------------------------------------------------------------------
+@ENABLE_RANDOMSEED_TRUE@am__append_62 = \
 @ENABLE_RANDOMSEED_TRUE@	systemd-random-seed
 
-@ENABLE_RANDOMSEED_TRUE@am__append_32 = \
+@ENABLE_RANDOMSEED_TRUE@am__append_63 = \
 @ENABLE_RANDOMSEED_TRUE@	units/systemd-random-seed.service
 
-@ENABLE_RANDOMSEED_TRUE@am__append_33 = \
+@ENABLE_RANDOMSEED_TRUE@am__append_64 = \
 @ENABLE_RANDOMSEED_TRUE@	systemd-random-seed.service
 
-@ENABLE_MANPAGES_TRUE@am__append_34 = \
+@ENABLE_MANPAGES_TRUE@am__append_65 = \
 @ENABLE_MANPAGES_TRUE@	man/custom-entities.ent
 
-@HAVE_SYSV_COMPAT_TRUE@am__append_35 = \
+@HAVE_SYSV_COMPAT_TRUE@am__append_66 = \
 @HAVE_SYSV_COMPAT_TRUE@	docs/sysvinit/README
 
-@HAVE_SYSV_COMPAT_TRUE@am__append_36 = \
+@HAVE_SYSV_COMPAT_TRUE@am__append_67 = \
 @HAVE_SYSV_COMPAT_TRUE@	systemd-update-utmp-runlevel.service
 
-@HAVE_SYSV_COMPAT_TRUE@am__append_37 = \
+@HAVE_SYSV_COMPAT_TRUE@am__append_68 = \
 @HAVE_SYSV_COMPAT_TRUE@	systemd-update-utmp-runlevel.service
 
-@HAVE_SYSV_COMPAT_TRUE@am__append_38 = \
+@HAVE_SYSV_COMPAT_TRUE@am__append_69 = \
 @HAVE_SYSV_COMPAT_TRUE@	systemd-update-utmp-runlevel.service
 
-@HAVE_SYSV_COMPAT_TRUE@am__append_39 = \
+@HAVE_SYSV_COMPAT_TRUE@am__append_70 = \
 @HAVE_SYSV_COMPAT_TRUE@	systemd-update-utmp-runlevel.service
 
-@HAVE_SYSV_COMPAT_TRUE@am__append_40 = \
+@HAVE_SYSV_COMPAT_TRUE@am__append_71 = \
 @HAVE_SYSV_COMPAT_TRUE@	systemd-update-utmp-runlevel.service
 
-@HAVE_SYSV_COMPAT_TRUE@am__append_41 = \
+@HAVE_SYSV_COMPAT_TRUE@am__append_72 = \
 @HAVE_SYSV_COMPAT_TRUE@	poweroff.target runlevel0.target \
 @HAVE_SYSV_COMPAT_TRUE@	rescue.target runlevel1.target \
 @HAVE_SYSV_COMPAT_TRUE@	multi-user.target runlevel2.target \
@@ -281,22 +387,22 @@ DIST_COMMON = $(srcdir)/Makefile-man.am $(srcdir)/Makefile.in \
 @HAVE_SYSV_COMPAT_TRUE@	graphical.target runlevel5.target \
 @HAVE_SYSV_COMPAT_TRUE@	reboot.target runlevel6.target
 
-@HAVE_SYSV_COMPAT_TRUE@am__append_42 = \
+@HAVE_SYSV_COMPAT_TRUE@am__append_73 = \
 @HAVE_SYSV_COMPAT_TRUE@	$(systemunitdir)/runlevel1.target.wants \
 @HAVE_SYSV_COMPAT_TRUE@	$(systemunitdir)/runlevel2.target.wants \
 @HAVE_SYSV_COMPAT_TRUE@	$(systemunitdir)/runlevel3.target.wants \
 @HAVE_SYSV_COMPAT_TRUE@	$(systemunitdir)/runlevel4.target.wants \
 @HAVE_SYSV_COMPAT_TRUE@	$(systemunitdir)/runlevel5.target.wants
 
-@HAVE_SYSV_COMPAT_TRUE@am__append_43 = \
+@HAVE_SYSV_COMPAT_TRUE@am__append_74 = \
 @HAVE_SYSV_COMPAT_TRUE@	--with-sysvinit-path=$$dc_install_base/$(sysvinitdir) \
 @HAVE_SYSV_COMPAT_TRUE@	--with-sysvrcnd-path=$$dc_install_base/$(sysvrcnddir)
 
-@HAVE_SYSV_COMPAT_FALSE@am__append_44 = \
+@HAVE_SYSV_COMPAT_FALSE@am__append_75 = \
 @HAVE_SYSV_COMPAT_FALSE@	--with-sysvinit-path= \
 @HAVE_SYSV_COMPAT_FALSE@	--with-sysvrcnd-path=
 
-@ENABLE_GTK_DOC_TRUE@am__append_45 = \
+@ENABLE_GTK_DOC_TRUE@am__append_76 = \
 @ENABLE_GTK_DOC_TRUE@	--enable-gtk-doc
 
 subdir = .
@@ -347,7 +453,8 @@ am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" \
 	"$(DESTDIR)$(man3dir)" "$(DESTDIR)$(man5dir)" \
 	"$(DESTDIR)$(man7dir)" "$(DESTDIR)$(man8dir)" \
 	"$(DESTDIR)$(dbusinterfacedir)" \
-	"$(DESTDIR)$(bashcompletiondir)" "$(DESTDIR)$(dbuspolicydir)" \
+	"$(DESTDIR)$(bashcompletiondir)" "$(DESTDIR)$(cglsdir)" \
+	"$(DESTDIR)$(dbuspolicydir)" \
 	"$(DESTDIR)$(dbussystemservicedir)" "$(DESTDIR)$(docdir)" \
 	"$(DESTDIR)$(pkgdatadir)" "$(DESTDIR)$(pkgsysconfdir)" \
 	"$(DESTDIR)$(sysctldir)" "$(DESTDIR)$(systemunitdir)" \
@@ -564,12 +671,15 @@ libsystemd_units_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libsystemd_units_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-@ENABLE_EFI_TRUE@am__EXEEXT_1 = test-boot-timestamp$(EXEEXT)
-am__EXEEXT_2 = test-engine$(EXEEXT) test-ns$(EXEEXT) \
+@ENABLE_ANALYZE_TRUE@am__EXEEXT_1 = systemd-analyze$(EXEEXT)
+@ENABLE_CGTOP_TRUE@am__EXEEXT_2 = systemd-cgtop$(EXEEXT)
+@ENABLE_DELTA_TRUE@am__EXEEXT_3 = systemd-delta$(EXEEXT)
+@ENABLE_EFI_TRUE@am__EXEEXT_4 = test-boot-timestamp$(EXEEXT)
+am__EXEEXT_5 = test-engine$(EXEEXT) test-ns$(EXEEXT) \
 	test-daemon$(EXEEXT) test-cgroup$(EXEEXT) \
 	test-install$(EXEEXT) test-watchdog$(EXEEXT) test-log$(EXEEXT) \
-	$(am__EXEEXT_1)
-am__EXEEXT_3 = test-job-type$(EXEEXT) test-env-replace$(EXEEXT) \
+	$(am__EXEEXT_4)
+am__EXEEXT_6 = test-job-type$(EXEEXT) test-env-replace$(EXEEXT) \
 	test-strbuf$(EXEEXT) test-strv$(EXEEXT) \
 	test-path-util$(EXEEXT) test-strxcpyx$(EXEEXT) \
 	test-unit-name$(EXEEXT) test-unit-file$(EXEEXT) \
@@ -580,14 +690,22 @@ am__EXEEXT_3 = test-job-type$(EXEEXT) test-env-replace$(EXEEXT) \
 	test-fileio$(EXEEXT) test-time$(EXEEXT) test-hashmap$(EXEEXT) \
 	test-list$(EXEEXT) test-tables$(EXEEXT) \
 	test-device-nodes$(EXEEXT) test-id128$(EXEEXT)
-@ENABLE_MACHINE_ID_SETUP_TRUE@am__EXEEXT_4 = systemd-machine-id-setup$(EXEEXT)
-@ENABLE_HOSTNAME_SETUP_TRUE@am__EXEEXT_5 =  \
+@ENABLE_MACHINE_ID_SETUP_TRUE@am__EXEEXT_7 = systemd-machine-id-setup$(EXEEXT)
+@ENABLE_HOSTNAME_SETUP_TRUE@am__EXEEXT_8 =  \
 @ENABLE_HOSTNAME_SETUP_TRUE@	uselessd-hostname-setup$(EXEEXT)
-@ENABLE_LOOPBACK_SETUP_TRUE@am__EXEEXT_6 =  \
+@ENABLE_LOOPBACK_SETUP_TRUE@am__EXEEXT_9 =  \
 @ENABLE_LOOPBACK_SETUP_TRUE@	uselessd-loopback-setup$(EXEEXT)
-@ENABLE_TMPFILES_TRUE@am__EXEEXT_7 = systemd-tmpfiles$(EXEEXT)
-@ENABLE_RANDOMSEED_TRUE@am__EXEEXT_8 = systemd-random-seed$(EXEEXT)
-@HAVE_SYSV_COMPAT_TRUE@am__EXEEXT_9 =  \
+@ENABLE_PASSWORD_AGENTS_TRUE@am__EXEEXT_10 = systemd-tty-ask-password-agent$(EXEEXT) \
+@ENABLE_PASSWORD_AGENTS_TRUE@	systemd-ask-password$(EXEEXT)
+@ENABLE_TMPFILES_TRUE@am__EXEEXT_11 = systemd-tmpfiles$(EXEEXT)
+@ENABLE_PASSWORD_AGENTS_TRUE@am__EXEEXT_12 =  \
+@ENABLE_PASSWORD_AGENTS_TRUE@	systemd-reply-password$(EXEEXT)
+@ENABLE_REMOUNT_FS_TRUE@am__EXEEXT_13 = systemd-remount-fs$(EXEEXT)
+@ENABLE_SLEEP_TRUE@am__EXEEXT_14 = systemd-sleep$(EXEEXT)
+@HAVE_SYSV_COMPAT_TRUE@am__EXEEXT_15 = systemd-initctl$(EXEEXT)
+@ENABLE_ACTIVATE_TRUE@am__EXEEXT_16 = systemd-activate$(EXEEXT)
+@ENABLE_RANDOMSEED_TRUE@am__EXEEXT_17 = systemd-random-seed$(EXEEXT)
+@HAVE_SYSV_COMPAT_TRUE@am__EXEEXT_18 =  \
 @HAVE_SYSV_COMPAT_TRUE@	systemd-rc-local-generator$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS) $(noinst_PROGRAMS) $(rootbin_PROGRAMS) \
 	$(rootlibexec_PROGRAMS) $(systemgenerator_PROGRAMS)
@@ -602,50 +720,64 @@ systemctl_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 am_systemd_ac_power_OBJECTS = src/ac-power/ac-power.$(OBJEXT)
 systemd_ac_power_OBJECTS = $(am_systemd_ac_power_OBJECTS)
 systemd_ac_power_DEPENDENCIES = libsystemd-shared.la
-am_systemd_activate_OBJECTS = src/activate/activate.$(OBJEXT)
+am__systemd_activate_SOURCES_DIST = src/activate/activate.c
+@ENABLE_ACTIVATE_TRUE@am_systemd_activate_OBJECTS =  \
+@ENABLE_ACTIVATE_TRUE@	src/activate/activate.$(OBJEXT)
 systemd_activate_OBJECTS = $(am_systemd_activate_OBJECTS)
-systemd_activate_DEPENDENCIES = libsystemd-shared.la \
-	libsystemd-daemon.la
-am_systemd_analyze_OBJECTS =  \
-	src/analyze/systemd_analyze-systemd-analyze.$(OBJEXT)
+@ENABLE_ACTIVATE_TRUE@systemd_activate_DEPENDENCIES =  \
+@ENABLE_ACTIVATE_TRUE@	libsystemd-shared.la \
+@ENABLE_ACTIVATE_TRUE@	libsystemd-daemon.la
+am__systemd_analyze_SOURCES_DIST = src/analyze/systemd-analyze.c
+@ENABLE_ANALYZE_TRUE@am_systemd_analyze_OBJECTS = src/analyze/systemd_analyze-systemd-analyze.$(OBJEXT)
 systemd_analyze_OBJECTS = $(am_systemd_analyze_OBJECTS)
-systemd_analyze_DEPENDENCIES = libsystemd-shared.la libsystemd-dbus.la
+@ENABLE_ANALYZE_TRUE@systemd_analyze_DEPENDENCIES =  \
+@ENABLE_ANALYZE_TRUE@	libsystemd-shared.la libsystemd-dbus.la
 systemd_analyze_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(systemd_analyze_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
-am_systemd_ask_password_OBJECTS =  \
-	src/ask-password/ask-password.$(OBJEXT)
+am__systemd_ask_password_SOURCES_DIST =  \
+	src/ask-password/ask-password.c
+@ENABLE_PASSWORD_AGENTS_TRUE@am_systemd_ask_password_OBJECTS = src/ask-password/ask-password.$(OBJEXT)
 systemd_ask_password_OBJECTS = $(am_systemd_ask_password_OBJECTS)
-systemd_ask_password_DEPENDENCIES = libsystemd-label.la \
-	libsystemd-shared.la
-am_systemd_cgtop_OBJECTS = src/cgtop/cgtop.$(OBJEXT)
+@ENABLE_PASSWORD_AGENTS_TRUE@systemd_ask_password_DEPENDENCIES =  \
+@ENABLE_PASSWORD_AGENTS_TRUE@	libsystemd-label.la \
+@ENABLE_PASSWORD_AGENTS_TRUE@	libsystemd-shared.la
+am__systemd_cgtop_SOURCES_DIST = src/cgtop/cgtop.c
+@ENABLE_CGTOP_TRUE@am_systemd_cgtop_OBJECTS =  \
+@ENABLE_CGTOP_TRUE@	src/cgtop/cgtop.$(OBJEXT)
 systemd_cgtop_OBJECTS = $(am_systemd_cgtop_OBJECTS)
-systemd_cgtop_DEPENDENCIES = libsystemd-shared.la
-am_systemd_delta_OBJECTS = src/delta/delta.$(OBJEXT)
+@ENABLE_CGTOP_TRUE@systemd_cgtop_DEPENDENCIES = libsystemd-shared.la
+am__systemd_delta_SOURCES_DIST = src/delta/delta.c
+@ENABLE_DELTA_TRUE@am_systemd_delta_OBJECTS =  \
+@ENABLE_DELTA_TRUE@	src/delta/delta.$(OBJEXT)
 systemd_delta_OBJECTS = $(am_systemd_delta_OBJECTS)
-systemd_delta_DEPENDENCIES = libsystemd-shared.la
+@ENABLE_DELTA_TRUE@systemd_delta_DEPENDENCIES = libsystemd-shared.la
 am_systemd_getty_generator_OBJECTS =  \
 	src/getty-generator/getty-generator.$(OBJEXT)
 systemd_getty_generator_OBJECTS =  \
 	$(am_systemd_getty_generator_OBJECTS)
 systemd_getty_generator_DEPENDENCIES = libsystemd-label.la \
 	libsystemd-shared.la
-am_systemd_initctl_OBJECTS =  \
-	src/initctl/systemd_initctl-initctl.$(OBJEXT)
+am__systemd_initctl_SOURCES_DIST = src/initctl/initctl.c
+@HAVE_SYSV_COMPAT_TRUE@am_systemd_initctl_OBJECTS = src/initctl/systemd_initctl-initctl.$(OBJEXT)
 systemd_initctl_OBJECTS = $(am_systemd_initctl_OBJECTS)
-systemd_initctl_DEPENDENCIES = libsystemd-shared.la \
-	libsystemd-daemon.la libsystemd-dbus.la
+@HAVE_SYSV_COMPAT_TRUE@systemd_initctl_DEPENDENCIES =  \
+@HAVE_SYSV_COMPAT_TRUE@	libsystemd-shared.la \
+@HAVE_SYSV_COMPAT_TRUE@	libsystemd-daemon.la libsystemd-dbus.la
 systemd_initctl_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(systemd_initctl_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
-am_systemd_machine_id_setup_OBJECTS =  \
-	src/machine-id-setup/machine-id-setup-main.$(OBJEXT)
+am__systemd_machine_id_setup_SOURCES_DIST =  \
+	src/machine-id-setup/machine-id-setup-main.c
+@ENABLE_MACHINE_ID_SETUP_TRUE@am_systemd_machine_id_setup_OBJECTS = src/machine-id-setup/machine-id-setup-main.$(OBJEXT)
 systemd_machine_id_setup_OBJECTS =  \
 	$(am_systemd_machine_id_setup_OBJECTS)
-systemd_machine_id_setup_DEPENDENCIES = libsystemd-label.la \
-	libsystemd-shared.la libsystemd-id128-internal.la
+@ENABLE_MACHINE_ID_SETUP_TRUE@systemd_machine_id_setup_DEPENDENCIES =  \
+@ENABLE_MACHINE_ID_SETUP_TRUE@	libsystemd-label.la \
+@ENABLE_MACHINE_ID_SETUP_TRUE@	libsystemd-shared.la \
+@ENABLE_MACHINE_ID_SETUP_TRUE@	libsystemd-id128-internal.la
 am_systemd_notify_OBJECTS = src/notify/notify.$(OBJEXT)
 systemd_notify_OBJECTS = $(am_systemd_notify_OBJECTS)
 systemd_notify_DEPENDENCIES = libsystemd-shared.la \
@@ -663,15 +795,21 @@ systemd_rc_local_generator_OBJECTS =  \
 	$(am_systemd_rc_local_generator_OBJECTS)
 systemd_rc_local_generator_DEPENDENCIES = libsystemd-label.la \
 	libsystemd-shared.la
-am_systemd_remount_fs_OBJECTS = src/remount-fs/remount-fs.$(OBJEXT) \
-	src/core/mount-setup.$(OBJEXT)
+am__systemd_remount_fs_SOURCES_DIST = src/remount-fs/remount-fs.c \
+	src/core/mount-setup.c src/core/mount-setup.h
+@ENABLE_REMOUNT_FS_TRUE@am_systemd_remount_fs_OBJECTS =  \
+@ENABLE_REMOUNT_FS_TRUE@	src/remount-fs/remount-fs.$(OBJEXT) \
+@ENABLE_REMOUNT_FS_TRUE@	src/core/mount-setup.$(OBJEXT)
 systemd_remount_fs_OBJECTS = $(am_systemd_remount_fs_OBJECTS)
-systemd_remount_fs_DEPENDENCIES = libsystemd-label.la \
-	libsystemd-shared.la
-am_systemd_reply_password_OBJECTS =  \
-	src/reply-password/reply-password.$(OBJEXT)
+@ENABLE_REMOUNT_FS_TRUE@systemd_remount_fs_DEPENDENCIES =  \
+@ENABLE_REMOUNT_FS_TRUE@	libsystemd-label.la \
+@ENABLE_REMOUNT_FS_TRUE@	libsystemd-shared.la
+am__systemd_reply_password_SOURCES_DIST =  \
+	src/reply-password/reply-password.c
+@ENABLE_PASSWORD_AGENTS_TRUE@am_systemd_reply_password_OBJECTS = src/reply-password/reply-password.$(OBJEXT)
 systemd_reply_password_OBJECTS = $(am_systemd_reply_password_OBJECTS)
-systemd_reply_password_DEPENDENCIES = libsystemd-shared.la
+@ENABLE_PASSWORD_AGENTS_TRUE@systemd_reply_password_DEPENDENCIES =  \
+@ENABLE_PASSWORD_AGENTS_TRUE@	libsystemd-shared.la
 am_systemd_shutdown_OBJECTS = src/core/umount.$(OBJEXT) \
 	src/core/shutdown.$(OBJEXT) src/core/mount-setup.$(OBJEXT) \
 	src/core/killall.$(OBJEXT)
@@ -682,9 +820,11 @@ am_systemd_shutdownd_OBJECTS = src/shutdownd/shutdownd.$(OBJEXT)
 systemd_shutdownd_OBJECTS = $(am_systemd_shutdownd_OBJECTS)
 systemd_shutdownd_DEPENDENCIES = libsystemd-label.la \
 	libsystemd-shared.la libsystemd-daemon.la
-am_systemd_sleep_OBJECTS = src/sleep/sleep.$(OBJEXT)
+am__systemd_sleep_SOURCES_DIST = src/sleep/sleep.c
+@ENABLE_SLEEP_TRUE@am_systemd_sleep_OBJECTS =  \
+@ENABLE_SLEEP_TRUE@	src/sleep/sleep.$(OBJEXT)
 systemd_sleep_OBJECTS = $(am_systemd_sleep_OBJECTS)
-systemd_sleep_DEPENDENCIES = libsystemd-shared.la
+@ENABLE_SLEEP_TRUE@systemd_sleep_DEPENDENCIES = libsystemd-shared.la
 am_systemd_sysctl_OBJECTS = src/sysctl/sysctl.$(OBJEXT)
 systemd_sysctl_OBJECTS = $(am_systemd_sysctl_OBJECTS)
 systemd_sysctl_DEPENDENCIES = libsystemd-shared.la
@@ -698,12 +838,14 @@ systemd_tmpfiles_OBJECTS = $(am_systemd_tmpfiles_OBJECTS)
 @ENABLE_TMPFILES_TRUE@	libsystemd-label.la libsystemd-shared.la \
 @ENABLE_TMPFILES_TRUE@	libsystemd-capability.la \
 @ENABLE_TMPFILES_TRUE@	libsystemd-id128-internal.la
-am_systemd_tty_ask_password_agent_OBJECTS =  \
-	src/tty-ask-password-agent/tty-ask-password-agent.$(OBJEXT)
+am__systemd_tty_ask_password_agent_SOURCES_DIST =  \
+	src/tty-ask-password-agent/tty-ask-password-agent.c
+@ENABLE_PASSWORD_AGENTS_TRUE@am_systemd_tty_ask_password_agent_OBJECTS = src/tty-ask-password-agent/tty-ask-password-agent.$(OBJEXT)
 systemd_tty_ask_password_agent_OBJECTS =  \
 	$(am_systemd_tty_ask_password_agent_OBJECTS)
-systemd_tty_ask_password_agent_DEPENDENCIES = libsystemd-label.la \
-	libsystemd-shared.la
+@ENABLE_PASSWORD_AGENTS_TRUE@systemd_tty_ask_password_agent_DEPENDENCIES =  \
+@ENABLE_PASSWORD_AGENTS_TRUE@	libsystemd-label.la \
+@ENABLE_PASSWORD_AGENTS_TRUE@	libsystemd-shared.la
 am_systemd_update_utmp_OBJECTS =  \
 	src/update-utmp/systemd_update_utmp-update-utmp.$(OBJEXT)
 systemd_update_utmp_OBJECTS = $(am_systemd_update_utmp_OBJECTS)
@@ -873,23 +1015,31 @@ test_util_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 am_test_watchdog_OBJECTS = src/test/test-watchdog.$(OBJEXT)
 test_watchdog_OBJECTS = $(am_test_watchdog_OBJECTS)
 test_watchdog_DEPENDENCIES = libsystemd-shared.la
-am_uselessd_OBJECTS = src/core/uselessd-main.$(OBJEXT)
+am__uselessd_SOURCES_DIST = src/core/main-no-init.c src/core/main.c
+@ENABLE_INIT_FALSE@am_uselessd_OBJECTS =  \
+@ENABLE_INIT_FALSE@	src/core/uselessd-main-no-init.$(OBJEXT)
+@ENABLE_INIT_TRUE@am_uselessd_OBJECTS =  \
+@ENABLE_INIT_TRUE@	src/core/uselessd-main.$(OBJEXT)
 uselessd_OBJECTS = $(am_uselessd_OBJECTS)
 uselessd_DEPENDENCIES = libsystemd-core.la libsystemd-daemon.la \
 	libsystemd-id128-internal.la libsystemd-dbus.la
 uselessd_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(uselessd_CFLAGS) \
 	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-am_uselessd_hostname_setup_OBJECTS =  \
-	src/hostname-setup/hostname-setup.$(OBJEXT)
+am__uselessd_hostname_setup_SOURCES_DIST =  \
+	src/hostname-setup/hostname-setup.c
+@ENABLE_HOSTNAME_SETUP_TRUE@am_uselessd_hostname_setup_OBJECTS = src/hostname-setup/hostname-setup.$(OBJEXT)
 uselessd_hostname_setup_OBJECTS =  \
 	$(am_uselessd_hostname_setup_OBJECTS)
-uselessd_hostname_setup_DEPENDENCIES = libsystemd-shared.la
-am_uselessd_loopback_setup_OBJECTS =  \
-	src/loopback-setup/loopback-setup.$(OBJEXT)
+@ENABLE_HOSTNAME_SETUP_TRUE@uselessd_hostname_setup_DEPENDENCIES =  \
+@ENABLE_HOSTNAME_SETUP_TRUE@	libsystemd-shared.la
+am__uselessd_loopback_setup_SOURCES_DIST =  \
+	src/loopback-setup/loopback-setup.c
+@ENABLE_LOOPBACK_SETUP_TRUE@am_uselessd_loopback_setup_OBJECTS = src/loopback-setup/loopback-setup.$(OBJEXT)
 uselessd_loopback_setup_OBJECTS =  \
 	$(am_uselessd_loopback_setup_OBJECTS)
-uselessd_loopback_setup_DEPENDENCIES = libsystemd-shared.la
+@ENABLE_LOOPBACK_SETUP_TRUE@uselessd_loopback_setup_DEPENDENCIES =  \
+@ENABLE_LOOPBACK_SETUP_TRUE@	libsystemd-shared.la
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -973,18 +1123,23 @@ DIST_SOURCES = $(am__libsystemd_acl_la_SOURCES_DIST) \
 	$(libsystemd_id128_la_SOURCES) $(libsystemd_label_la_SOURCES) \
 	$(libsystemd_shared_la_SOURCES) $(libsystemd_units_la_SOURCES) \
 	$(systemctl_SOURCES) $(systemd_ac_power_SOURCES) \
-	$(systemd_activate_SOURCES) $(systemd_analyze_SOURCES) \
-	$(systemd_ask_password_SOURCES) $(systemd_cgtop_SOURCES) \
-	$(systemd_delta_SOURCES) $(systemd_getty_generator_SOURCES) \
-	$(systemd_initctl_SOURCES) $(systemd_machine_id_setup_SOURCES) \
+	$(am__systemd_activate_SOURCES_DIST) \
+	$(am__systemd_analyze_SOURCES_DIST) \
+	$(am__systemd_ask_password_SOURCES_DIST) \
+	$(am__systemd_cgtop_SOURCES_DIST) \
+	$(am__systemd_delta_SOURCES_DIST) \
+	$(systemd_getty_generator_SOURCES) \
+	$(am__systemd_initctl_SOURCES_DIST) \
+	$(am__systemd_machine_id_setup_SOURCES_DIST) \
 	$(systemd_notify_SOURCES) \
 	$(am__systemd_random_seed_SOURCES_DIST) \
 	$(systemd_rc_local_generator_SOURCES) \
-	$(systemd_remount_fs_SOURCES) \
-	$(systemd_reply_password_SOURCES) $(systemd_shutdown_SOURCES) \
-	$(systemd_shutdownd_SOURCES) $(systemd_sleep_SOURCES) \
-	$(systemd_sysctl_SOURCES) $(am__systemd_tmpfiles_SOURCES_DIST) \
-	$(systemd_tty_ask_password_agent_SOURCES) \
+	$(am__systemd_remount_fs_SOURCES_DIST) \
+	$(am__systemd_reply_password_SOURCES_DIST) \
+	$(systemd_shutdown_SOURCES) $(systemd_shutdownd_SOURCES) \
+	$(am__systemd_sleep_SOURCES_DIST) $(systemd_sysctl_SOURCES) \
+	$(am__systemd_tmpfiles_SOURCES_DIST) \
+	$(am__systemd_tty_ask_password_agent_SOURCES_DIST) \
 	$(systemd_update_utmp_SOURCES) \
 	$(am__test_boot_timestamp_SOURCES_DIST) $(test_cgroup_SOURCES) \
 	$(test_cgroup_util_SOURCES) $(test_daemon_SOURCES) \
@@ -1002,8 +1157,9 @@ DIST_SOURCES = $(am__libsystemd_acl_la_SOURCES_DIST) \
 	$(test_time_SOURCES) $(test_unit_file_SOURCES) \
 	$(test_unit_name_SOURCES) $(test_utf8_SOURCES) \
 	$(test_util_SOURCES) $(test_watchdog_SOURCES) \
-	$(uselessd_SOURCES) $(uselessd_hostname_setup_SOURCES) \
-	$(uselessd_loopback_setup_SOURCES)
+	$(am__uselessd_SOURCES_DIST) \
+	$(am__uselessd_hostname_setup_SOURCES_DIST) \
+	$(am__uselessd_loopback_setup_SOURCES_DIST)
 RECURSIVE_TARGETS = all-recursive check-recursive cscopelist-recursive \
 	ctags-recursive dvi-recursive html-recursive info-recursive \
 	install-data-recursive install-dvi-recursive \
@@ -1024,16 +1180,42 @@ man7dir = $(mandir)/man7
 man8dir = $(mandir)/man8
 NROFF = nroff
 MANS = $(man_MANS)
+am__dist_bashcompletion_DATA_DIST = shell-completion/bash/systemctl \
+	shell-completion/bash/systemd-analyze
+am__dist_cgls_DATA_DIST = src/cgls/uselessd-cgls
+am__dist_systemunit_DATA_DIST = units/graphical.target \
+	units/multi-user.target units/emergency.service \
+	units/emergency.target units/sysinit.target units/basic.target \
+	units/getty.target units/halt.target units/kexec.target \
+	units/local-fs.target units/local-fs-pre.target \
+	units/swap.target units/initrd.target units/initrd-fs.target \
+	units/initrd-root-fs.target units/remote-fs.target \
+	units/remote-fs-pre.target units/network.target \
+	units/network-online.target units/nss-lookup.target \
+	units/nss-user-lookup.target units/hibernate.target \
+	units/hybrid-sleep.target units/poweroff.target \
+	units/reboot.target units/rescue.target units/rpcbind.target \
+	units/time-sync.target units/shutdown.target \
+	units/final.target units/umount.target units/sigpwr.target \
+	units/sleep.target units/sockets.target units/paths.target \
+	units/suspend.target units/slices.target units/system.slice \
+	units/x-.slice units/systemd-shutdownd.socket \
+	units/syslog.socket units/printer.target units/sound.target \
+	units/bluetooth.target units/smartcard.target \
+	units/systemd-ask-password-wall.path \
+	units/systemd-ask-password-console.path \
+	units/initrd-switch-root.target units/systemd-initctl.socket
 am__dist_tmpfiles_DATA_DIST = tmpfiles.d/systemd.conf \
 	tmpfiles.d/tmp.conf tmpfiles.d/x11.conf tmpfiles.d/legacy.conf
 am__dist_zshcompletion_DATA_DIST = shell-completion/zsh/_systemctl \
-	shell-completion/zsh/_systemd-analyze \
 	shell-completion/zsh/_sd_hosts_or_user_at_host \
+	shell-completion/zsh/_systemd-analyze \
 	shell-completion/zsh/_systemd-delta \
 	shell-completion/zsh/_systemd-tmpfiles
 DATA = $(dbusinterface_DATA) $(dist_bashcompletion_DATA) \
-	$(dist_dbuspolicy_DATA) $(dist_dbussystemservice_DATA) \
-	$(dist_doc_DATA) $(dist_pkgdata_DATA) $(dist_pkgsysconf_DATA) \
+	$(dist_cgls_DATA) $(dist_dbuspolicy_DATA) \
+	$(dist_dbussystemservice_DATA) $(dist_doc_DATA) \
+	$(dist_pkgdata_DATA) $(dist_pkgsysconf_DATA) \
 	$(dist_sysctl_DATA) $(dist_systemunit_DATA) \
 	$(dist_tmpfiles_DATA) $(dist_userunit_DATA) \
 	$(dist_zshcompletion_DATA) $(nodist_polkitpolicy_DATA) \
@@ -1529,9 +1711,12 @@ systemunitdir = $(rootprefix)/lib/systemd/system
 systempresetdir = $(rootprefix)/lib/systemd/system-preset
 rootbindir = $(rootprefix)/bin
 rootlibexecdir = $(rootprefix)/lib/systemd
+
+# scripts
+cglsdir = @rootbindir@
 CLEANFILES = $(BUILT_SOURCES) units/console-shell.service.m4 \
 	units/console-getty.service.m4 units/rescue.service.m4 \
-	$(am__append_18) $(am__append_20) \
+	$(am__append_48) $(am__append_50) \
 	src/core/load-fragment-gperf.gperf \
 	src/core/load-fragment-gperf.c \
 	src/core/load-fragment-gperf-nulstr.c \
@@ -1541,40 +1726,34 @@ CLEANFILES = $(BUILT_SOURCES) units/console-shell.service.m4 \
 	$(nodist_systemunit_DATA) $(nodist_userunit_DATA) \
 	$(pkgconfigdata_DATA) $(pkgconfiglib_DATA) \
 	$(nodist_polkitpolicy_DATA) $(dbusinterface_DATA) \
-	$(am__append_35)
-DISTCLEANFILES = $(am__append_34)
+	$(am__append_66)
+DISTCLEANFILES = $(am__append_65)
 EXTRA_DIST = units/getty@.service.m4 units/serial-getty@.service.m4 \
 	units/console-shell.service.m4.in \
 	units/console-getty.service.m4.in units/rescue.service.m4.in \
-	units/systemd-initctl.service.in \
 	units/systemd-shutdownd.service.in \
-	units/systemd-remount-fs.service.in \
 	units/systemd-update-utmp.service.in \
 	units/systemd-update-utmp-runlevel.service.in \
-	units/systemd-ask-password-wall.service.in \
-	units/systemd-ask-password-console.service.in \
 	units/systemd-sysctl.service.in units/emergency.service.in \
 	units/systemd-halt.service.in \
 	units/systemd-poweroff.service.in \
 	units/systemd-reboot.service.in units/systemd-kexec.service.in \
 	units/user/systemd-exit.service.in \
 	units/systemd-fsck@.service.in units/user@.service.in \
-	units/debug-shell.service.in \
-	units/systemd-hibernate.service.in \
-	units/systemd-hybrid-sleep.service.in \
-	units/systemd-suspend.service.in \
-	units/initrd-parse-etc.service.in \
+	units/debug-shell.service.in units/initrd-parse-etc.service.in \
 	units/initrd-cleanup.service.in \
 	units/initrd-switch-root.service.in introspect.awk \
 	$(am__append_3) $(am__append_6) $(am__append_9) \
-	units/rc-local.service.in units/halt-local.service.in \
-	$(am__append_21) $(XML_FILES) $(HTML_FILES) $(HTML_ALIAS) \
-	$(man_MANS) make-man-index.py make-directive-index.py \
-	xml_helper.py src/core/load-fragment-gperf.gperf.m4 \
-	src/core/systemd.pc.in src/core/macros.systemd.in \
-	test/sched_idle_bad.service test/sched_idle_ok.service \
-	test/sched_rr_bad.service test/sched_rr_ok.service \
-	test/sched_rr_change.service src/test/test-helper.h \
+	$(am__append_19) $(am__append_22) $(am__append_25) \
+	$(am__append_28) units/rc-local.service.in \
+	units/halt-local.service.in $(am__append_51) $(XML_FILES) \
+	$(HTML_FILES) $(HTML_ALIAS) $(man_MANS) make-man-index.py \
+	make-directive-index.py xml_helper.py \
+	src/core/load-fragment-gperf.gperf.m4 src/core/systemd.pc.in \
+	src/core/macros.systemd.in test/sched_idle_bad.service \
+	test/sched_idle_ok.service test/sched_rr_bad.service \
+	test/sched_rr_ok.service test/sched_rr_change.service \
+	src/test/test-helper.h \
 	units/systemd-tmpfiles-setup-dev.service.in \
 	units/systemd-tmpfiles-setup.service.in \
 	units/systemd-tmpfiles-clean.service.in \
@@ -1616,12 +1795,12 @@ pkginclude_HEADERS = src/systemd/sd-messages.h \
 # ------------------------------------------------------------------------------
 noinst_LTLIBRARIES = libsystemd-shared.la libsystemd-dbus.la \
 	libsystemd-units.la libsystemd-label.la \
-	libsystemd-capability.la libsystemd-audit.la $(am__append_22) \
+	libsystemd-capability.la libsystemd-audit.la $(am__append_52) \
 	libsystemd-core.la libsystemd-daemon-internal.la \
 	libsystemd-id128-internal.la
 lib_LTLIBRARIES = libsystemd-daemon.la libsystemd-id128.la
 include_HEADERS = 
-noinst_DATA = $(am__append_17) $(am__append_19)
+noinst_DATA = $(am__append_47) $(am__append_49)
 pkgconfiglib_DATA = src/libsystemd-daemon/libsystemd-daemon.pc \
 	src/libsystemd-id128/libsystemd-id128.pc
 polkitpolicy_in_in_files =  \
@@ -1651,7 +1830,7 @@ tests = test-job-type test-env-replace test-strbuf test-strv \
 
 # ------------------------------------------------------------------------------
 manual_tests = test-engine test-ns test-daemon test-cgroup \
-	test-install test-watchdog test-log $(am__append_24)
+	test-install test-watchdog test-log $(am__append_54)
 AM_CPPFLAGS = \
 	-include $(top_builddir)/config.h \
 	-DPKGSYSCONFDIR=\"$(pkgsysconfdir)\" \
@@ -1668,7 +1847,6 @@ AM_CPPFLAGS = \
 	-DSYSTEMD_TTY_ASK_PASSWORD_AGENT_BINARY_PATH=\"$(rootbindir)/systemd-tty-ask-password-agent\" \
 	-DROOTPREFIX=\"$(rootprefix)\" \
 	-DRANDOM_SEED=\"$(localstatedir)/lib/systemd/random-seed\" \
-	-DSYSTEMD_CRYPTSETUP_PATH=\"$(rootlibexecdir)/systemd-cryptsetup\" \
 	-DSYSTEM_GENERATOR_PATH=\"$(systemgeneratordir)\" \
 	-DUSER_GENERATOR_PATH=\"$(usergeneratordir)\" \
 	-DSYSTEM_SHUTDOWN_PATH=\"$(systemshutdowndir)\" \
@@ -1676,7 +1854,6 @@ AM_CPPFLAGS = \
 	-DSYSTEMD_KBD_MODEL_MAP=\"$(pkgdatadir)/kbd-model-map\" \
 	-DX_SERVER=\"$(bindir)/X\" \
 	-DPOLKIT_AGENT_BINARY_PATH=\"$(bindir)/pkttyagent\" \
-	-DQUOTACHECK=\"$(QUOTACHECK)\" \
 	-DKEXEC=\"$(KEXEC)\" \
 	-I $(top_srcdir)/src \
 	-I $(top_srcdir)/src/shared \
@@ -1687,7 +1864,7 @@ AM_CPPFLAGS = \
 
 AM_CFLAGS = $(OUR_CFLAGS)
 AM_LDFLAGS = $(OUR_LDFLAGS)
-INSTALL_DIRS = $(am__append_30) $(am__append_42) \
+INSTALL_DIRS = $(am__append_60) $(am__append_73) \
 	$(prefix)/lib/sysctl.d $(sysconfdir)/sysctl.d \
 	$(prefix)/lib/kernel/install.d $(sysconfdir)/kernel/install.d \
 	$(systemshutdowndir) $(systemsleepdir) $(systemgeneratordir) \
@@ -1696,19 +1873,19 @@ INSTALL_DIRS = $(am__append_30) $(am__append_42) \
 	$(pkgsysconfdir)/system/getty.target.wants \
 	$(pkgsysconfdir)/user $(dbussessionservicedir) \
 	$(sysconfdir)/xdg/systemd
-RUNLEVEL1_TARGET_WANTS = $(am__append_36)
-RUNLEVEL2_TARGET_WANTS = $(am__append_37)
-RUNLEVEL3_TARGET_WANTS = $(am__append_38)
-RUNLEVEL4_TARGET_WANTS = $(am__append_39)
-RUNLEVEL5_TARGET_WANTS = $(am__append_40)
+RUNLEVEL1_TARGET_WANTS = $(am__append_67)
+RUNLEVEL2_TARGET_WANTS = $(am__append_68)
+RUNLEVEL3_TARGET_WANTS = $(am__append_69)
+RUNLEVEL4_TARGET_WANTS = $(am__append_70)
+RUNLEVEL5_TARGET_WANTS = $(am__append_71)
 SHUTDOWN_TARGET_WANTS = 
 LOCAL_FS_TARGET_WANTS = systemd-remount-fs.service
 MULTI_USER_TARGET_WANTS = getty.target systemd-ask-password-wall.path
-SYSINIT_TARGET_WANTS = $(am__append_28) $(am__append_33) \
+SYSINIT_TARGET_WANTS = $(am__append_58) $(am__append_64) \
 	systemd-update-utmp.service systemd-sysctl.service \
 	systemd-ask-password-console.path
 SOCKETS_TARGET_WANTS = systemd-initctl.socket systemd-shutdownd.socket
-SYSTEM_UNIT_ALIASES = $(am__append_41) graphical.target default.target \
+SYSTEM_UNIT_ALIASES = $(am__append_72) graphical.target default.target \
 	reboot.target ctrl-alt-del.target getty@.service \
 	autovt@.service
 USER_UNIT_ALIASES = $(systemunitdir)/shutdown.target shutdown.target \
@@ -1739,105 +1916,71 @@ AM_V_GPERF_0 = @echo "  GPERF   " $@;
 AM_V_LN = $(AM_V_LN_$(V))
 AM_V_LN_ = $(AM_V_LN_$(AM_DEFAULT_VERBOSITY))
 AM_V_LN_0 = @echo "  LN      " $@;
-systemd_analyze_SOURCES = \
-	src/analyze/systemd-analyze.c
-
-systemd_analyze_CFLAGS = \
-	$(AM_CFLAGS) \
-	$(DBUS_CFLAGS)
-
-systemd_analyze_LDADD = \
-	libsystemd-shared.la \
-	libsystemd-dbus.la
-
-dist_bashcompletion_DATA = \
-	shell-completion/bash/systemctl \
-	shell-completion/bash/systemd-analyze
-
+dist_bashcompletion_DATA = shell-completion/bash/systemctl \
+	$(am__append_11)
 dist_zshcompletion_DATA = shell-completion/zsh/_systemctl \
-	shell-completion/zsh/_systemd-analyze \
 	shell-completion/zsh/_sd_hosts_or_user_at_host \
-	shell-completion/zsh/_systemd-delta $(am__append_29)
+	$(am__append_12) $(am__append_15) $(am__append_59)
 dist_sysctl_DATA = \
 	sysctl.d/50-default.conf
 
-dist_systemunit_DATA = \
-	units/graphical.target \
-	units/multi-user.target \
-	units/emergency.service \
-	units/emergency.target \
-	units/sysinit.target \
-	units/basic.target \
-	units/getty.target \
-	units/halt.target \
-	units/kexec.target \
-	units/local-fs.target \
-	units/local-fs-pre.target \
-    units/swap.target \
-	units/initrd.target \
-	units/initrd-fs.target \
-	units/initrd-root-fs.target \
-	units/remote-fs.target \
-	units/remote-fs-pre.target \
-	units/network.target \
-	units/network-online.target \
-	units/nss-lookup.target \
-	units/nss-user-lookup.target \
-	units/hibernate.target \
-	units/hybrid-sleep.target \
-	units/poweroff.target \
-	units/reboot.target \
-	units/rescue.target \
-	units/rpcbind.target \
-	units/time-sync.target \
-	units/shutdown.target \
-	units/final.target \
-	units/umount.target \
-	units/sigpwr.target \
-	units/sleep.target \
-	units/sockets.target \
-	units/paths.target \
-	units/suspend.target \
-	units/slices.target \
-	units/system.slice \
-	units/x-.slice \
-	units/systemd-initctl.socket \
-	units/systemd-shutdownd.socket \
-	units/syslog.socket \
-	units/printer.target \
-	units/sound.target \
-	units/bluetooth.target \
-	units/smartcard.target \
+dist_systemunit_DATA = units/graphical.target units/multi-user.target \
+	units/emergency.service units/emergency.target \
+	units/sysinit.target units/basic.target units/getty.target \
+	units/halt.target units/kexec.target units/local-fs.target \
+	units/local-fs-pre.target units/swap.target \
+	units/initrd.target units/initrd-fs.target \
+	units/initrd-root-fs.target units/remote-fs.target \
+	units/remote-fs-pre.target units/network.target \
+	units/network-online.target units/nss-lookup.target \
+	units/nss-user-lookup.target units/hibernate.target \
+	units/hybrid-sleep.target units/poweroff.target \
+	units/reboot.target units/rescue.target units/rpcbind.target \
+	units/time-sync.target units/shutdown.target \
+	units/final.target units/umount.target units/sigpwr.target \
+	units/sleep.target units/sockets.target units/paths.target \
+	units/suspend.target units/slices.target units/system.slice \
+	units/x-.slice units/systemd-shutdownd.socket \
+	units/syslog.socket units/printer.target units/sound.target \
+	units/bluetooth.target units/smartcard.target \
 	units/systemd-ask-password-wall.path \
 	units/systemd-ask-password-console.path \
-	units/initrd-switch-root.target
-
+	units/initrd-switch-root.target $(am__append_27)
 nodist_systemunit_DATA = units/getty@.service \
 	units/serial-getty@.service units/console-shell.service \
-	units/console-getty.service units/systemd-initctl.service \
-	units/systemd-shutdownd.service \
-	units/systemd-remount-fs.service \
+	units/console-getty.service units/systemd-shutdownd.service \
 	units/systemd-update-utmp.service \
 	units/systemd-update-utmp-runlevel.service \
-	units/systemd-ask-password-wall.service \
-	units/systemd-ask-password-console.service \
 	units/systemd-sysctl.service units/emergency.service \
 	units/rescue.service units/user@.service \
-	units/systemd-hibernate.service \
-	units/systemd-hybrid-sleep.service \
-	units/systemd-suspend.service units/systemd-halt.service \
-	units/systemd-poweroff.service units/systemd-reboot.service \
-	units/systemd-kexec.service units/systemd-fsck@.service \
-	units/debug-shell.service units/initrd-parse-etc.service \
-	units/initrd-cleanup.service units/initrd-switch-root.service \
-	$(am__append_2) $(am__append_5) $(am__append_8) \
-	$(am__append_10) $(am__append_26) $(am__append_32)
+	units/systemd-halt.service units/systemd-poweroff.service \
+	units/systemd-reboot.service units/systemd-kexec.service \
+	units/systemd-fsck@.service units/debug-shell.service \
+	units/initrd-parse-etc.service units/initrd-cleanup.service \
+	units/initrd-switch-root.service $(am__append_2) \
+	$(am__append_5) $(am__append_8) $(am__append_18) \
+	$(am__append_21) $(am__append_24) $(am__append_26) \
+	$(am__append_56) $(am__append_63)
 dist_userunit_DATA = \
 	units/user/default.target \
 	units/user/exit.target
 
 nodist_userunit_DATA = \
 	units/user/systemd-exit.service
+
+@ENABLE_ANALYZE_TRUE@systemd_analyze_SOURCES = \
+@ENABLE_ANALYZE_TRUE@	src/analyze/systemd-analyze.c
+
+@ENABLE_ANALYZE_TRUE@systemd_analyze_CFLAGS = \
+@ENABLE_ANALYZE_TRUE@	$(AM_CFLAGS) \
+@ENABLE_ANALYZE_TRUE@	$(DBUS_CFLAGS)
+
+@ENABLE_ANALYZE_TRUE@systemd_analyze_LDADD = \
+@ENABLE_ANALYZE_TRUE@	libsystemd-shared.la \
+@ENABLE_ANALYZE_TRUE@	libsystemd-dbus.la
+
+@ENABLE_CGLS_TRUE@dist_cgls_DATA = \
+@ENABLE_CGLS_TRUE@	src/cgls/uselessd-cgls
 
 dist_doc_DATA = \
 	README.txt \
@@ -1855,15 +1998,10 @@ MANPAGES = man/bootup.7 man/daemon.7 man/halt.8 man/hostname.5 \
 	man/sd_id128_get_machine.3 man/sd_id128_randomize.3 \
 	man/sd_id128_to_string.3 man/sd_is_fifo.3 man/sd_listen_fds.3 \
 	man/sd_notify.3 man/shutdown.8 man/sysctl.d.5 man/systemctl.1 \
-	man/systemd-activate.8 man/systemd-analyze.1 \
-	man/systemd-ask-password-console.service.8 \
-	man/systemd-ask-password.1 man/systemd-cgtop.1 \
-	man/systemd-delta.1 man/systemd-fsck@.service.8 \
-	man/systemd-getty-generator.8 man/systemd-halt.service.8 \
-	man/systemd-inhibit.1 man/systemd-initctl.service.8 \
-	man/systemd-notify.1 man/systemd-remount-fs.service.8 \
-	man/systemd-shutdownd.service.8 man/systemd-sleep.conf.5 \
-	man/systemd-suspend.service.8 man/systemd-sysctl.service.8 \
+	man/systemd-fsck@.service.8 man/systemd-getty-generator.8 \
+	man/systemd-halt.service.8 man/systemd-initctl.service.8 \
+	man/systemd-notify.1 man/systemd-inhibit.1 \
+	man/systemd-shutdownd.service.8 man/systemd-sysctl.service.8 \
 	man/systemd-system.conf.5 man/systemd-tmpfiles.8 \
 	man/systemd-tty-ask-password-agent.1 \
 	man/systemd-update-utmp.service.8 man/systemd.1 \
@@ -1873,8 +2011,10 @@ MANPAGES = man/bootup.7 man/daemon.7 man/halt.8 man/hostname.5 \
 	man/systemd.snapshot.5 man/systemd.socket.5 \
 	man/systemd.special.7 man/systemd.target.5 man/systemd.time.7 \
 	man/systemd.unit.5 man/telinit.8 man/tmpfiles.d.5 \
-	$(am__append_12) $(am__append_14) $(am__append_15) \
-	$(am__append_16)
+	$(am__append_31) $(am__append_33) $(am__append_34) \
+	$(am__append_35) $(am__append_36) $(am__append_37) \
+	$(am__append_38) $(am__append_39) $(am__append_40) \
+	$(am__append_41) $(am__append_43) $(am__append_45)
 MANPAGES_ALIAS = man/SD_ALERT.3 man/SD_CRIT.3 man/SD_DEBUG.3 \
 	man/SD_EMERG.3 man/SD_ERR.3 man/SD_ID128_CONST_STR.3 \
 	man/SD_ID128_FORMAT_STR.3 man/SD_ID128_FORMAT_VAL.3 \
@@ -1886,21 +2026,18 @@ MANPAGES_ALIAS = man/SD_ALERT.3 man/SD_CRIT.3 man/SD_DEBUG.3 \
 	man/sd_is_socket_inet.3 man/sd_is_socket_unix.3 \
 	man/sd_notifyf.3 man/systemd-ask-password-console.path.8 \
 	man/systemd-ask-password-wall.path.8 \
-	man/systemd-ask-password-wall.service.8 \
 	man/systemd-fsck-root.service.8 man/systemd-fsck.8 \
-	man/systemd-hibernate.service.8 \
-	man/systemd-hybrid-sleep.service.8 man/systemd-initctl.8 \
-	man/systemd-initctl.socket.8 man/systemd-kexec.service.8 \
-	man/systemd-poweroff.service.8 man/systemd-reboot.service.8 \
-	man/systemd-remount-fs.8 man/systemd-shutdown.8 \
+	man/systemd-initctl.8 man/systemd-initctl.socket.8 \
+	man/systemd-kexec.service.8 man/systemd-poweroff.service.8 \
+	man/systemd-reboot.service.8 man/systemd-shutdown.8 \
 	man/systemd-shutdownd.8 man/systemd-shutdownd.socket.8 \
-	man/systemd-sleep.8 man/systemd-sysctl.8 \
-	man/systemd-tmpfiles-clean.service.8 \
+	man/systemd-sysctl.8 man/systemd-tmpfiles-clean.service.8 \
 	man/systemd-tmpfiles-setup-dev.service.8 \
 	man/systemd-tmpfiles-setup.service.8 \
 	man/systemd-update-utmp-runlevel.service.8 \
 	man/systemd-update-utmp.8 man/systemd-user.conf.5 \
-	$(am__append_13)
+	$(am__append_32) $(am__append_42) $(am__append_44) \
+	$(am__append_46)
 XML_FILES = \
 	${patsubst %.1,%.xml,${patsubst %.3,%.xml,${patsubst %.5,%.xml,${patsubst %.7,%.xml,${patsubst %.8,%.xml,$(MANPAGES)}}}}}
 
@@ -1919,7 +2056,6 @@ HTML_ALIAS = \
 @ENABLE_MANPAGES_TRUE@@HAVE_PYTHON_TRUE@SOURCE_XML_FILES = $(filter-out man/systemd.directives.xml,$(NON_INDEX_XML_FILES))
 libsystemd_shared_la_SOURCES = \
 	src/shared/linux/auto_dev-ioctl.h \
-	src/shared/linux/fanotify.h \
 	src/shared/linux/seccomp.h \
 	src/shared/linux/seccomp-bpf.h \
 	src/shared/missing.h \
@@ -2111,7 +2247,7 @@ libsystemd_core_la_SOURCES = src/core/unit.c src/core/unit.h \
 	src/core/killall.h src/core/killall.c src/core/syscall-list.c \
 	src/core/syscall-list.h src/core/audit-fd.c \
 	src/core/audit-fd.h src/core/async.c src/core/async.h \
-	$(am__append_23)
+	$(am__append_53)
 nodist_libsystemd_core_la_SOURCES = \
 	src/core/load-fragment-gperf.c \
 	src/core/load-fragment-gperf-nulstr.c \
@@ -2140,10 +2276,13 @@ libsystemd_core_la_LIBADD = \
 	$(CAP_LIBS) \
 	$(KMOD_LIBS)
 
+@ENABLE_INIT_FALSE@uselessd_SOURCES = \
+@ENABLE_INIT_FALSE@	src/core/main-no-init.c
+
 
 # ------------------------------------------------------------------------------
-uselessd_SOURCES = \
-	src/core/main.c
+@ENABLE_INIT_TRUE@uselessd_SOURCES = \
+@ENABLE_INIT_TRUE@	src/core/main.c
 
 uselessd_CFLAGS = \
 	$(AM_CFLAGS) \
@@ -2419,17 +2558,17 @@ coverage_dir = coverage
 coverage_opts = --base-directory $(srcdir) --directory $(builddir) --rc 'geninfo_adjust_src_path=$(abspath $(srcdir))=>$(abspath $(builddir))'
 
 # ------------------------------------------------------------------------------
-systemd_initctl_SOURCES = \
-	src/initctl/initctl.c
+@HAVE_SYSV_COMPAT_TRUE@systemd_initctl_SOURCES = \
+@HAVE_SYSV_COMPAT_TRUE@	src/initctl/initctl.c
 
-systemd_initctl_CFLAGS = \
-	$(AM_CFLAGS) \
-	$(DBUS_CFLAGS)
+@HAVE_SYSV_COMPAT_TRUE@systemd_initctl_CFLAGS = \
+@HAVE_SYSV_COMPAT_TRUE@	$(AM_CFLAGS) \
+@HAVE_SYSV_COMPAT_TRUE@	$(DBUS_CFLAGS)
 
-systemd_initctl_LDADD = \
-	libsystemd-shared.la \
-	libsystemd-daemon.la \
-	libsystemd-dbus.la
+@HAVE_SYSV_COMPAT_TRUE@systemd_initctl_LDADD = \
+@HAVE_SYSV_COMPAT_TRUE@	libsystemd-shared.la \
+@HAVE_SYSV_COMPAT_TRUE@	libsystemd-daemon.la \
+@HAVE_SYSV_COMPAT_TRUE@	libsystemd-dbus.la
 
 
 # ------------------------------------------------------------------------------
@@ -2486,32 +2625,32 @@ systemd_shutdown_LDADD = \
 
 @ENABLE_TMPFILES_TRUE@dist_tmpfiles_DATA = tmpfiles.d/systemd.conf \
 @ENABLE_TMPFILES_TRUE@	tmpfiles.d/tmp.conf tmpfiles.d/x11.conf \
-@ENABLE_TMPFILES_TRUE@	$(am__append_27)
+@ENABLE_TMPFILES_TRUE@	$(am__append_57)
 
 # ------------------------------------------------------------------------------
-systemd_machine_id_setup_SOURCES = \
-	src/machine-id-setup/machine-id-setup-main.c
+@ENABLE_MACHINE_ID_SETUP_TRUE@systemd_machine_id_setup_SOURCES = \
+@ENABLE_MACHINE_ID_SETUP_TRUE@	src/machine-id-setup/machine-id-setup-main.c
 
-systemd_machine_id_setup_LDADD = \
-	libsystemd-label.la \
-	libsystemd-shared.la \
-	libsystemd-id128-internal.la
-
-
-# ------------------------------------------------------------------------------
-uselessd_hostname_setup_SOURCES = \
-	src/hostname-setup/hostname-setup.c
-
-uselessd_hostname_setup_LDADD = \
-	libsystemd-shared.la
+@ENABLE_MACHINE_ID_SETUP_TRUE@systemd_machine_id_setup_LDADD = \
+@ENABLE_MACHINE_ID_SETUP_TRUE@	libsystemd-label.la \
+@ENABLE_MACHINE_ID_SETUP_TRUE@	libsystemd-shared.la \
+@ENABLE_MACHINE_ID_SETUP_TRUE@	libsystemd-id128-internal.la
 
 
 # ------------------------------------------------------------------------------
-uselessd_loopback_setup_SOURCES = \
-	src/loopback-setup/loopback-setup.c
+@ENABLE_HOSTNAME_SETUP_TRUE@uselessd_hostname_setup_SOURCES = \
+@ENABLE_HOSTNAME_SETUP_TRUE@	src/hostname-setup/hostname-setup.c
 
-uselessd_loopback_setup_LDADD = \
-	libsystemd-shared.la
+@ENABLE_HOSTNAME_SETUP_TRUE@uselessd_hostname_setup_LDADD = \
+@ENABLE_HOSTNAME_SETUP_TRUE@	libsystemd-shared.la
+
+
+# ------------------------------------------------------------------------------
+@ENABLE_LOOPBACK_SETUP_TRUE@uselessd_loopback_setup_SOURCES = \
+@ENABLE_LOOPBACK_SETUP_TRUE@	src/loopback-setup/loopback-setup.c
+
+@ENABLE_LOOPBACK_SETUP_TRUE@uselessd_loopback_setup_LDADD = \
+@ENABLE_LOOPBACK_SETUP_TRUE@	libsystemd-shared.la
 
 
 # ------------------------------------------------------------------------------
@@ -2523,11 +2662,11 @@ systemd_sysctl_LDADD = \
 
 
 # ------------------------------------------------------------------------------
-systemd_sleep_SOURCES = \
-	src/sleep/sleep.c
+@ENABLE_SLEEP_TRUE@systemd_sleep_SOURCES = \
+@ENABLE_SLEEP_TRUE@	src/sleep/sleep.c
 
-systemd_sleep_LDADD = \
-	libsystemd-shared.la
+@ENABLE_SLEEP_TRUE@systemd_sleep_LDADD = \
+@ENABLE_SLEEP_TRUE@	libsystemd-shared.la
 
 
 # ------------------------------------------------------------------------------
@@ -2539,11 +2678,11 @@ systemd_ac_power_LDADD = \
 
 
 # ------------------------------------------------------------------------------
-systemd_delta_SOURCES = \
-	src/delta/delta.c
+@ENABLE_DELTA_TRUE@systemd_delta_SOURCES = \
+@ENABLE_DELTA_TRUE@	src/delta/delta.c
 
-systemd_delta_LDADD = \
-	libsystemd-shared.la
+@ENABLE_DELTA_TRUE@systemd_delta_LDADD = \
+@ENABLE_DELTA_TRUE@	libsystemd-shared.la
 
 
 # ------------------------------------------------------------------------------
@@ -2565,14 +2704,14 @@ systemd_rc_local_generator_LDADD = \
 
 
 # ------------------------------------------------------------------------------
-systemd_remount_fs_SOURCES = \
-	src/remount-fs/remount-fs.c \
-	src/core/mount-setup.c \
-	src/core/mount-setup.h
+@ENABLE_REMOUNT_FS_TRUE@systemd_remount_fs_SOURCES = \
+@ENABLE_REMOUNT_FS_TRUE@	src/remount-fs/remount-fs.c \
+@ENABLE_REMOUNT_FS_TRUE@	src/core/mount-setup.c \
+@ENABLE_REMOUNT_FS_TRUE@	src/core/mount-setup.h
 
-systemd_remount_fs_LDADD = \
-	libsystemd-label.la \
-	libsystemd-shared.la
+@ENABLE_REMOUNT_FS_TRUE@systemd_remount_fs_LDADD = \
+@ENABLE_REMOUNT_FS_TRUE@	libsystemd-label.la \
+@ENABLE_REMOUNT_FS_TRUE@	libsystemd-shared.la
 
 
 # ------------------------------------------------------------------------------
@@ -2602,37 +2741,33 @@ systemd_notify_LDADD = \
 
 
 # ------------------------------------------------------------------------------
-systemd_ask_password_SOURCES = \
-	src/ask-password/ask-password.c
+@ENABLE_PASSWORD_AGENTS_TRUE@systemd_ask_password_SOURCES = \
+@ENABLE_PASSWORD_AGENTS_TRUE@	src/ask-password/ask-password.c
 
-systemd_ask_password_LDADD = \
-	libsystemd-label.la \
-	libsystemd-shared.la
+@ENABLE_PASSWORD_AGENTS_TRUE@systemd_ask_password_LDADD = \
+@ENABLE_PASSWORD_AGENTS_TRUE@	libsystemd-label.la \
+@ENABLE_PASSWORD_AGENTS_TRUE@	libsystemd-shared.la
 
+@ENABLE_PASSWORD_AGENTS_TRUE@systemd_reply_password_SOURCES = \
+@ENABLE_PASSWORD_AGENTS_TRUE@	src/reply-password/reply-password.c
 
-# ------------------------------------------------------------------------------
-systemd_reply_password_SOURCES = \
-	src/reply-password/reply-password.c
+@ENABLE_PASSWORD_AGENTS_TRUE@systemd_reply_password_LDADD = \
+@ENABLE_PASSWORD_AGENTS_TRUE@	libsystemd-shared.la
 
-systemd_reply_password_LDADD = \
-	libsystemd-shared.la
+@ENABLE_PASSWORD_AGENTS_TRUE@systemd_tty_ask_password_agent_SOURCES = \
+@ENABLE_PASSWORD_AGENTS_TRUE@	src/tty-ask-password-agent/tty-ask-password-agent.c
 
-
-# ------------------------------------------------------------------------------
-systemd_cgtop_SOURCES = \
-	src/cgtop/cgtop.c
-
-systemd_cgtop_LDADD = \
-	libsystemd-shared.la
+@ENABLE_PASSWORD_AGENTS_TRUE@systemd_tty_ask_password_agent_LDADD = \
+@ENABLE_PASSWORD_AGENTS_TRUE@	libsystemd-label.la \
+@ENABLE_PASSWORD_AGENTS_TRUE@	libsystemd-shared.la
 
 
 # ------------------------------------------------------------------------------
-systemd_tty_ask_password_agent_SOURCES = \
-	src/tty-ask-password-agent/tty-ask-password-agent.c
+@ENABLE_CGTOP_TRUE@systemd_cgtop_SOURCES = \
+@ENABLE_CGTOP_TRUE@	src/cgtop/cgtop.c
 
-systemd_tty_ask_password_agent_LDADD = \
-	libsystemd-label.la \
-	libsystemd-shared.la
+@ENABLE_CGTOP_TRUE@systemd_cgtop_LDADD = \
+@ENABLE_CGTOP_TRUE@	libsystemd-shared.la
 
 
 # ------------------------------------------------------------------------------
@@ -2686,12 +2821,12 @@ test_id128_LDADD = \
 	libsystemd-id128-internal.la \
 	libsystemd-daemon.la
 
-systemd_activate_SOURCES = \
-	src/activate/activate.c
+@ENABLE_ACTIVATE_TRUE@systemd_activate_SOURCES = \
+@ENABLE_ACTIVATE_TRUE@	src/activate/activate.c
 
-systemd_activate_LDADD = \
-	libsystemd-shared.la \
-	libsystemd-daemon.la
+@ENABLE_ACTIVATE_TRUE@systemd_activate_LDADD = \
+@ENABLE_ACTIVATE_TRUE@	libsystemd-shared.la \
+@ENABLE_ACTIVATE_TRUE@	libsystemd-daemon.la
 
 @ENABLE_RANDOMSEED_TRUE@systemd_random_seed_SOURCES = \
 @ENABLE_RANDOMSEED_TRUE@	src/random-seed/random-seed.c
@@ -2784,7 +2919,7 @@ DISTCHECK_CONFIGURE_FLAGS =  \
 	--with-pamlibdir=$$dc_install_base/$(pamlibdir) \
 	--with-pamconfdir=$$dc_install_base/$(pamconfdir) \
 	--with-rootprefix=$$dc_install_base --disable-split-usr \
-	$(am__append_43) $(am__append_44) $(am__append_45)
+	$(am__append_74) $(am__append_75) $(am__append_76)
 www_target = www.freedesktop.org:/srv/www.freedesktop.org/www/software/systemd
 all: $(BUILT_SOURCES) config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
@@ -3847,6 +3982,8 @@ src/test/test-watchdog.$(OBJEXT): src/test/$(am__dirstamp) \
 test-watchdog$(EXEEXT): $(test_watchdog_OBJECTS) $(test_watchdog_DEPENDENCIES) $(EXTRA_test_watchdog_DEPENDENCIES) 
 	@rm -f test-watchdog$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(test_watchdog_OBJECTS) $(test_watchdog_LDADD) $(LIBS)
+src/core/uselessd-main-no-init.$(OBJEXT): src/core/$(am__dirstamp) \
+	src/core/$(DEPDIR)/$(am__dirstamp)
 src/core/uselessd-main.$(OBJEXT): src/core/$(am__dirstamp) \
 	src/core/$(DEPDIR)/$(am__dirstamp)
 
@@ -3971,6 +4108,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@src/core/$(DEPDIR)/mount-setup.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/core/$(DEPDIR)/shutdown.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/core/$(DEPDIR)/umount.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/core/$(DEPDIR)/uselessd-main-no-init.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/core/$(DEPDIR)/uselessd-main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/delta/$(DEPDIR)/delta.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/getty-generator/$(DEPDIR)/getty-generator.Po@am__quote@
@@ -4789,6 +4927,20 @@ src/test/test_util-test-util.obj: src/test/test-util.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_util_CFLAGS) $(CFLAGS) -c -o src/test/test_util-test-util.obj `if test -f 'src/test/test-util.c'; then $(CYGPATH_W) 'src/test/test-util.c'; else $(CYGPATH_W) '$(srcdir)/src/test/test-util.c'; fi`
 
+src/core/uselessd-main-no-init.o: src/core/main-no-init.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(uselessd_CFLAGS) $(CFLAGS) -MT src/core/uselessd-main-no-init.o -MD -MP -MF src/core/$(DEPDIR)/uselessd-main-no-init.Tpo -c -o src/core/uselessd-main-no-init.o `test -f 'src/core/main-no-init.c' || echo '$(srcdir)/'`src/core/main-no-init.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) src/core/$(DEPDIR)/uselessd-main-no-init.Tpo src/core/$(DEPDIR)/uselessd-main-no-init.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='src/core/main-no-init.c' object='src/core/uselessd-main-no-init.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(uselessd_CFLAGS) $(CFLAGS) -c -o src/core/uselessd-main-no-init.o `test -f 'src/core/main-no-init.c' || echo '$(srcdir)/'`src/core/main-no-init.c
+
+src/core/uselessd-main-no-init.obj: src/core/main-no-init.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(uselessd_CFLAGS) $(CFLAGS) -MT src/core/uselessd-main-no-init.obj -MD -MP -MF src/core/$(DEPDIR)/uselessd-main-no-init.Tpo -c -o src/core/uselessd-main-no-init.obj `if test -f 'src/core/main-no-init.c'; then $(CYGPATH_W) 'src/core/main-no-init.c'; else $(CYGPATH_W) '$(srcdir)/src/core/main-no-init.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) src/core/$(DEPDIR)/uselessd-main-no-init.Tpo src/core/$(DEPDIR)/uselessd-main-no-init.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='src/core/main-no-init.c' object='src/core/uselessd-main-no-init.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(uselessd_CFLAGS) $(CFLAGS) -c -o src/core/uselessd-main-no-init.obj `if test -f 'src/core/main-no-init.c'; then $(CYGPATH_W) 'src/core/main-no-init.c'; else $(CYGPATH_W) '$(srcdir)/src/core/main-no-init.c'; fi`
+
 src/core/uselessd-main.o: src/core/main.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(uselessd_CFLAGS) $(CFLAGS) -MT src/core/uselessd-main.o -MD -MP -MF src/core/$(DEPDIR)/uselessd-main.Tpo -c -o src/core/uselessd-main.o `test -f 'src/core/main.c' || echo '$(srcdir)/'`src/core/main.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) src/core/$(DEPDIR)/uselessd-main.Tpo src/core/$(DEPDIR)/uselessd-main.Po
@@ -5072,6 +5224,27 @@ uninstall-dist_bashcompletionDATA:
 	@list='$(dist_bashcompletion_DATA)'; test -n "$(bashcompletiondir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	dir='$(DESTDIR)$(bashcompletiondir)'; $(am__uninstall_files_from_dir)
+install-dist_cglsDATA: $(dist_cgls_DATA)
+	@$(NORMAL_INSTALL)
+	@list='$(dist_cgls_DATA)'; test -n "$(cglsdir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(cglsdir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(cglsdir)" || exit 1; \
+	fi; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(cglsdir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(cglsdir)" || exit $$?; \
+	done
+
+uninstall-dist_cglsDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(dist_cgls_DATA)'; test -n "$(cglsdir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	dir='$(DESTDIR)$(cglsdir)'; $(am__uninstall_files_from_dir)
 install-dist_dbuspolicyDATA: $(dist_dbuspolicy_DATA)
 	@$(NORMAL_INSTALL)
 	@list='$(dist_dbuspolicy_DATA)'; test -n "$(dbuspolicydir)" || list=; \
@@ -6106,7 +6279,7 @@ install-binPROGRAMS: install-libLTLIBRARIES
 
 installdirs: installdirs-recursive
 installdirs-am:
-	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(rootbindir)" "$(DESTDIR)$(rootlibexecdir)" "$(DESTDIR)$(systemgeneratordir)" "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(man3dir)" "$(DESTDIR)$(man5dir)" "$(DESTDIR)$(man7dir)" "$(DESTDIR)$(man8dir)" "$(DESTDIR)$(dbusinterfacedir)" "$(DESTDIR)$(bashcompletiondir)" "$(DESTDIR)$(dbuspolicydir)" "$(DESTDIR)$(dbussystemservicedir)" "$(DESTDIR)$(docdir)" "$(DESTDIR)$(pkgdatadir)" "$(DESTDIR)$(pkgsysconfdir)" "$(DESTDIR)$(sysctldir)" "$(DESTDIR)$(systemunitdir)" "$(DESTDIR)$(tmpfilesdir)" "$(DESTDIR)$(userunitdir)" "$(DESTDIR)$(zshcompletiondir)" "$(DESTDIR)$(polkitpolicydir)" "$(DESTDIR)$(rpmmacrosdir)" "$(DESTDIR)$(systemunitdir)" "$(DESTDIR)$(userunitdir)" "$(DESTDIR)$(pkgconfigdatadir)" "$(DESTDIR)$(pkgconfiglibdir)" "$(DESTDIR)$(sysvinitdir)" "$(DESTDIR)$(includedir)" "$(DESTDIR)$(pkgincludedir)"; do \
+	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(rootbindir)" "$(DESTDIR)$(rootlibexecdir)" "$(DESTDIR)$(systemgeneratordir)" "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(man3dir)" "$(DESTDIR)$(man5dir)" "$(DESTDIR)$(man7dir)" "$(DESTDIR)$(man8dir)" "$(DESTDIR)$(dbusinterfacedir)" "$(DESTDIR)$(bashcompletiondir)" "$(DESTDIR)$(cglsdir)" "$(DESTDIR)$(dbuspolicydir)" "$(DESTDIR)$(dbussystemservicedir)" "$(DESTDIR)$(docdir)" "$(DESTDIR)$(pkgdatadir)" "$(DESTDIR)$(pkgsysconfdir)" "$(DESTDIR)$(sysctldir)" "$(DESTDIR)$(systemunitdir)" "$(DESTDIR)$(tmpfilesdir)" "$(DESTDIR)$(userunitdir)" "$(DESTDIR)$(zshcompletiondir)" "$(DESTDIR)$(polkitpolicydir)" "$(DESTDIR)$(rpmmacrosdir)" "$(DESTDIR)$(systemunitdir)" "$(DESTDIR)$(userunitdir)" "$(DESTDIR)$(pkgconfigdatadir)" "$(DESTDIR)$(pkgconfiglibdir)" "$(DESTDIR)$(sysvinitdir)" "$(DESTDIR)$(includedir)" "$(DESTDIR)$(pkgincludedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: $(BUILT_SOURCES)
@@ -6230,18 +6403,18 @@ info: info-recursive
 info-am:
 
 install-data-am: install-dbusinterfaceDATA \
-	install-dist_bashcompletionDATA install-dist_dbuspolicyDATA \
-	install-dist_dbussystemserviceDATA install-dist_docDATA \
-	install-dist_pkgdataDATA install-dist_pkgsysconfDATA \
-	install-dist_sysctlDATA install-dist_systemunitDATA \
-	install-dist_tmpfilesDATA install-dist_userunitDATA \
-	install-dist_zshcompletionDATA install-includeHEADERS \
-	install-man install-nodist_polkitpolicyDATA \
-	install-nodist_rpmmacrosDATA install-nodist_systemunitDATA \
-	install-nodist_userunitDATA install-pkgconfigdataDATA \
-	install-pkgconfiglibDATA install-pkgincludeHEADERS \
-	install-rootbinPROGRAMS install-systemgeneratorPROGRAMS \
-	install-sysvinitDATA
+	install-dist_bashcompletionDATA install-dist_cglsDATA \
+	install-dist_dbuspolicyDATA install-dist_dbussystemserviceDATA \
+	install-dist_docDATA install-dist_pkgdataDATA \
+	install-dist_pkgsysconfDATA install-dist_sysctlDATA \
+	install-dist_systemunitDATA install-dist_tmpfilesDATA \
+	install-dist_userunitDATA install-dist_zshcompletionDATA \
+	install-includeHEADERS install-man \
+	install-nodist_polkitpolicyDATA install-nodist_rpmmacrosDATA \
+	install-nodist_systemunitDATA install-nodist_userunitDATA \
+	install-pkgconfigdataDATA install-pkgconfiglibDATA \
+	install-pkgincludeHEADERS install-rootbinPROGRAMS \
+	install-systemgeneratorPROGRAMS install-sysvinitDATA
 	@$(NORMAL_INSTALL)
 	$(MAKE) $(AM_MAKEFLAGS) install-data-hook
 install-dvi: install-dvi-recursive
@@ -6294,7 +6467,7 @@ ps: ps-recursive
 ps-am:
 
 uninstall-am: uninstall-binPROGRAMS uninstall-dbusinterfaceDATA \
-	uninstall-dist_bashcompletionDATA \
+	uninstall-dist_bashcompletionDATA uninstall-dist_cglsDATA \
 	uninstall-dist_dbuspolicyDATA \
 	uninstall-dist_dbussystemserviceDATA uninstall-dist_docDATA \
 	uninstall-dist_pkgdataDATA uninstall-dist_pkgsysconfDATA \
@@ -6331,30 +6504,30 @@ uninstall-man: uninstall-man1 uninstall-man3 uninstall-man5 \
 	html-am info info-am install install-am install-binPROGRAMS \
 	install-data install-data-am install-data-hook \
 	install-dbusinterfaceDATA install-dist_bashcompletionDATA \
-	install-dist_dbuspolicyDATA install-dist_dbussystemserviceDATA \
-	install-dist_docDATA install-dist_pkgdataDATA \
-	install-dist_pkgsysconfDATA install-dist_sysctlDATA \
-	install-dist_systemunitDATA install-dist_tmpfilesDATA \
-	install-dist_userunitDATA install-dist_zshcompletionDATA \
-	install-dvi install-dvi-am install-exec install-exec-am \
-	install-exec-hook install-html install-html-am \
-	install-includeHEADERS install-info install-info-am \
-	install-libLTLIBRARIES install-man install-man1 install-man3 \
-	install-man5 install-man7 install-man8 \
-	install-nodist_polkitpolicyDATA install-nodist_rpmmacrosDATA \
-	install-nodist_systemunitDATA install-nodist_userunitDATA \
-	install-pdf install-pdf-am install-pkgconfigdataDATA \
-	install-pkgconfiglibDATA install-pkgincludeHEADERS install-ps \
-	install-ps-am install-rootbinPROGRAMS \
-	install-rootlibexecPROGRAMS install-strip \
-	install-systemgeneratorPROGRAMS install-sysvinitDATA \
-	installcheck installcheck-am installdirs installdirs-am \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
-	pdf pdf-am ps ps-am recheck tags tags-am uninstall \
-	uninstall-am uninstall-binPROGRAMS uninstall-dbusinterfaceDATA \
-	uninstall-dist_bashcompletionDATA \
-	uninstall-dist_dbuspolicyDATA \
+	install-dist_cglsDATA install-dist_dbuspolicyDATA \
+	install-dist_dbussystemserviceDATA install-dist_docDATA \
+	install-dist_pkgdataDATA install-dist_pkgsysconfDATA \
+	install-dist_sysctlDATA install-dist_systemunitDATA \
+	install-dist_tmpfilesDATA install-dist_userunitDATA \
+	install-dist_zshcompletionDATA install-dvi install-dvi-am \
+	install-exec install-exec-am install-exec-hook install-html \
+	install-html-am install-includeHEADERS install-info \
+	install-info-am install-libLTLIBRARIES install-man \
+	install-man1 install-man3 install-man5 install-man7 \
+	install-man8 install-nodist_polkitpolicyDATA \
+	install-nodist_rpmmacrosDATA install-nodist_systemunitDATA \
+	install-nodist_userunitDATA install-pdf install-pdf-am \
+	install-pkgconfigdataDATA install-pkgconfiglibDATA \
+	install-pkgincludeHEADERS install-ps install-ps-am \
+	install-rootbinPROGRAMS install-rootlibexecPROGRAMS \
+	install-strip install-systemgeneratorPROGRAMS \
+	install-sysvinitDATA installcheck installcheck-am installdirs \
+	installdirs-am maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-compile mostlyclean-generic \
+	mostlyclean-libtool pdf pdf-am ps ps-am recheck tags tags-am \
+	uninstall uninstall-am uninstall-binPROGRAMS \
+	uninstall-dbusinterfaceDATA uninstall-dist_bashcompletionDATA \
+	uninstall-dist_cglsDATA uninstall-dist_dbuspolicyDATA \
 	uninstall-dist_dbussystemserviceDATA uninstall-dist_docDATA \
 	uninstall-dist_pkgdataDATA uninstall-dist_pkgsysconfDATA \
 	uninstall-dist_sysctlDATA uninstall-dist_systemunitDATA \
@@ -6470,21 +6643,16 @@ man/sd_is_socket_unix.3: man/sd_is_fifo.3
 man/sd_notifyf.3: man/sd_notify.3
 man/systemd-ask-password-console.path.8: man/systemd-ask-password-console.service.8
 man/systemd-ask-password-wall.path.8: man/systemd-ask-password-console.service.8
-man/systemd-ask-password-wall.service.8: man/systemd-ask-password-console.service.8
 man/systemd-fsck-root.service.8: man/systemd-fsck@.service.8
 man/systemd-fsck.8: man/systemd-fsck@.service.8
-man/systemd-hibernate.service.8: man/systemd-suspend.service.8
-man/systemd-hybrid-sleep.service.8: man/systemd-suspend.service.8
 man/systemd-initctl.8: man/systemd-initctl.service.8
 man/systemd-initctl.socket.8: man/systemd-initctl.service.8
 man/systemd-kexec.service.8: man/systemd-halt.service.8
 man/systemd-poweroff.service.8: man/systemd-halt.service.8
 man/systemd-reboot.service.8: man/systemd-halt.service.8
-man/systemd-remount-fs.8: man/systemd-remount-fs.service.8
 man/systemd-shutdown.8: man/systemd-halt.service.8
 man/systemd-shutdownd.8: man/systemd-shutdownd.service.8
 man/systemd-shutdownd.socket.8: man/systemd-shutdownd.service.8
-man/systemd-sleep.8: man/systemd-suspend.service.8
 man/systemd-sysctl.8: man/systemd-sysctl.service.8
 man/systemd-tmpfiles-clean.service.8: man/systemd-tmpfiles.8
 man/systemd-tmpfiles-setup-dev.service.8: man/systemd-tmpfiles.8
@@ -6576,19 +6744,10 @@ man/systemd-ask-password-console.path.html: man/systemd-ask-password-console.ser
 man/systemd-ask-password-wall.path.html: man/systemd-ask-password-console.service.html
 	$(html-alias)
 
-man/systemd-ask-password-wall.service.html: man/systemd-ask-password-console.service.html
-	$(html-alias)
-
 man/systemd-fsck-root.service.html: man/systemd-fsck@.service.html
 	$(html-alias)
 
 man/systemd-fsck.html: man/systemd-fsck@.service.html
-	$(html-alias)
-
-man/systemd-hibernate.service.html: man/systemd-suspend.service.html
-	$(html-alias)
-
-man/systemd-hybrid-sleep.service.html: man/systemd-suspend.service.html
 	$(html-alias)
 
 man/systemd-initctl.html: man/systemd-initctl.service.html
@@ -6606,9 +6765,6 @@ man/systemd-poweroff.service.html: man/systemd-halt.service.html
 man/systemd-reboot.service.html: man/systemd-halt.service.html
 	$(html-alias)
 
-man/systemd-remount-fs.html: man/systemd-remount-fs.service.html
-	$(html-alias)
-
 man/systemd-shutdown.html: man/systemd-halt.service.html
 	$(html-alias)
 
@@ -6616,9 +6772,6 @@ man/systemd-shutdownd.html: man/systemd-shutdownd.service.html
 	$(html-alias)
 
 man/systemd-shutdownd.socket.html: man/systemd-shutdownd.service.html
-	$(html-alias)
-
-man/systemd-sleep.html: man/systemd-suspend.service.html
 	$(html-alias)
 
 man/systemd-sysctl.html: man/systemd-sysctl.service.html
@@ -6644,6 +6797,29 @@ man/systemd-user.conf.html: man/systemd-system.conf.html
 @ENABLE_RANDOMSEED_TRUE@man/systemd-random-seed.8: man/systemd-random-seed.service.8
 @ENABLE_RANDOMSEED_TRUE@man/systemd-random-seed.html: man/systemd-random-seed.service.html
 @ENABLE_RANDOMSEED_TRUE@	$(html-alias)
+
+@ENABLE_PASSWORD_AGENTS_TRUE@man/systemd-ask-password-wall.service.8: man/systemd-ask-password-console.service.8
+
+@ENABLE_PASSWORD_AGENTS_TRUE@man/systemd-ask-password-wall.service.html: man/systemd-ask-password-console.service.html
+@ENABLE_PASSWORD_AGENTS_TRUE@	$(html-alias)
+
+@ENABLE_REMOUNT_FS_TRUE@man/systemd-remount-fs.8: man/systemd-remount-fs.service.8
+
+@ENABLE_REMOUNT_FS_TRUE@man/systemd-remount-fs.html: man/systemd-remount-fs.service.html
+@ENABLE_REMOUNT_FS_TRUE@	$(html-alias)
+
+@ENABLE_SLEEP_TRUE@man/systemd-hibernate.service.8: man/systemd-suspend.service.8
+@ENABLE_SLEEP_TRUE@man/systemd-hybrid-sleep.service.8: man/systemd-suspend.service.8
+@ENABLE_SLEEP_TRUE@man/systemd-sleep.8: man/systemd-suspend.service.8
+
+@ENABLE_SLEEP_TRUE@man/systemd-hibernate.service.html: man/systemd-suspend.service.html
+@ENABLE_SLEEP_TRUE@	$(html-alias)
+
+@ENABLE_SLEEP_TRUE@man/systemd-hybrid-sleep.service.html: man/systemd-suspend.service.html
+@ENABLE_SLEEP_TRUE@	$(html-alias)
+
+@ENABLE_SLEEP_TRUE@man/systemd-sleep.html: man/systemd-suspend.service.html
+@ENABLE_SLEEP_TRUE@	$(html-alias)
 
 .PHONY: man
 man: $(MANPAGES) $(MANPAGES_ALIAS) $(HTML_FILES) $(HTML_ALIAS)

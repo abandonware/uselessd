@@ -592,8 +592,8 @@ pid_t unit_search_main_pid(Unit *u) {
 
 int manager_setup_cgroup(Manager *m) {
         _cleanup_free_ char *path = NULL;
+        char *e;
         int r;
-        char *e, *a;
 
         assert(m);
 
@@ -613,10 +613,14 @@ int manager_setup_cgroup(Manager *m) {
                 return r;
         }
 
-        /* Already in /system.slice? If so, let's cut this off again */
-        if (m->running_as == SYSTEMD_SYSTEM) {
-                e = endswith(m->cgroup_root, "/" SPECIAL_SYSTEM_SLICE);
-                if (e)
+       /* LEGACY: Already in /system.slice? If so, let's cut this
+        * off. This is to support live upgrades from older systemd
+        * versions where PID 1 was moved there. */
+         if (m->running_as == SYSTEMD_SYSTEM) {
+                 e = endswith(m->cgroup_root, "/" SPECIAL_SYSTEM_SLICE);
+                 if (!e)
+                        e = endswith(m->cgroup_root, "/system");
+                 if (e)
                         *e = 0;
         }
 
@@ -635,16 +639,12 @@ int manager_setup_cgroup(Manager *m) {
 
         log_debug("Using cgroup controller " SYSTEMD_CGROUP_CONTROLLER ". File system hierarchy is at %s.", path);
 
-        /* 3. Realize the system slice and put us in there */
-        if (m->running_as == SYSTEMD_SYSTEM) {
-                a = strappenda(m->cgroup_root, "/" SPECIAL_SYSTEM_SLICE);
-                r = cg_create_and_attach(SYSTEMD_CGROUP_CONTROLLER, a, 0);
-        } else
-                r = cg_create_and_attach(SYSTEMD_CGROUP_CONTROLLER, m->cgroup_root, 0);
+        /* 3. Make sure we are in the root cgroup, not system.slice */
+        r = cg_create_and_attach(SYSTEMD_CGROUP_CONTROLLER, m->cgroup_root, 0);
         if (r < 0) {
                 log_error("Failed to create root cgroup hierarchy: %s", strerror(-r));
                 return r;
-        }
+	    }
 
         /* 4. And pin it, so that it cannot be unmounted */
         if (m->pin_cgroupfs_fd >= 0)

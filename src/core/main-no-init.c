@@ -49,7 +49,9 @@
 #include "strv.h"
 #include "def.h"
 #include "virt.h"
+#include "watchdog.h"
 #include "path-util.h"
+#include "switch-root.h"
 #include "capability.h"
 #include "killall.h"
 #include "env-util.h"
@@ -58,6 +60,9 @@
 #include "sd-messages.h"
 
 #include "mount-setup.h"
+#ifdef HAVE_KMOD
+#include "kmod-setup.h"
+#endif
 #include "fileio.h"
 
 static enum {
@@ -72,12 +77,17 @@ static enum {
 static char *arg_default_unit = NULL;
 static SystemdRunningAs arg_running_as = SYSTEMD_SYSTEM;
 
-static bool arg_dump_core = false;
+static bool arg_dump_core = true;
+static bool arg_crash_shell = false;
+static int arg_crash_chvt = -1;
 static bool arg_confirm_spawn = false;
 static bool arg_show_status = true;
+static bool arg_switched_root = false;
 static char ***arg_join_controllers = NULL;
 static ExecOutput arg_default_std_output = EXEC_OUTPUT_SYSLOG;
 static ExecOutput arg_default_std_error = EXEC_OUTPUT_INHERIT;
+static usec_t arg_runtime_watchdog = 0;
+static usec_t arg_shutdown_watchdog = 10 * USEC_PER_MINUTE;
 static char **arg_default_environment = NULL;
 static struct rlimit *arg_default_rlimit[RLIMIT_NLIMITS] = {};
 static uint64_t arg_capability_bounding_set_drop = 0;
@@ -96,6 +106,180 @@ static int set_default_unit(const char *u) {
 
         free(arg_default_unit);
         arg_default_unit = c;
+
+        return 0;
+}
+
+static int parse_proc_cmdline_word(const char *word) {
+
+        static const char * const rlmap[] = {
+                "emergency", SPECIAL_EMERGENCY_TARGET,
+                "-b",        SPECIAL_EMERGENCY_TARGET,
+                "single",    SPECIAL_RESCUE_TARGET,
+                "-s",        SPECIAL_RESCUE_TARGET,
+                "s",         SPECIAL_RESCUE_TARGET,
+                "S",         SPECIAL_RESCUE_TARGET,
+                "1",         SPECIAL_RESCUE_TARGET,
+                "2",         SPECIAL_RUNLEVEL2_TARGET,
+                "3",         SPECIAL_RUNLEVEL3_TARGET,
+                "4",         SPECIAL_RUNLEVEL4_TARGET,
+                "5",         SPECIAL_RUNLEVEL5_TARGET,
+        };
+
+        assert(word);
+
+        if (startswith(word, "systemd.unit=")) {
+
+                if (!in_initrd())
+                        return set_default_unit(word + 13);
+
+        } else if (startswith(word, "rd.systemd.unit=")) {
+
+                if (in_initrd())
+                        return set_default_unit(word + 16);
+
+        } else if (startswith(word, "systemd.log_target=")) {
+
+                if (log_set_target_from_string(word + 19) < 0)
+                        log_warning("Failed to parse log target %s. Ignoring.", word + 19);
+
+        } else if (startswith(word, "systemd.log_level=")) {
+
+                if (log_set_max_level_from_string(word + 18) < 0)
+                        log_warning("Failed to parse log level %s. Ignoring.", word + 18);
+
+        } else if (startswith(word, "systemd.log_color=")) {
+
+                if (log_show_color_from_string(word + 18) < 0)
+                        log_warning("Failed to parse log color setting %s. Ignoring.", word + 18);
+
+        } else if (startswith(word, "systemd.log_location=")) {
+
+                if (log_show_location_from_string(word + 21) < 0)
+                        log_warning("Failed to parse log location setting %s. Ignoring.", word + 21);
+
+        } else if (startswith(word, "systemd.dump_core=")) {
+                int r;
+
+                if ((r = parse_boolean(word + 18)) < 0)
+                        log_warning("Failed to parse dump core switch %s. Ignoring.", word + 18);
+                else
+                        arg_dump_core = r;
+
+        } else if (startswith(word, "systemd.crash_shell=")) {
+                int r;
+
+                if ((r = parse_boolean(word + 20)) < 0)
+                        log_warning("Failed to parse crash shell switch %s. Ignoring.", word + 20);
+                else
+                        arg_crash_shell = r;
+
+        } else if (startswith(word, "systemd.confirm_spawn=")) {
+                int r;
+
+                if ((r = parse_boolean(word + 22)) < 0)
+                        log_warning("Failed to parse confirm spawn switch %s. Ignoring.", word + 22);
+                else
+                        arg_confirm_spawn = r;
+
+        } else if (startswith(word, "systemd.crash_chvt=")) {
+                int k;
+
+                if (safe_atoi(word + 19, &k) < 0)
+                        log_warning("Failed to parse crash chvt switch %s. Ignoring.", word + 19);
+                else
+                        arg_crash_chvt = k;
+
+        } else if (startswith(word, "systemd.show_status=")) {
+                int r;
+
+                if ((r = parse_boolean(word + 20)) < 0)
+                        log_warning("Failed to parse show status switch %s. Ignoring.", word + 20);
+                else
+                        arg_show_status = r;
+        } else if (startswith(word, "systemd.default_standard_output=")) {
+                int r;
+
+                if ((r = exec_output_from_string(word + 32)) < 0)
+                        log_warning("Failed to parse default standard output switch %s. Ignoring.", word + 32);
+                else
+                        arg_default_std_output = r;
+        } else if (startswith(word, "systemd.default_standard_error=")) {
+                int r;
+
+                if ((r = exec_output_from_string(word + 31)) < 0)
+                        log_warning("Failed to parse default standard error switch %s. Ignoring.", word + 31);
+                else
+                        arg_default_std_error = r;
+        } else if (startswith(word, "systemd.setenv=")) {
+                _cleanup_free_ char *cenv = NULL;
+
+                cenv = strdup(word + 15);
+                if (!cenv)
+                        return -ENOMEM;
+
+                if (env_assignment_is_valid(cenv)) {
+                        char **env;
+
+                        env = strv_env_set(arg_default_environment, cenv);
+                        if (env)
+                                arg_default_environment = env;
+                        else
+                                log_warning("Setting environment variable '%s' failed, ignoring: %m", cenv);
+                } else
+                        log_warning("Environment variable name '%s' is not valid. Ignoring.", cenv);
+
+        } else if (startswith(word, "systemd.") ||
+                   (in_initrd() && startswith(word, "rd.systemd."))) {
+
+                const char *c;
+
+                /* Ignore systemd.journald.xyz and friends */
+                c = word;
+                if (startswith(c, "rd."))
+                        c += 3;
+                if (startswith(c, "systemd."))
+                        c += 8;
+                if (c[strcspn(c, ".=")] != '.')  {
+
+                        log_warning("Unknown kernel switch %s. Ignoring.", word);
+
+                        log_info("Supported kernel switches:\n"
+                                 "systemd.unit=UNIT                        Default unit to start\n"
+                                 "rd.systemd.unit=UNIT                     Default unit to start when run in initrd\n"
+                                 "systemd.dump_core=0|1                    Dump core on crash\n"
+                                 "systemd.crash_shell=0|1                  Run shell on crash\n"
+                                 "systemd.crash_chvt=N                     Change to VT #N on crash\n"
+                                 "systemd.confirm_spawn=0|1                Confirm every process spawn\n"
+                                 "systemd.show_status=0|1                  Show status updates on the console during bootup\n"
+                                 "systemd.log_target=console|kmsg|syslog|syslog-or-kmsg|null\n"
+                                 "                                         Log target\n"
+                                 "systemd.log_level=LEVEL                  Log level\n"
+                                 "systemd.log_color=0|1                    Highlight important log messages\n"
+                                 "systemd.log_location=0|1                 Include code location in log messages\n"
+                                 "systemd.default_standard_output=null|tty|syslog|syslog+console|kmsg|kmsg+console\n"
+                                 "                                         Set default log output for services\n"
+                                 "systemd.default_standard_error=null|tty|syslog|syslog+console|kmsg|kmsg+console\n"
+                                 "                                         Set default log error output for services\n"
+                                 "systemd.setenv=ASSIGNMENT                Set an environment variable for all spawned processes\n");
+                }
+
+        } else if (streq(word, "quiet"))
+                arg_show_status = false;
+        else if (streq(word, "systemd.debug")) {
+                /* Log to kmsg, using an exclusive
+                 * namespace, as we do not have journald
+                 * to delegate to later on. */
+                log_set_max_level(LOG_DEBUG);
+                log_set_target(LOG_TARGET_KMSG);
+        } else if (!in_initrd()) {
+                unsigned i;
+
+                /* SysV compatibility */
+                for (i = 0; i < ELEMENTSOF(rlmap); i += 2)
+                        if (streq(word, rlmap[i]))
+                                return set_default_unit(rlmap[i+1]);
+        }
 
         return 0;
 }
@@ -130,6 +314,7 @@ DEFINE_SETTER(config_parse_level2, log_set_max_level_from_string, "log level")
 DEFINE_SETTER(config_parse_target, log_set_target_from_string, "target")
 DEFINE_SETTER(config_parse_color, log_show_color_from_string, "color" )
 DEFINE_SETTER(config_parse_location, log_show_location_from_string, "location")
+
 
 static int config_parse_cpu_affinity2(const char *unit,
                                       const char *filename,
@@ -309,11 +494,15 @@ static int parse_config_file(void) {
                 { "Manager", "LogColor",              config_parse_color,        0, NULL                     },
                 { "Manager", "LogLocation",           config_parse_location,     0, NULL                     },
                 { "Manager", "DumpCore",              config_parse_bool,         0, &arg_dump_core           },
+                { "Manager", "CrashShell",            config_parse_bool,         0, &arg_crash_shell         },
                 { "Manager", "ShowStatus",            config_parse_bool,         0, &arg_show_status         },
+                { "Manager", "CrashChVT",             config_parse_int,          0, &arg_crash_chvt          },
                 { "Manager", "CPUAffinity",           config_parse_cpu_affinity2, 0, NULL                    },
                 { "Manager", "DefaultStandardOutput", config_parse_output,       0, &arg_default_std_output  },
                 { "Manager", "DefaultStandardError",  config_parse_output,       0, &arg_default_std_error   },
                 { "Manager", "JoinControllers",       config_parse_join_controllers, 0, &arg_join_controllers },
+                { "Manager", "RuntimeWatchdogSec",    config_parse_sec,          0, &arg_runtime_watchdog    },
+                { "Manager", "ShutdownWatchdogSec",   config_parse_sec,          0, &arg_shutdown_watchdog   },
                 { "Manager", "CapabilityBoundingSet", config_parse_bounding_set, 0, &arg_capability_bounding_set_drop },
                 { "Manager", "TimerSlackNSec",        config_parse_nsec,         0, &arg_timer_slack_nsec    },
                 { "Manager", "DefaultEnvironment",    config_parse_environ,      0, &arg_default_environment },
@@ -357,6 +546,40 @@ static int parse_config_file(void) {
         return 0;
 }
 
+static int parse_proc_cmdline(void) {
+        _cleanup_free_ char *line = NULL;
+        char *w, *state;
+        int r;
+        size_t l;
+
+        /* Don't read /proc/cmdline if we are in a container, since
+         * that is only relevant for the host system */
+        if (detect_container(NULL) > 0)
+                return 0;
+
+        r = read_one_line_file("/proc/cmdline", &line);
+        if (r < 0) {
+                log_warning("Failed to read /proc/cmdline, ignoring: %s", strerror(-r));
+                return 0;
+        }
+
+        FOREACH_WORD_QUOTED(w, l, line, state) {
+                _cleanup_free_ char *word;
+
+                word = strndup(w, l);
+                if (!word)
+                        return log_oom();
+
+                r = parse_proc_cmdline_word(word);
+                if (r < 0) {
+                        log_error("Failed on cmdline argument %s: %s", word, strerror(-r));
+                        return r;
+                }
+        }
+
+        return 0;
+}
+
 static int parse_argv(int argc, char *argv[]) {
 
         enum {
@@ -366,13 +589,16 @@ static int parse_argv(int argc, char *argv[]) {
                 ARG_LOG_LOCATION,
                 ARG_UNIT,
                 ARG_SYSTEM,
+                ARG_USER,
                 ARG_TEST,
                 ARG_VERSION,
                 ARG_DUMP_CONFIGURATION_ITEMS,
                 ARG_DUMP_CORE,
+                ARG_CRASH_SHELL,
                 ARG_CONFIRM_SPAWN,
                 ARG_SHOW_STATUS,
                 ARG_DESERIALIZE,
+                ARG_SWITCHED_ROOT,
                 ARG_INTROSPECT,
                 ARG_DEFAULT_STD_OUTPUT,
                 ARG_DEFAULT_STD_ERROR
@@ -385,14 +611,17 @@ static int parse_argv(int argc, char *argv[]) {
                 { "log-location",             optional_argument, NULL, ARG_LOG_LOCATION             },
                 { "unit",                     required_argument, NULL, ARG_UNIT                     },
                 { "system",                   no_argument,       NULL, ARG_SYSTEM                   },
+                { "user",                     no_argument,       NULL, ARG_USER                     },
                 { "test",                     no_argument,       NULL, ARG_TEST                     },
                 { "help",                     no_argument,       NULL, 'h'                          },
                 { "version",                  no_argument,       NULL, ARG_VERSION                  },
                 { "dump-configuration-items", no_argument,       NULL, ARG_DUMP_CONFIGURATION_ITEMS },
                 { "dump-core",                optional_argument, NULL, ARG_DUMP_CORE                },
+                { "crash-shell",              optional_argument, NULL, ARG_CRASH_SHELL              },
                 { "confirm-spawn",            optional_argument, NULL, ARG_CONFIRM_SPAWN            },
                 { "show-status",              optional_argument, NULL, ARG_SHOW_STATUS              },
                 { "deserialize",              required_argument, NULL, ARG_DESERIALIZE              },
+                { "switched-root",            no_argument,       NULL, ARG_SWITCHED_ROOT            },
                 { "introspect",               optional_argument, NULL, ARG_INTROSPECT               },
                 { "default-standard-output",  required_argument, NULL, ARG_DEFAULT_STD_OUTPUT,      },
                 { "default-standard-error",   required_argument, NULL, ARG_DEFAULT_STD_ERROR,       },
@@ -483,6 +712,10 @@ static int parse_argv(int argc, char *argv[]) {
                         arg_running_as = SYSTEMD_SYSTEM;
                         break;
 
+                case ARG_USER:
+                        arg_running_as = SYSTEMD_USER;
+                        break;
+
                 case ARG_TEST:
                         arg_action = ACTION_TEST;
                         break;
@@ -502,6 +735,15 @@ static int parse_argv(int argc, char *argv[]) {
                                 return r;
                         }
                         arg_dump_core = r;
+                        break;
+
+                case ARG_CRASH_SHELL:
+                        r = optarg ? parse_boolean(optarg) : 1;
+                        if (r < 0) {
+                                log_error("Failed to parse crash shell boolean %s.", optarg);
+                                return r;
+                        }
+                        arg_crash_shell = r;
                         break;
 
                 case ARG_CONFIRM_SPAWN:
@@ -547,6 +789,10 @@ static int parse_argv(int argc, char *argv[]) {
 
                         break;
                 }
+
+                case ARG_SWITCHED_ROOT:
+                        arg_switched_root = true;
+                        break;
 
                 case ARG_INTROSPECT: {
                         const char * const * i = NULL;
@@ -603,6 +849,24 @@ static int parse_argv(int argc, char *argv[]) {
                 return -EINVAL;
         }
 
+        if (detect_container(NULL) > 0) {
+                char **a;
+
+                /* All /proc/cmdline arguments the kernel didn't
+                 * understand it passed to us. We're not really
+                 * interested in that usually since /proc/cmdline is
+                 * more interesting and complete. With one exception:
+                 * if we are run in a container /proc/cmdline is not
+                 * relevant for the container, hence we rely on argv[]
+                 * instead. */
+
+                for (a = argv; a < argv + argc; a++)
+                        if ((r = parse_proc_cmdline_word(*a)) < 0) {
+                                log_error("Failed on cmdline argument %s: %s", *a, strerror(-r));
+                                return r;
+                        }
+        }
+
         return 0;
 }
 
@@ -615,8 +879,10 @@ static int help(void) {
                "     --dump-configuration-items  Dump understood unit configuration items\n"
                "     --introspect[=INTERFACE]    Extract D-Bus interface data\n"
                "     --unit=UNIT                 Set default unit\n"
-               "     --system                    Run a system instance (default and only)\n"
+               "     --system                    Run a system instance, even if PID != 1\n"
+               "     --user                      Run a user instance\n"
                "     --dump-core[=0|1]           Dump core on crash\n"
+               "     --crash-shell[=0|1]         Run shell on crash\n"
                "     --confirm-spawn[=0|1]       Ask for confirmation when spawning processes\n"
                "     --show-status[=0|1]         Show status updates on the console during bootup\n"
                "     --log-target=TARGET         Set log target (console, syslog, kmsg, syslog-or-kmsg, null)\n"
@@ -634,6 +900,69 @@ static int version(void) {
         puts(SYSTEMD_FEATURES);
 
         return 0;
+}
+
+static int prepare_reexecute(Manager *m, FILE **_f, FDSet **_fds, bool switching_root) {
+        FILE *f = NULL;
+        FDSet *fds = NULL;
+        int r;
+
+        assert(m);
+        assert(_f);
+        assert(_fds);
+
+        r = manager_open_serialization(m, &f);
+        if (r < 0) {
+                log_error("Failed to create serialization file: %s", strerror(-r));
+                goto fail;
+        }
+
+        /* Make sure nothing is really destructed when we shut down */
+        m->n_reloading ++;
+        bus_broadcast_reloading(m, true);
+
+        fds = fdset_new();
+        if (!fds) {
+                r = -ENOMEM;
+                log_error("Failed to allocate fd set: %s", strerror(-r));
+                goto fail;
+        }
+
+        r = manager_serialize(m, f, fds, switching_root);
+        if (r < 0) {
+                log_error("Failed to serialize state: %s", strerror(-r));
+                goto fail;
+        }
+
+        if (fseeko(f, 0, SEEK_SET) < 0) {
+                log_error("Failed to rewind serialization fd: %m");
+                goto fail;
+        }
+
+        r = fd_cloexec(fileno(f), false);
+        if (r < 0) {
+                log_error("Failed to disable O_CLOEXEC for serialization: %s", strerror(-r));
+                goto fail;
+        }
+
+        r = fdset_cloexec(fds, false);
+        if (r < 0) {
+                log_error("Failed to disable O_CLOEXEC for serialization fds: %s", strerror(-r));
+                goto fail;
+        }
+
+        *_f = f;
+        *_fds = fds;
+
+        return 0;
+
+fail:
+        fdset_free(fds);
+
+        if (f)
+                fclose(f);
+
+        return r;
 }
 
 static int bump_rlimit_nofile(struct rlimit *saved_rlimit) {
@@ -747,13 +1076,17 @@ int main(int argc, char *argv[]) {
         usec_t before_startup, after_startup;
         char timespan[FORMAT_TIMESPAN_MAX];
         FDSet *fds = NULL;
+        bool reexecute = false;
+        const char *shutdown_verb = NULL;
         dual_timestamp initrd_timestamp = { 0ULL, 0ULL };
         dual_timestamp userspace_timestamp = { 0ULL, 0ULL };
         dual_timestamp kernel_timestamp = { 0ULL, 0ULL };
         static char uselessd[] = "uselessd";
         bool skip_setup = false;
         int j;
+        bool arm_reboot_watchdog = false;
         bool queue_default_job = false;
+        char *switch_root_dir = NULL, *switch_root_init = NULL;
         static struct rlimit saved_rlimit_nofile = { 0, 0 };
 
 #ifdef HAVE_SYSV_COMPAT
@@ -815,6 +1148,10 @@ int main(int argc, char *argv[]) {
 
         if (parse_config_file() < 0)
                 goto finish;
+
+        if (arg_running_as == SYSTEMD_SYSTEM)
+                if (parse_proc_cmdline() < 0)
+                        goto finish;
 
         if (parse_argv(argc, argv) < 0)
                 goto finish;
@@ -888,6 +1225,9 @@ int main(int argc, char *argv[]) {
                 test_cgroups();
         }
 
+        if (arg_running_as == SYSTEMD_SYSTEM && arg_runtime_watchdog > 0)
+                watchdog_set_timeout(&arg_runtime_watchdog);
+
         if (arg_timer_slack_nsec != (nsec_t) -1)
                 if (prctl(PR_SET_TIMERSLACK, arg_timer_slack_nsec) < 0)
                         log_error("Failed to adjust timer slack: %m");
@@ -917,6 +1257,8 @@ int main(int argc, char *argv[]) {
         m->confirm_spawn = arg_confirm_spawn;
         m->default_std_output = arg_default_std_output;
         m->default_std_error = arg_default_std_error;
+        m->runtime_watchdog = arg_runtime_watchdog;
+        m->shutdown_watchdog = arg_shutdown_watchdog;
         m->userspace_timestamp = userspace_timestamp;
         m->kernel_timestamp = kernel_timestamp;
         m->initrd_timestamp = initrd_timestamp;
@@ -929,7 +1271,7 @@ int main(int argc, char *argv[]) {
         manager_set_show_status(m, arg_show_status);
 
         /* Remember whether we should queue the default job */
-        queue_default_job = !serialization;
+        queue_default_job = !serialization || arg_switched_root;
 
         before_startup = now(CLOCK_MONOTONIC);
 
@@ -1032,7 +1374,7 @@ int main(int argc, char *argv[]) {
 
                 case MANAGER_EXIT:
                         retval = EXIT_SUCCESS;
-                        log_debug("Remove uselessd from the premises.");
+                        log_debug("Exit.");
                         goto finish;
 
                 case MANAGER_RELOAD:
@@ -1043,25 +1385,50 @@ int main(int argc, char *argv[]) {
                         break;
 
                 case MANAGER_REEXECUTE:
-                        log_notice("Reexecute request leads to exit in non-init. Exiting.");
+
+                        if (prepare_reexecute(m, &serialization, &fds, false) < 0)
+                                goto finish;
+
+                        reexecute = true;
+                        log_notice("Remove uselessd from the premises.");
                         goto finish;
 
                 case MANAGER_SWITCH_ROOT:
-                        log_error("Switching root on a no-init instance unsupported. Exiting.");
+                        /* Steal the switch root parameters */
+                        switch_root_dir = m->switch_root;
+                        switch_root_init = m->switch_root_init;
+                        m->switch_root = m->switch_root_init = NULL;
+
+                        if (!switch_root_init)
+                                if (prepare_reexecute(m, &serialization, &fds, true) < 0)
+                                        goto finish;
+
+                        reexecute = true;
+                        log_notice("Switching root.");
                         goto finish;
 
                 case MANAGER_REBOOT:
                 case MANAGER_POWEROFF:
                 case MANAGER_HALT:
                 case MANAGER_KEXEC: {
-                       log_error("Running stage 3 system command from a no-init instance. Exiting.");
-                       goto finish;
+                        static const char * const table[_MANAGER_EXIT_CODE_MAX] = {
+                                [MANAGER_REBOOT] = "reboot",
+                                [MANAGER_POWEROFF] = "poweroff",
+                                [MANAGER_HALT] = "halt",
+                                [MANAGER_KEXEC] = "kexec"
+                        };
+
+                        assert_se(shutdown_verb = table[m->exit_code]);
+                        arm_reboot_watchdog = m->exit_code == MANAGER_REBOOT;
+
+                        log_notice("Shutting down.");
+                        goto finish;
+                }
 
                 default:
                         assert_not_reached("Unknown exit code.");
                 }
         }
-	}
 
 finish:
         if (m)
@@ -1081,6 +1448,44 @@ finish:
 
         if (fds)
                 fdset_free(fds);
+
+        if (shutdown_verb) {
+                const char * command_line[] = {
+                        SYSTEMD_SHUTDOWN_BINARY_PATH,
+                        shutdown_verb,
+                        NULL
+                };
+                char **env_block;
+
+                if (arm_reboot_watchdog && arg_shutdown_watchdog > 0) {
+                        char e[32];
+
+                        /* If we reboot let's set the shutdown
+                         * watchdog and tell the shutdown binary to
+                         * repeatedly ping it */
+                        watchdog_set_timeout(&arg_shutdown_watchdog);
+                        watchdog_close(false);
+
+                        /* Tell the binary how often to ping */
+                        snprintf(e, sizeof(e), "WATCHDOG_USEC=%llu", (unsigned long long) arg_shutdown_watchdog);
+                        char_array_0(e);
+
+                        env_block = strv_append(environ, e);
+                } else {
+                        env_block = strv_copy(environ);
+                        watchdog_close(true);
+                }
+
+                /* Avoid the creation of new processes forked by the
+                 * kernel; at this point, we will not listen to the
+                 * signals anyway */
+                if (detect_container(NULL) <= 0)
+                        cg_uninstall_release_agent(SYSTEMD_CGROUP_CONTROLLER);
+
+                execve(SYSTEMD_SHUTDOWN_BINARY_PATH, (char **) command_line, env_block);
+                free(env_block);
+                log_error("Failed to execute shutdown binary, freezing: %m");
+        }
 
         return retval;
 }

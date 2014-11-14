@@ -19,8 +19,8 @@
   <a href="systemd.directives.html">Directives </a>·
   <a href="../python-systemd/index.html">Python </a>·
   <a href="../libudev/index.html">libudev </a>·
-  <a href="../libudev/index.html">gudev </a><span style="float:right">systemd 3</span><hr><div class="refentry"><a name="sd-daemon"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>sd-daemon, SD_EMERG, SD_ALERT, SD_CRIT, SD_ERR, SD_WARNING, SD_NOTICE, SD_INFO, SD_DEBUG — Reference implementation of APIs for
-                new-style daemons</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><pre class="funcsynopsisinfo">#include &lt;systemd/sd-daemon.h&gt;</pre></div><div class="cmdsynopsis"><p><code class="command">pkg-config --cflags --libs libsystemd-daemon</code> </p></div></div><div class="refsect1"><a name="idp44258180"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="#Description">¶</a></h2><p><code class="filename">sd-daemon.c</code> and
+  <a href="../libudev/index.html">gudev </a><span style="float:right">systemd 7</span><hr><div class="refentry"><a name="sd-daemon"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>sd-daemon, SD_EMERG, SD_ALERT, SD_CRIT, SD_ERR, SD_WARNING, SD_NOTICE, SD_INFO, SD_DEBUG — Reference implementation of APIs for
+                new-style daemons</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><pre class="funcsynopsisinfo">#include &lt;systemd/sd-daemon.h&gt;</pre></div><div class="cmdsynopsis"><p><code class="command">pkg-config --cflags --libs libsystemd-daemon</code> </p></div></div><div class="refsect1"><a name="idp38545660"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="#Description">¶</a></h2><p><code class="filename">sd-daemon.c</code> and
                 <code class="filename">sd-daemon.h</code> provide a reference
                 implementation of various APIs for new-style daemons,
                 as implemented by the
@@ -53,8 +53,8 @@
                 log level system. To use these prefixes simply prefix
                 every line with one of these strings. A line that is
                 not prefixed will be logged at the default log level
-                SD_INFO.</p><div class="example"><a name="idp46628516"></a><p class="title"><b>Example 1. Hello World</b></p><div class="example-contents"><p>A daemon may log with the log level
-                        NOTICE by issuing this call:</p><pre class="programlisting">fprintf(stderr, SD_NOTICE "Hello World!\n");</pre></div></div><br class="example-break"></div><div class="refsect1"><a name="idp46629684"></a><h2 id="Notes">Notes<a class="headerlink" title="Permalink to this headline" href="#Notes">¶</a></h2><p>These interfaces are provided by the reference
+                SD_INFO.</p><div class="example"><a name="idp38552884"></a><p class="title"><b>Example 1. Hello World</b></p><div class="example-contents"><p>A daemon may log with the log level
+                        NOTICE by issuing this call:</p><pre class="programlisting">fprintf(stderr, SD_NOTICE "Hello World!\n");</pre></div></div><br class="example-break"></div><div class="refsect1"><a name="idp38554028"></a><h2 id="Notes">Notes<a class="headerlink" title="Permalink to this headline" href="#Notes">¶</a></h2><p>These interfaces are provided by the reference
                 implementation of APIs for new-style daemons and
                 distributed with the systemd package. The algorithms
                 they implement are simple, and can easily be
@@ -78,7 +78,7 @@
                 during compilation and the reference implementation is
                 used as drop-in files. In addition, if
                 <code class="filename">sd-daemon.c</code> is compiled on
-                non-Linux systems they become NOPs.</p></div><div class="refsect1"><a name="idp44163796"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="#See%20Also">¶</a></h2><p>
+                non-Linux systems they become NOPs.</p></div><div class="refsect1"><a name="idp38515564"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="#See%20Also">¶</a></h2><p>
                         <a href="systemd.html"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
                         <a href="sd_listen_fds.html"><span class="citerefentry"><span class="refentrytitle">sd_listen_fds</span>(3)</span></a>,
                         <a href="sd_notify.html"><span class="citerefentry"><span class="refentrytitle">sd_notify</span>(3)</span></a>,

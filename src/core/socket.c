@@ -1887,24 +1887,39 @@ _pure_ static const char *socket_sub_state_to_string(Unit *u) {
 }
 
 const char* socket_port_type_to_string(SocketPort *p) {
-
         assert(p);
 
         switch (p->type) {
                 case SOCKET_SOCKET:
                         switch (p->address.type) {
-                                case SOCK_STREAM: return "Stream";
-                                case SOCK_DGRAM: return "Datagram";
-                                case SOCK_SEQPACKET: return "SequentialPacket";
+
+                                case SOCK_STREAM:
+                                        return "Stream";
+
+                                case SOCK_DGRAM:
+                                        return "Datagram";
+
+                                case SOCK_SEQPACKET:
+                                        return "SequentialPacket";
+
                                 case SOCK_RAW:
                                         if (socket_address_family(&p->address) == AF_NETLINK)
                                                 return "Netlink";
-                                default: return "Invalid";
+
+                                default:
+                                        return "Invalid";
                         }
-                case SOCKET_SPECIAL: return "Special";
-                case SOCKET_MQUEUE: return "MessageQueue";
-                case SOCKET_FIFO: return "FIFO";
-                default: return NULL;
+                case SOCKET_SPECIAL:
+                        return "Special";
+
+                case SOCKET_MQUEUE:
+                        return "MessageQueue";
+
+                case SOCKET_FIFO:
+                        return "FIFO";
+
+                default:
+                        return NULL;
         }
 }
 

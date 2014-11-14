@@ -19,10 +19,10 @@
   <a href="systemd.directives.html">Directives </a>·
   <a href="../python-systemd/index.html">Python </a>·
   <a href="../libudev/index.html">libudev </a>·
-  <a href="../libudev/index.html">gudev </a><span style="float:right">systemd 3</span><hr><div class="refentry"><a name="systemd.kill"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>systemd.kill — Kill environment configuration</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><p><code class="filename"><em class="replaceable"><code>service</code></em>.service</code>,
+  <a href="../libudev/index.html">gudev </a><span style="float:right">systemd 7</span><hr><div class="refentry"><a name="systemd.kill"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>systemd.kill — Kill environment configuration</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><p><code class="filename"><em class="replaceable"><code>service</code></em>.service</code>,
                 <code class="filename"><em class="replaceable"><code>socket</code></em>.socket</code>,
                 <code class="filename"><em class="replaceable"><code>mount</code></em>.mount</code>,
-                <code class="filename"><em class="replaceable"><code>swap</code></em>.swap</code></p></div><div class="refsect1"><a name="idp22782276"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="#Description">¶</a></h2><p>Unit configuration files for services, sockets,
+                <code class="filename"><em class="replaceable"><code>swap</code></em>.swap</code></p></div><div class="refsect1"><a name="idp42861860"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="#Description">¶</a></h2><p>Unit configuration files for services, sockets,
                 mount points and swap devices share a subset of
                 configuration options which define the process killing
                 parameters of spawned processes.</p><p>This man page lists the configuration options
@@ -32,28 +32,30 @@
                 files, and
                 <a href="systemd.service.html"><span class="citerefentry"><span class="refentrytitle">systemd.service</span>(5)</span></a>,
                 <a href="systemd.socket.html"><span class="citerefentry"><span class="refentrytitle">systemd.socket</span>(5)</span></a>,
-                <a href="systemd.swap.html"><span class="citerefentry"><span class="refentrytitle">systemd.swap</span>(5)</span></a>
-                and
-                <a href="systemd.mount.html"><span class="citerefentry"><span class="refentrytitle">systemd.mount</span>(5)</span></a>
                 for more information on the specific unit
                 configuration files. The execution specific
-                configuration options are configured in the [Service],
-                [Socket], [Mount], or [Swap] section, depending on the unit
-                type.</p></div><div class="refsect1"><a name="idp20327660"></a><h2 id="Options">Options<a class="headerlink" title="Permalink to this headline" href="#Options">¶</a></h2><div class="variablelist"><dl class="variablelist"><dt id="KillMode="><span class="term"><code class="varname">KillMode=</code></span><a class="headerlink" title="Permalink to this term" href="#KillMode=">¶</a></dt><dd><p>Specifies how
+                configuration options are configured in the [Service] or
+                [Socket] section, depending on the unit
+                type.</p></div><div class="refsect1"><a name="idp40402644"></a><h2 id="Options">Options<a class="headerlink" title="Permalink to this headline" href="#Options">¶</a></h2><div class="variablelist"><dl class="variablelist"><dt id="KillMode="><span class="term"><code class="varname">KillMode=</code></span><a class="headerlink" title="Permalink to this term" href="#KillMode=">¶</a></dt><dd><p>Specifies how
                                 processes of this service shall be
                                 killed. One of
                                 <code class="option">control-group</code>,
                                 <code class="option">process</code>,
+                                <code class="option">mixed</code>
                                 <code class="option">none</code>.</p><p>If set to
                                 <code class="option">control-group</code>, all
                                 remaining processes in the control
-                                group of this unit will be terminated
+                                group of this unit will be killed
                                 on unit stop (for services: after the
                                 stop command is executed, as
                                 configured with
                                 <code class="varname">ExecStop=</code>). If set
                                 to <code class="option">process</code>, only the
-                                main process itself is killed. If set
+                                main process itself is killed. If set to <code class="option">mixed</code>,
+                                the <code class="option">SIGTERM</code> signal (see below) is sent to the
+                                main process while the subsequent <code class="option">SIGKILL</code> signal
+                                (see below) is sent to all remaining processes
+                                of the unit's control group. If set
                                 to <code class="option">none</code>, no process is
                                 killed. In this case only the stop
                                 command will be executed on unit
@@ -62,8 +64,7 @@
                                 after stop are left in their control
                                 group and the control group continues
                                 to exist after stop unless it is
-                                empty. Defaults to
-                                <code class="option">control-group</code>.</p><p>Processes will first be
+                                empty.</p><p>Processes will first be
                                 terminated via
                                 <code class="constant">SIGTERM</code> (unless
                                 the signal to send is changed via
@@ -82,7 +83,9 @@
                                 option). See
                                 <a href="kill.html"><span class="citerefentry"><span class="refentrytitle">kill</span>(2)</span></a>
                                 for more
-                                information.</p></dd><dt id="KillSignal="><span class="term"><code class="varname">KillSignal=</code></span><a class="headerlink" title="Permalink to this term" href="#KillSignal=">¶</a></dt><dd><p>Specifies which signal
+                                information.</p><p>Defaults to
+                                <code class="option">control-group</code>.
+                                </p></dd><dt id="KillSignal="><span class="term"><code class="varname">KillSignal=</code></span><a class="headerlink" title="Permalink to this term" href="#KillSignal=">¶</a></dt><dd><p>Specifies which signal
                                 to use when killing a
                                 service. Defaults to <code class="constant">SIGTERM</code>.
                                 </p></dd><dt id="SendSIGHUP="><span class="term"><code class="varname">SendSIGHUP=</code></span><a class="headerlink" title="Permalink to this term" href="#SendSIGHUP=">¶</a></dt><dd><p>Specifies whether to
@@ -100,7 +103,7 @@
                                 shutdown procedure left processes of
                                 the service around. Takes a boolean
                                 value. Defaults to "yes".
-                                </p></dd></dl></div></div><div class="refsect1"><a name="idp20339508"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="#See%20Also">¶</a></h2><p>
+                                </p></dd></dl></div></div><div class="refsect1"><a name="idp40415788"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="#See%20Also">¶</a></h2><p>
                           <a href="systemd.html"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
                           <a href="systemctl.html"><span class="citerefentry"><span class="refentrytitle">systemctl</span>(8)</span></a>,
                           <a href="journalctl.html"><span class="citerefentry"><span class="refentrytitle">journalctl</span>(8)</span></a>,

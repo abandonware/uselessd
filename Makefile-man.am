@@ -22,22 +22,13 @@ MANPAGES += \
 	man/shutdown.8 \
 	man/sysctl.d.5 \
 	man/systemctl.1 \
-	man/systemd-activate.8 \
-	man/systemd-analyze.1 \
-	man/systemd-ask-password-console.service.8 \
-	man/systemd-ask-password.1 \
-	man/systemd-cgtop.1 \
-	man/systemd-delta.1 \
 	man/systemd-fsck@.service.8 \
 	man/systemd-getty-generator.8 \
 	man/systemd-halt.service.8 \
-	man/systemd-inhibit.1 \
 	man/systemd-initctl.service.8 \
 	man/systemd-notify.1 \
-	man/systemd-remount-fs.service.8 \
+	man/systemd-inhibit.1 \
 	man/systemd-shutdownd.service.8 \
-	man/systemd-sleep.conf.5 \
-	man/systemd-suspend.service.8 \
 	man/systemd-sysctl.service.8 \
 	man/systemd-system.conf.5 \
 	man/systemd-tmpfiles.8 \
@@ -89,21 +80,16 @@ MANPAGES_ALIAS += \
 	man/sd_notifyf.3 \
 	man/systemd-ask-password-console.path.8 \
 	man/systemd-ask-password-wall.path.8 \
-	man/systemd-ask-password-wall.service.8 \
 	man/systemd-fsck-root.service.8 \
 	man/systemd-fsck.8 \
-	man/systemd-hibernate.service.8 \
-	man/systemd-hybrid-sleep.service.8 \
 	man/systemd-initctl.8 \
 	man/systemd-initctl.socket.8 \
 	man/systemd-kexec.service.8 \
 	man/systemd-poweroff.service.8 \
 	man/systemd-reboot.service.8 \
-	man/systemd-remount-fs.8 \
 	man/systemd-shutdown.8 \
 	man/systemd-shutdownd.8 \
 	man/systemd-shutdownd.socket.8 \
-	man/systemd-sleep.8 \
 	man/systemd-sysctl.8 \
 	man/systemd-tmpfiles-clean.service.8 \
 	man/systemd-tmpfiles-setup-dev.service.8 \
@@ -139,21 +125,16 @@ man/sd_is_socket_unix.3: man/sd_is_fifo.3
 man/sd_notifyf.3: man/sd_notify.3
 man/systemd-ask-password-console.path.8: man/systemd-ask-password-console.service.8
 man/systemd-ask-password-wall.path.8: man/systemd-ask-password-console.service.8
-man/systemd-ask-password-wall.service.8: man/systemd-ask-password-console.service.8
 man/systemd-fsck-root.service.8: man/systemd-fsck@.service.8
 man/systemd-fsck.8: man/systemd-fsck@.service.8
-man/systemd-hibernate.service.8: man/systemd-suspend.service.8
-man/systemd-hybrid-sleep.service.8: man/systemd-suspend.service.8
 man/systemd-initctl.8: man/systemd-initctl.service.8
 man/systemd-initctl.socket.8: man/systemd-initctl.service.8
 man/systemd-kexec.service.8: man/systemd-halt.service.8
 man/systemd-poweroff.service.8: man/systemd-halt.service.8
 man/systemd-reboot.service.8: man/systemd-halt.service.8
-man/systemd-remount-fs.8: man/systemd-remount-fs.service.8
 man/systemd-shutdown.8: man/systemd-halt.service.8
 man/systemd-shutdownd.8: man/systemd-shutdownd.service.8
 man/systemd-shutdownd.socket.8: man/systemd-shutdownd.service.8
-man/systemd-sleep.8: man/systemd-suspend.service.8
 man/systemd-sysctl.8: man/systemd-sysctl.service.8
 man/systemd-tmpfiles-clean.service.8: man/systemd-tmpfiles.8
 man/systemd-tmpfiles-setup-dev.service.8: man/systemd-tmpfiles.8
@@ -245,19 +226,10 @@ man/systemd-ask-password-console.path.html: man/systemd-ask-password-console.ser
 man/systemd-ask-password-wall.path.html: man/systemd-ask-password-console.service.html
 	$(html-alias)
 
-man/systemd-ask-password-wall.service.html: man/systemd-ask-password-console.service.html
-	$(html-alias)
-
 man/systemd-fsck-root.service.html: man/systemd-fsck@.service.html
 	$(html-alias)
 
 man/systemd-fsck.html: man/systemd-fsck@.service.html
-	$(html-alias)
-
-man/systemd-hibernate.service.html: man/systemd-suspend.service.html
-	$(html-alias)
-
-man/systemd-hybrid-sleep.service.html: man/systemd-suspend.service.html
 	$(html-alias)
 
 man/systemd-initctl.html: man/systemd-initctl.service.html
@@ -275,9 +247,6 @@ man/systemd-poweroff.service.html: man/systemd-halt.service.html
 man/systemd-reboot.service.html: man/systemd-halt.service.html
 	$(html-alias)
 
-man/systemd-remount-fs.html: man/systemd-remount-fs.service.html
-	$(html-alias)
-
 man/systemd-shutdown.html: man/systemd-halt.service.html
 	$(html-alias)
 
@@ -285,9 +254,6 @@ man/systemd-shutdownd.html: man/systemd-shutdownd.service.html
 	$(html-alias)
 
 man/systemd-shutdownd.socket.html: man/systemd-shutdownd.service.html
-	$(html-alias)
-
-man/systemd-sleep.html: man/systemd-suspend.service.html
 	$(html-alias)
 
 man/systemd-sysctl.html: man/systemd-sysctl.service.html
@@ -338,5 +304,89 @@ endif
 if ENABLE_LOOPBACK_SETUP
 MANPAGES += \
 	man/uselessd-loopback-setup.1
+
+endif
+
+if ENABLE_ANALYZE
+MANPAGES += \
+	man/systemd-analyze.1
+
+endif
+
+if ENABLE_ACTIVATE
+MANPAGES += \
+	man/systemd-activate.8
+
+endif
+
+if ENABLE_CGTOP
+MANPAGES += \
+	man/systemd-cgtop.1
+
+endif
+
+if ENABLE_CGLS
+MANPAGES += \
+	man/uselessd-cgls.1
+
+endif
+
+if ENABLE_DELTA
+MANPAGES += \
+	man/systemd-delta.1
+
+endif
+
+if ENABLE_PASSWORD_AGENTS
+MANPAGES += \
+	man/systemd-ask-password-console.service.8 \
+	man/systemd-ask-password.1
+
+MANPAGES_ALIAS += \
+	man/systemd-ask-password-wall.service.8
+
+man/systemd-ask-password-wall.service.8: man/systemd-ask-password-console.service.8
+
+man/systemd-ask-password-wall.service.html: man/systemd-ask-password-console.service.html
+	$(html-alias)
+
+endif
+
+if ENABLE_REMOUNT_FS
+MANPAGES += \
+	man/systemd-remount-fs.service.8
+
+MANPAGES_ALIAS += \
+	man/systemd-remount-fs.8
+
+man/systemd-remount-fs.8: man/systemd-remount-fs.service.8
+
+man/systemd-remount-fs.html: man/systemd-remount-fs.service.html
+	$(html-alias)
+
+endif
+
+if ENABLE_SLEEP
+MANPAGES += \
+	man/systemd-sleep.conf.5 \
+	man/systemd-suspend.service.8
+
+MANPAGES_ALIAS += \
+	man/systemd-sleep.8 \
+	man/systemd-hibernate.service.8 \
+	man/systemd-hybrid-sleep.service.8
+
+man/systemd-hibernate.service.8: man/systemd-suspend.service.8
+man/systemd-hybrid-sleep.service.8: man/systemd-suspend.service.8
+man/systemd-sleep.8: man/systemd-suspend.service.8
+
+man/systemd-hibernate.service.html: man/systemd-suspend.service.html
+	$(html-alias)
+
+man/systemd-hybrid-sleep.service.html: man/systemd-suspend.service.html
+	$(html-alias)
+
+man/systemd-sleep.html: man/systemd-suspend.service.html
+	$(html-alias)
 
 endif

@@ -370,11 +370,12 @@ static int transaction_verify_order_one(Transaction *tr, Job *j, Job *from, unsi
                 for (k = from; k; k = ((k->generation == generation && k->marker != k) ? k->marker : NULL)) {
 
                         /* logging for j not k here here to provide consistent narrative */
-                        log_info_unit(j->unit->id,
-                                      "Found dependency on %s/%s",
-                                      k->unit->id, job_type_to_string(k->type));
+                        log_warning_unit(j->unit->id,
+                                         "Found dependency on %s/%s",
+                                         k->unit->id, job_type_to_string(k->type));
 
-                        if (!delete &&
+                        /* verify unit is part of transaction */
+                        if (!delete && hashmap_get(tr->jobs, k->unit) &&
                             !unit_matters_to_anchor(k->unit, k)) {
                                 /* Ok, we can drop this one, so let's
                                  * do so. */

@@ -19,7 +19,7 @@
   <a href="systemd.directives.html">Directives </a>·
   <a href="../python-systemd/index.html">Python </a>·
   <a href="../libudev/index.html">libudev </a>·
-  <a href="../libudev/index.html">gudev </a><span style="float:right">systemd 3</span><hr><div class="refentry"><a name="sd_notify"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>sd_notify, sd_notifyf — Notify service manager about start-up completion and other daemon status changes</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><pre class="funcsynopsisinfo">#include &lt;systemd/sd-daemon.h&gt;</pre><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int <b class="fsfunc">sd_notify</b>(</code></td><td>int <var class="pdparam">unset_environment</var>, </td></tr><tr><td> </td><td>const char *<var class="pdparam">state</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int <b class="fsfunc">sd_notifyf</b>(</code></td><td>int <var class="pdparam">unset_environment</var>, </td></tr><tr><td> </td><td>const char *<var class="pdparam">format</var>, </td></tr><tr><td> </td><td>...<code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="idp21926852"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="#Description">¶</a></h2><p><code class="function">sd_notify()</code> shall be called
+  <a href="../libudev/index.html">gudev </a><span style="float:right">systemd 7</span><hr><div class="refentry"><a name="sd_notify"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>sd_notify, sd_notifyf — Notify service manager about start-up completion and other daemon status changes</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><pre class="funcsynopsisinfo">#include &lt;systemd/sd-daemon.h&gt;</pre><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int <b class="fsfunc">sd_notify</b>(</code></td><td>int <var class="pdparam">unset_environment</var>, </td></tr><tr><td> </td><td>const char *<var class="pdparam">state</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int <b class="fsfunc">sd_notifyf</b>(</code></td><td>int <var class="pdparam">unset_environment</var>, </td></tr><tr><td> </td><td>const char *<var class="pdparam">format</var>, </td></tr><tr><td> </td><td>...<code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="idp22807980"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="#Description">¶</a></h2><p><code class="function">sd_notify()</code> shall be called
                 by a daemon to notify the init system about status
                 changes. It can be used to send arbitrary information,
                 encoded in an environment-block-like string. Most
@@ -89,7 +89,7 @@
                 for details.</p><p><code class="function">sd_notifyf()</code> is similar to
                 <code class="function">sd_notify()</code> but takes a
                 <code class="function">printf()</code>-like format string plus
-                arguments.</p></div><div class="refsect1"><a name="idp21955332"></a><h2 id="Return Value">Return Value<a class="headerlink" title="Permalink to this headline" href="#Return%20Value">¶</a></h2><p>On failure, these calls return a negative
+                arguments.</p></div><div class="refsect1"><a name="idp20332980"></a><h2 id="Return Value">Return Value<a class="headerlink" title="Permalink to this headline" href="#Return%20Value">¶</a></h2><p>On failure, these calls return a negative
                 errno-style error code. If
                 <code class="varname">$NOTIFY_SOCKET</code> was not set and
                 hence no status data could be sent, 0 is returned. If
@@ -97,7 +97,7 @@
                 positive return value. In order to support both, init
                 systems that implement this scheme and those which
                 do not, it is generally recommended to ignore the return
-                value of this call.</p></div><div class="refsect1"><a name="idp21956668"></a><h2 id="Notes">Notes<a class="headerlink" title="Permalink to this headline" href="#Notes">¶</a></h2><p>These functions are provided by the reference
+                value of this call.</p></div><div class="refsect1"><a name="idp20334316"></a><h2 id="Notes">Notes<a class="headerlink" title="Permalink to this headline" href="#Notes">¶</a></h2><p>These functions are provided by the reference
                 implementation of APIs for new-style daemons and
                 distributed with the systemd package. The algorithms
                 they implement are simple, and can easily be
@@ -128,22 +128,22 @@
                 <a href="sd-daemon.html"><span class="citerefentry"><span class="refentrytitle">sd-daemon</span>(3)</span></a>.</p><p>If the reference implementation is used as
                 drop-in files and -DDISABLE_SYSTEMD is set during
                 compilation, these functions will always return 0 and
-                otherwise become a NOP.</p></div><div class="refsect1"><a name="idp21963676"></a><h2 id="Environment">Environment<a class="headerlink" title="Permalink to this headline" href="#Environment">¶</a></h2><div class="variablelist"><dl class="variablelist"><dt id="$NOTIFY_SOCKET"><span class="term"><code class="varname">$NOTIFY_SOCKET</code></span><a class="headerlink" title="Permalink to this term" href="#%24NOTIFY_SOCKET">¶</a></dt><dd><p>Set by the init system
+                otherwise become a NOP.</p></div><div class="refsect1"><a name="idp20298124"></a><h2 id="Environment">Environment<a class="headerlink" title="Permalink to this headline" href="#Environment">¶</a></h2><div class="variablelist"><dl class="variablelist"><dt id="$NOTIFY_SOCKET"><span class="term"><code class="varname">$NOTIFY_SOCKET</code></span><a class="headerlink" title="Permalink to this term" href="#%24NOTIFY_SOCKET">¶</a></dt><dd><p>Set by the init system
                                 for supervised processes for status
                                 and start-up completion
                                 notification. This environment variable
                                 specifies the socket
                                 <code class="function">sd_notify()</code> talks
-                                to. See above for details.</p></dd></dl></div></div><div class="refsect1"><a name="idp21834292"></a><h2 id="Examples">Examples<a class="headerlink" title="Permalink to this headline" href="#Examples">¶</a></h2><div class="example"><a name="idp21834628"></a><p class="title"><b>Example 1. Start-up Notification</b></p><div class="example-contents"><p>When a daemon finished starting up, it
+                                to. See above for details.</p></dd></dl></div></div><div class="refsect1"><a name="idp20300292"></a><h2 id="Examples">Examples<a class="headerlink" title="Permalink to this headline" href="#Examples">¶</a></h2><div class="example"><a name="idp20300628"></a><p class="title"><b>Example 1. Start-up Notification</b></p><div class="example-contents"><p>When a daemon finished starting up, it
                         might issue the following call to notify
-                        the init system:</p><pre class="programlisting">sd_notify(0, "READY=1");</pre></div></div><br class="example-break"><div class="example"><a name="idp21835692"></a><p class="title"><b>Example 2. Extended Start-up Notification</b></p><div class="example-contents"><p>A daemon could send the following after
+                        the init system:</p><pre class="programlisting">sd_notify(0, "READY=1");</pre></div></div><br class="example-break"><div class="example"><a name="idp20301692"></a><p class="title"><b>Example 2. Extended Start-up Notification</b></p><div class="example-contents"><p>A daemon could send the following after
                         completing initialization:</p><pre class="programlisting">sd_notifyf(0, "READY=1\n"
               "STATUS=Processing requests...\n"
               "MAINPID=%lu",
-              (unsigned long) getpid());</pre></div></div><br class="example-break"><div class="example"><a name="idp21836852"></a><p class="title"><b>Example 3. Error Cause Notification</b></p><div class="example-contents"><p>A daemon could send the following shortly before exiting, on failure</p><pre class="programlisting">sd_notifyf(0, "STATUS=Failed to start up: %s\n"
+              (unsigned long) getpid());</pre></div></div><br class="example-break"><div class="example"><a name="idp20302852"></a><p class="title"><b>Example 3. Error Cause Notification</b></p><div class="example-contents"><p>A daemon could send the following shortly before exiting, on failure</p><pre class="programlisting">sd_notifyf(0, "STATUS=Failed to start up: %s\n"
               "ERRNO=%i",
               strerror(errno),
-              errno);</pre></div></div><br class="example-break"></div><div class="refsect1"><a name="idp21838044"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="#See%20Also">¶</a></h2><p>
+              errno);</pre></div></div><br class="example-break"></div><div class="refsect1"><a name="idp20304044"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="#See%20Also">¶</a></h2><p>
                         <a href="systemd.html"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
                         <a href="sd-daemon.html"><span class="citerefentry"><span class="refentrytitle">sd-daemon</span>(3)</span></a>,
                         <a href="daemon.html"><span class="citerefentry"><span class="refentrytitle">daemon</span>(7)</span></a>,

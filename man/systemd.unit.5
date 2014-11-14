@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSTEMD\&.UNIT" "5" "" "systemd 3" "systemd.unit"
+.TH "SYSTEMD\&.UNIT" "5" "" "systemd 7" "systemd.unit"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -94,9 +94,9 @@ Along with a unit file
 foo\&.service, the directory
 foo\&.service\&.wants/
 may exist\&. All unit files symlinked from such a directory are implicitly added as dependencies of type
-\fIWanted=\fR
+\fIWants=\fR
 to the unit\&. This is useful to hook units into the start\-up of other units, without having to modify their unit files\&. For details about the semantics of
-\fIWanted=\fR, see below\&. The preferred way to create symlinks in the
+\fIWants=\fR, see below\&. The preferred way to create symlinks in the
 \&.wants/
 directory of a unit file is with the
 \fBenable\fR

@@ -1487,6 +1487,19 @@ int unit_file_enable(
                 return r;
 
         STRV_FOREACH(i, files) {
+			    UnitFileState state;
+
+                /* We only care about not letting masked units in.
+                 * Don't interfere with templated units (ones that
+                 * use format specifiers replaced by '@' in unit names).
+                 */
+			    state = unit_file_get_state(scope, root_dir, *i);
+
+			    if (state == UNIT_FILE_MASKED || state == UNIT_FILE_MASKED_RUNTIME) {
+					    log_error("Failed to enable unit: Unit %s is masked.", *i);
+					    return -ENOTSUP;
+			    }
+
                 r = install_info_add_auto(&c, *i);
                 if (r < 0)
                         return r;
@@ -1535,7 +1548,7 @@ int unit_file_disable(
         r = install_context_mark_for_removal(&c, &paths, &remove_symlinks_to, config_path, root_dir);
 
         q = remove_marked_symlinks(remove_symlinks_to, config_path, changes, n_changes, files);
-        if (r == 0)
+        if (r >= 0)
                 r = q;
 
         return r;

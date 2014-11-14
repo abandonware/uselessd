@@ -1053,11 +1053,6 @@ static int bus_init_private(Manager *m) {
                 return 0;
 
         if (m->running_as == SYSTEMD_SYSTEM) {
-
-                /* We want the private bus only when running as init */
-                if (getpid() != 1)
-                        return 0;
-
                 unlink("/run/systemd/private");
                 m->private_bus = dbus_server_listen("unix:path=/run/systemd/private", &error);
         } else {

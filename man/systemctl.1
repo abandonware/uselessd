@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSTEMCTL" "1" "" "systemd 3" "systemctl"
+.TH "SYSTEMCTL" "1" "" "systemd 7" "systemctl"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -194,6 +194,11 @@ When used with
 and related commands, disables asking for passwords\&. Background services may require input of a password or passphrase string, for example to unlock system hard disks or cryptographic certificates\&. Unless this option is specified and the command is invoked from a terminal,
 \fBsystemctl\fR
 will query the user on the terminal for the necessary secrets\&. Use this option to switch this behavior off\&. In this case, the password must be supplied by some other means (for example graphical password agents) or the service might fail\&. This also disables querying the user for authentication for privileged operations\&.
+.RE
+.PP
+\fB\-\-avoid\-bus\fR
+.RS 4
+Bypass system bus checks and communicate with private IPC socket directly (where passive, unprivileged or otherwise permitted)\&.
 .RE
 .PP
 \fB\-\-kill\-who=\fR

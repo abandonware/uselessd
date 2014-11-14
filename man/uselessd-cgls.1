@@ -1,5 +1,5 @@
 '\" t
-.TH "USELESSD\-LOOPBACK\-SETUP" "1" "" "systemd 7" "uselessd-loopback-setup"
+.TH "USELESSD\-CGLS" "1" "" "systemd 7" "uselessd-cgls"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -20,16 +20,14 @@
 .\" * MAIN CONTENT STARTS HERE *
 .\" -----------------------------------------------------------------
 .SH "NAME"
-uselessd-loopback-setup \- Initialize the loopback device
+uselessd-cgls \- Show control group contents
 .SH "SYNOPSIS"
-.HP \w'\fBuselessd\-loopback\-setup\fR\ 'u
-\fBuselessd\-loopback\-setup\fR
+.HP \w'\fBuselessd\-cgls\fR\ 'u
+\fBuselessd\-cgls\fR [OPTIONS...]
 .SH "DESCRIPTION"
 .PP
-\fBuselessd\-loopback\-setup\fR
-is an early boot service that initializes the loopback (lo) device\&.
-.PP
-This tool will execute no operation if a loopback device is already running\&.
+\fBuselessd\-cgls\fR
+is a shell script, similar in intent to systemd\-cgls, which can either display the cgroupfs hierarchy in a tree format, show the kernel threads which are tasks in the root hierarchy, or show the PIDs and comms of the services in the system slice\&.
 .SH "OPTIONS"
 .PP
 The following options are understood:
@@ -39,13 +37,26 @@ The following options are understood:
 Prints a short help text and exits\&.
 .RE
 .PP
-\fB\-\-version\fR
+\fB\-t\fR
 .RS 4
-Prints a short version string and exits\&.
+Prints a listing of the cgroupfs hierarchy tree and breaks\&.
+.RE
+.PP
+\fB\-k\fR
+.RS 4
+Prints the PIDs and comms of the kernel threads in the root hierarchy and breaks\&.
+.RE
+.PP
+\fB\-s\fR
+.RS 4
+Prints the PIDs and comms of the services monitored in the system slice\&.
 .RE
 .SH "EXIT STATUS"
 .PP
 On success 0 is returned, a non\-zero failure code otherwise\&.
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1)
+\fBsystemd\fR(1),
+\fBsystemd-cgtop\fR(1),
+\fBsystemctl\fR(1),
+\fBps\fR(1)
