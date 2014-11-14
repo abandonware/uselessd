@@ -467,12 +467,12 @@ static int write_one_file(Item *i, const char *path) {
         int r, e, fd, flags;
         struct stat st;
 
-        flags = i->type == CREATE_FILE ? O_CREAT|O_APPEND :
-                i->type == TRUNCATE_FILE ? O_CREAT|O_TRUNC : 0;
+        flags = i->type == CREATE_FILE ? O_CREAT|O_APPEND|O_NOFOLLOW :
+                i->type == TRUNCATE_FILE ? O_CREAT|O_TRUNC|O_NOFOLLOW : 0;
 
-        RUN_WITH_UMASK(0) {
+        RUN_WITH_UMASK(0000) {
                 label_context_set(path, S_IFREG);
-                fd = open(path, flags|O_NDELAY|O_CLOEXEC|O_WRONLY|O_NOCTTY|O_NOFOLLOW, i->mode);
+                fd = open(path, flags|O_NDELAY|O_CLOEXEC|O_WRONLY|O_NOCTTY, i->mode);
                 e = errno;
                 label_context_clear();
                 errno = e;
@@ -492,8 +492,7 @@ static int write_one_file(Item *i, const char *path) {
                 size_t l;
 
                 unescaped = cunescape(i->argument);
-                if (unescaped == NULL) {
-                        close_nointr_nofail(fd);
+                if (!unescaped) {
                         return log_oom();
                 }
 
@@ -502,7 +501,6 @@ static int write_one_file(Item *i, const char *path) {
 
                 if (n < 0 || (size_t) n < l) {
                         log_error("Failed to write file %s: %s", path, n < 0 ? strerror(-n) : "Short write");
-                        close_nointr_nofail(fd);
                         return n < 0 ? n : -EIO;
                 }
         }
