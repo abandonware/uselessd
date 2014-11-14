@@ -201,6 +201,7 @@ int main(int argc, char *argv[]) {
                 need_swapoff = false;
                 need_dm_detach = false;
                 need_loop_detach = false;
+                need_umount = false;
         }
 
         /* Unmount all mountpoints, swaps, and loopback devices */

@@ -122,9 +122,9 @@ int switch_root(const char *new_root) {
 
                 /* Immediately get rid of the old root. Since we are
                  * running off it we need to do this lazily. */
-                if (umount2(temporary_old_root, MNT_DETACH) < 0) {
+                if (umount2("/mnt", MNT_DETACH) < 0) {
                         r = -errno;
-                        log_error("Failed to umount old root dir %s: %m", temporary_old_root);
+                        log_error("Failed to umount old root dir /mnt: %m");
                         goto fail;
                 }
 

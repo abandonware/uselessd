@@ -541,15 +541,22 @@ static void merge_dependencies(Unit *u, Unit *other, UnitDependency d) {
         SET_FOREACH(back, other->dependencies[d], i) {
                 UnitDependency k;
 
-                for (k = 0; k < _UNIT_DEPENDENCY_MAX; k++)
-                        if ((r = set_remove_and_put(back->dependencies[k], other, u)) < 0) {
-
+                for (k = 0; k < _UNIT_DEPENDENCY_MAX; k++) {
+                        /* Do not add dependencies between u and itself */
+                        if (back == u) {
+							    set_remove(back->dependencies[k], other);
+					    } else {
+							    r = set_remove_and_put(back->dependencies[k], other, u);
                                 if (r == -EEXIST)
                                         set_remove(back->dependencies[k], other);
                                 else
-                                        assert(r == -ENOENT);
+                                        assert(r >= 0 || r == -ENOENT);
                         }
-        }
+			   }
+		}
+
+        /* Also do not move dependencies on u to itself. */
+        set_remove(other->dependencies[d], u);
 
         complete_move(&u->dependencies[d], &other->dependencies[d]);
 
@@ -2907,7 +2914,7 @@ int unit_kill_context(
                 }
         }
 
-        if (c->kill_mode == KILL_CONTROL_GROUP && u->cgroup_path) {
+        if ((c->kill_mode == KILL_CONTROL_GROUP || (c->kill_mode == KILL_MIXED && sigkill)) && u->cgroup_path) {
                 _cleanup_set_free_ Set *pid_set = NULL;
 
                 /* Exclude the main/control pids from being killed via the cgroup */

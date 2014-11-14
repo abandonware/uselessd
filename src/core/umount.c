@@ -308,7 +308,7 @@ int umount_all(bool *changed) {
         if (r <= 0)
                 goto end;
 
-  end:
+end:
         mount_points_list_free(&mp_list_head);
 
         return r;
@@ -344,9 +344,9 @@ int loopback_detach_all(void) {
            if (s < 0)
                  log_error("Setting blocking signal mask failed.");
 	   
-	   r = system("/sbin/losetup -D");
-	   if (r < 0)
-	         log_error("Detaching loopback devices with losetup(8) failed.");
+	       r = system("/sbin/losetup -D");
+	       if (r < 0)
+	             log_error("Detaching loopback devices with losetup(8) failed.");
 	         
 	   return r;
 }

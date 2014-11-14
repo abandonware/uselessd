@@ -49,9 +49,11 @@ static void test_sleep(void) {
         log_info("Hibernate+Shutdown configured: %s", yes_no(can_sleep_disk(shutdown) > 0));
         log_info("Freeze configured: %s", yes_no(can_sleep_state(freez) > 0));
 
+#ifdef ENABLE_SLEEP
         log_info("Suspend configured and possible: %s", yes_no(can_sleep("suspend") > 0));
         log_info("Hibernation configured and possible: %s", yes_no(can_sleep("hibernate") > 0));
         log_info("Hybrid-sleep configured and possible: %s", yes_no(can_sleep("hybrid-sleep") > 0));
+#endif
 }
 
 int main(int argc, char* argv[]) {

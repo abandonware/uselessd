@@ -30,10 +30,10 @@ int write_string_file_atomic_label(const char *fn, const char *line) {
         int r;
 
         r = label_context_set(fn, S_IFREG);
-        if (r  < 0)
+        if (r < 0)
                 return r;
 
-        write_string_file_atomic(fn, line);
+        r = write_string_file_atomic(fn, line);
 
         label_context_clear();
 
@@ -44,10 +44,10 @@ int write_env_file_label(const char *fname, char **l) {
         int r;
 
         r = label_context_set(fname, S_IFREG);
-        if (r  < 0)
+        if (r < 0)
                 return r;
 
-        write_env_file(fname, l);
+        r = write_env_file(fname, l);
 
         label_context_clear();
 

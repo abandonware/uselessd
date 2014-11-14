@@ -395,11 +395,10 @@ static int parse_proc_cmdline_word(const char *word) {
 
         } else if (streq(word, "quiet"))
                 arg_show_status = false;
-        else if (streq(word, "debug")) {
-                /* Log to kmsg, the journal socket will fill up before the
-                 * journal is started and tools running during that time
-                 * will block with every log message for for 60 seconds,
-                 * before they give up. */
+        else if (streq(word, "systemd.debug")) {
+                /* Log to kmsg, using an exclusive
+                 * namespace, as we do not have journald
+                 * to delegate to later on. */
                 log_set_max_level(LOG_DEBUG);
                 log_set_target(LOG_TARGET_KMSG);
         } else if (!in_initrd()) {
@@ -1300,11 +1299,6 @@ int main(int argc, char *argv[]) {
                                  * until we reach the real system.
                                  */
                                 hwclock_reset_timezone();
-
-                                /* Tell the kernel our timezone */
-                                r = hwclock_set_timezone(NULL);
-                                if (r < 0)
-                                        log_error("Failed to set the kernel's timezone, ignoring: %s", strerror(-r));
                         }
                 }
 
@@ -1322,7 +1316,7 @@ int main(int argc, char *argv[]) {
         } else {
                 /* Running as user instance */
                 arg_running_as = SYSTEMD_USER;
-                log_set_target(LOG_TARGET_SYSLOG_OR_KMSG);
+                log_set_target(LOG_TARGET_KMSG);
                 log_open();
 
                 /* clear the kernel timestamp,

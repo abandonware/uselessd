@@ -30,7 +30,7 @@ TEMPLATE = '''\
 
   <refentryinfo>
     <title>systemd.index</title>
-    <productname>systemd</productname>
+    <productname>uselessd</productname>
 
     <authorgroup>
       <author>

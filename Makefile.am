@@ -79,6 +79,9 @@ rootprefix=@rootprefix@
 rootbindir=$(rootprefix)/bin
 rootlibexecdir=$(rootprefix)/lib/systemd
 
+# scripts
+cglsdir=@rootbindir@
+
 CLEANFILES = $(BUILT_SOURCES)
 DISTCLEANFILES =
 EXTRA_DIST =
@@ -131,7 +134,6 @@ AM_CPPFLAGS = \
 	-DSYSTEMD_TTY_ASK_PASSWORD_AGENT_BINARY_PATH=\"$(rootbindir)/systemd-tty-ask-password-agent\" \
 	-DROOTPREFIX=\"$(rootprefix)\" \
 	-DRANDOM_SEED=\"$(localstatedir)/lib/systemd/random-seed\" \
-	-DSYSTEMD_CRYPTSETUP_PATH=\"$(rootlibexecdir)/systemd-cryptsetup\" \
 	-DSYSTEM_GENERATOR_PATH=\"$(systemgeneratordir)\" \
 	-DUSER_GENERATOR_PATH=\"$(usergeneratordir)\" \
 	-DSYSTEM_SHUTDOWN_PATH=\"$(systemshutdowndir)\" \
@@ -139,7 +141,6 @@ AM_CPPFLAGS = \
 	-DSYSTEMD_KBD_MODEL_MAP=\"$(pkgdatadir)/kbd-model-map\" \
 	-DX_SERVER=\"$(bindir)/X\" \
 	-DPOLKIT_AGENT_BINARY_PATH=\"$(bindir)/pkttyagent\" \
-	-DQUOTACHECK=\"$(QUOTACHECK)\" \
 	-DKEXEC=\"$(KEXEC)\" \
 	-I $(top_srcdir)/src \
 	-I $(top_srcdir)/src/shared \
@@ -247,50 +248,27 @@ AM_V_LN_0 = @echo "  LN      " $@;
 # ------------------------------------------------------------------------------
 rootbin_PROGRAMS = \
 	systemctl \
-	systemd-notify \
-	systemd-ask-password \
-	systemd-tty-ask-password-agent
+	systemd-notify
 
-bin_PROGRAMS = \
-	systemd-cgtop \
-	systemd-delta \
-	systemd-analyze
+bin_PROGRAMS =
 
 rootlibexec_PROGRAMS = \
 	uselessd \
-	systemd-initctl \
 	systemd-update-utmp \
 	systemd-shutdownd \
 	systemd-shutdown \
-	systemd-remount-fs \
-	systemd-reply-password \
 	systemd-ac-power \
-	systemd-sysctl \
-	systemd-sleep
+	systemd-sysctl
 
 systemgenerator_PROGRAMS = \
 	systemd-getty-generator
 
-systemd_analyze_SOURCES = \
-	src/analyze/systemd-analyze.c
-
-systemd_analyze_CFLAGS = \
-	$(AM_CFLAGS) \
-	$(DBUS_CFLAGS)
-
-systemd_analyze_LDADD = \
-	libsystemd-shared.la \
-	libsystemd-dbus.la
-
 dist_bashcompletion_DATA = \
-	shell-completion/bash/systemctl \
-	shell-completion/bash/systemd-analyze
+	shell-completion/bash/systemctl
 
 dist_zshcompletion_DATA = \
 	shell-completion/zsh/_systemctl \
-	shell-completion/zsh/_systemd-analyze \
-	shell-completion/zsh/_sd_hosts_or_user_at_host \
-	shell-completion/zsh/_systemd-delta
+	shell-completion/zsh/_sd_hosts_or_user_at_host
 
 dist_sysctl_DATA = \
 	sysctl.d/50-default.conf
@@ -335,7 +313,6 @@ dist_systemunit_DATA = \
 	units/slices.target \
 	units/system.slice \
 	units/x-.slice \
-	units/systemd-initctl.socket \
 	units/systemd-shutdownd.socket \
 	units/syslog.socket \
 	units/printer.target \
@@ -351,20 +328,13 @@ nodist_systemunit_DATA = \
 	units/serial-getty@.service \
 	units/console-shell.service \
 	units/console-getty.service \
-	units/systemd-initctl.service \
 	units/systemd-shutdownd.service \
-	units/systemd-remount-fs.service \
 	units/systemd-update-utmp.service \
 	units/systemd-update-utmp-runlevel.service \
-	units/systemd-ask-password-wall.service \
-	units/systemd-ask-password-console.service \
 	units/systemd-sysctl.service \
 	units/emergency.service \
 	units/rescue.service \
 	units/user@.service \
-	units/systemd-hibernate.service \
-	units/systemd-hybrid-sleep.service \
-	units/systemd-suspend.service \
 	units/systemd-halt.service \
 	units/systemd-poweroff.service \
 	units/systemd-reboot.service \
@@ -388,13 +358,9 @@ EXTRA_DIST += \
 	units/console-shell.service.m4.in \
 	units/console-getty.service.m4.in \
 	units/rescue.service.m4.in \
-	units/systemd-initctl.service.in \
 	units/systemd-shutdownd.service.in \
-	units/systemd-remount-fs.service.in \
 	units/systemd-update-utmp.service.in \
 	units/systemd-update-utmp-runlevel.service.in \
-	units/systemd-ask-password-wall.service.in \
-	units/systemd-ask-password-console.service.in \
 	units/systemd-sysctl.service.in \
 	units/emergency.service.in \
 	units/systemd-halt.service.in \
@@ -405,9 +371,6 @@ EXTRA_DIST += \
 	units/systemd-fsck@.service.in \
 	units/user@.service.in \
 	units/debug-shell.service.in \
-	units/systemd-hibernate.service.in \
-	units/systemd-hybrid-sleep.service.in \
-	units/systemd-suspend.service.in \
 	units/initrd-parse-etc.service.in \
 	units/initrd-cleanup.service.in \
 	units/initrd-switch-root.service.in \
@@ -451,10 +414,103 @@ EXTRA_DIST += \
 	units/uselessd-loopback-setup.service.in
 endif
 
+if ENABLE_ANALYZE
+bin_PROGRAMS += \
+	systemd-analyze
+
+systemd_analyze_SOURCES = \
+	src/analyze/systemd-analyze.c
+
+systemd_analyze_CFLAGS = \
+	$(AM_CFLAGS) \
+	$(DBUS_CFLAGS)
+
+systemd_analyze_LDADD = \
+	libsystemd-shared.la \
+	libsystemd-dbus.la
+
+dist_bashcompletion_DATA += \
+	shell-completion/bash/systemd-analyze
+
+dist_zshcompletion_DATA += \
+	shell-completion/zsh/_systemd-analyze
+endif
+
+if ENABLE_CGTOP
+bin_PROGRAMS += \
+	systemd-cgtop
+endif
+
+if ENABLE_CGLS
+dist_cgls_DATA = \
+	src/cgls/uselessd-cgls
+endif
+
+if ENABLE_DELTA
+bin_PROGRAMS += \
+	systemd-delta
+
+dist_zshcompletion_DATA += \
+	shell-completion/zsh/_systemd-delta
+endif
+
+if ENABLE_PASSWORD_AGENTS
+rootbin_PROGRAMS += \
+	systemd-tty-ask-password-agent \
+	systemd-ask-password
+
+rootlibexec_PROGRAMS += \
+	systemd-reply-password
+
+nodist_systemunit_DATA += \
+	units/systemd-ask-password-wall.service \
+	units/systemd-ask-password-console.service
+
+EXTRA_DIST += \
+	units/systemd-ask-password-wall.service.in \
+	units/systemd-ask-password-console.service.in
+endif
+
+if ENABLE_REMOUNT_FS
+rootlibexec_PROGRAMS += \
+	systemd-remount-fs
+
+nodist_systemunit_DATA += \
+	units/systemd-remount-fs.service
+
+EXTRA_DIST += \
+	units/systemd-remount-fs.service.in
+endif
+
+if ENABLE_SLEEP
+rootlibexec_PROGRAMS += \
+	systemd-sleep
+
+nodist_systemunit_DATA += \
+	units/systemd-hibernate.service \
+	units/systemd-hybrid-sleep.service \
+	units/systemd-suspend.service
+
+EXTRA_DIST += \
+	units/systemd-hibernate.service.in \
+	units/systemd-hybrid-sleep.service.in \
+	units/systemd-suspend.service.in
+endif
+
 if HAVE_SYSV_COMPAT
 nodist_systemunit_DATA += \
 	units/rc-local.service \
-	units/halt-local.service
+	units/halt-local.service \
+	units/systemd-initctl.service
+
+dist_systemunit_DATA += \
+	units/systemd-initctl.socket
+
+EXTRA_DIST += \
+	units/systemd-initctl.service.in
+
+rootlibexec_PROGRAMS += \
+	systemd-initctl
 
 systemgenerator_PROGRAMS += \
 	systemd-rc-local-generator
@@ -581,7 +637,6 @@ noinst_LTLIBRARIES += \
 
 libsystemd_shared_la_SOURCES = \
 	src/shared/linux/auto_dev-ioctl.h \
-	src/shared/linux/fanotify.h \
 	src/shared/linux/seccomp.h \
 	src/shared/linux/seccomp-bpf.h \
 	src/shared/missing.h \
@@ -929,8 +984,13 @@ src/core/syscall-to-name.h: src/core/syscall-list.txt Makefile
 	$(AM_V_GEN)$(AWK) 'BEGIN{ print "const char* const syscall_names[] = { "} { printf "[SYSCALL_TO_INDEX(__NR_%s)] = \"%s\",\n", $$1, $$1 } END{print "};"}' < $< > $@
 
 # ------------------------------------------------------------------------------
+if ENABLE_INIT
 uselessd_SOURCES = \
 	src/core/main.c
+else
+uselessd_SOURCES = \
+	src/core/main-no-init.c
+endif
 
 uselessd_CFLAGS = \
 	$(AM_CFLAGS) \
@@ -1327,6 +1387,7 @@ lcov-run lcov-report:
 endif
 
 # ------------------------------------------------------------------------------
+if HAVE_SYSV_COMPAT
 systemd_initctl_SOURCES = \
 	src/initctl/initctl.c
 
@@ -1338,6 +1399,7 @@ systemd_initctl_LDADD = \
 	libsystemd-shared.la \
 	libsystemd-daemon.la \
 	libsystemd-dbus.la
+endif
 
 # ------------------------------------------------------------------------------
 systemd_update_utmp_SOURCES = \
@@ -1428,6 +1490,7 @@ EXTRA_DIST += \
 	units/systemd-tmpfiles-clean.service.in
 
 # ------------------------------------------------------------------------------
+if ENABLE_MACHINE_ID_SETUP
 systemd_machine_id_setup_SOURCES = \
 	src/machine-id-setup/machine-id-setup-main.c
 
@@ -1435,20 +1498,25 @@ systemd_machine_id_setup_LDADD = \
 	libsystemd-label.la \
 	libsystemd-shared.la \
 	libsystemd-id128-internal.la
+endif
 
 # ------------------------------------------------------------------------------
+if ENABLE_HOSTNAME_SETUP
 uselessd_hostname_setup_SOURCES = \
 	src/hostname-setup/hostname-setup.c
 
 uselessd_hostname_setup_LDADD = \
 	libsystemd-shared.la
+endif
 
 # ------------------------------------------------------------------------------
+if ENABLE_LOOPBACK_SETUP
 uselessd_loopback_setup_SOURCES = \
 	src/loopback-setup/loopback-setup.c
 
 uselessd_loopback_setup_LDADD = \
 	libsystemd-shared.la
+endif
 
 # ------------------------------------------------------------------------------
 systemd_sysctl_SOURCES = \
@@ -1458,11 +1526,13 @@ systemd_sysctl_LDADD = \
 	libsystemd-shared.la
 
 # ------------------------------------------------------------------------------
+if ENABLE_SLEEP
 systemd_sleep_SOURCES = \
 	src/sleep/sleep.c
 
 systemd_sleep_LDADD = \
 	libsystemd-shared.la
+endif
 
 # ------------------------------------------------------------------------------
 systemd_ac_power_SOURCES = \
@@ -1472,11 +1542,13 @@ systemd_ac_power_LDADD = \
 	libsystemd-shared.la
 
 # ------------------------------------------------------------------------------
+if ENABLE_DELTA
 systemd_delta_SOURCES = \
 	src/delta/delta.c
 
 systemd_delta_LDADD = \
 	libsystemd-shared.la
+endif
 
 # ------------------------------------------------------------------------------
 systemd_getty_generator_SOURCES = \
@@ -1495,6 +1567,7 @@ systemd_rc_local_generator_LDADD = \
 	libsystemd-shared.la
 
 # ------------------------------------------------------------------------------
+if ENABLE_REMOUNT_FS
 systemd_remount_fs_SOURCES = \
 	src/remount-fs/remount-fs.c \
 	src/core/mount-setup.c \
@@ -1503,6 +1576,7 @@ systemd_remount_fs_SOURCES = \
 systemd_remount_fs_LDADD = \
 	libsystemd-label.la \
 	libsystemd-shared.la
+endif
 
 # ------------------------------------------------------------------------------
 systemctl_SOURCES = \
@@ -1529,6 +1603,7 @@ systemd_notify_LDADD = \
 	libsystemd-daemon.la
 
 # ------------------------------------------------------------------------------
+if ENABLE_PASSWORD_AGENTS
 systemd_ask_password_SOURCES = \
 	src/ask-password/ask-password.c
 
@@ -1536,29 +1611,31 @@ systemd_ask_password_LDADD = \
 	libsystemd-label.la \
 	libsystemd-shared.la
 
-# ------------------------------------------------------------------------------
 systemd_reply_password_SOURCES = \
 	src/reply-password/reply-password.c
 
 systemd_reply_password_LDADD = \
 	libsystemd-shared.la
 
-# ------------------------------------------------------------------------------
-systemd_cgtop_SOURCES = \
-	src/cgtop/cgtop.c
-
-systemd_cgtop_LDADD = \
-	libsystemd-shared.la
-
-# ------------------------------------------------------------------------------
 systemd_tty_ask_password_agent_SOURCES = \
 	src/tty-ask-password-agent/tty-ask-password-agent.c
 
 systemd_tty_ask_password_agent_LDADD = \
 	libsystemd-label.la \
 	libsystemd-shared.la
+endif
 
 # ------------------------------------------------------------------------------
+if ENABLE_CGTOP
+systemd_cgtop_SOURCES = \
+	src/cgtop/cgtop.c
+
+systemd_cgtop_LDADD = \
+	libsystemd-shared.la
+endif
+
+# ------------------------------------------------------------------------------
+
 libsystemd_daemon_la_SOURCES = \
 	src/libsystemd-daemon/sd-daemon.c
 
@@ -1664,7 +1741,7 @@ EXTRA_DIST += \
 	src/libsystemd-id128/libsystemd-id128.sym
 
 # ------------------------------------------------------------------------------
-
+if ENABLE_ACTIVATE
 rootlibexec_PROGRAMS += \
 	systemd-activate
 
@@ -1674,6 +1751,7 @@ systemd_activate_SOURCES = \
 systemd_activate_LDADD = \
 	libsystemd-shared.la \
 	libsystemd-daemon.la
+endif
 
 # ------------------------------------------------------------------------------
 if ENABLE_RANDOMSEED

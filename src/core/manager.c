@@ -434,9 +434,12 @@ static int manager_setup_signals(Manager *m) {
                         SIGRTMIN+22, /* systemd: set log level to LOG_DEBUG */
                         SIGRTMIN+23, /* systemd: set log level to LOG_INFO */
                         SIGRTMIN+24, /* systemd: Immediate exit (--user only) */
+#if !defined(__hppa64__) && !defined(__hppa__)
+
                         SIGRTMIN+27, /* systemd: set log target to console */
                         SIGRTMIN+28, /* systemd: set log target to kmsg */
                         SIGRTMIN+29, /* systemd: set log target to syslog-or-kmsg */
+#endif
                         -1);
         assert_se(sigprocmask(SIG_SETMASK, &mask, NULL) == 0);
 
@@ -815,7 +818,7 @@ int manager_coldplug(Manager *m) {
 
 static void manager_build_unit_path_cache(Manager *m) {
         char **i;
-        _cleanup_free_ DIR *d = NULL;
+        _cleanup_closedir_ DIR *d = NULL;
         int r;
 
         assert(m);
@@ -1932,6 +1935,8 @@ void manager_send_unit_audit(Manager *m, Unit *u, int type, bool success) {
 }
 
 void manager_send_unit_plymouth(Manager *m, Unit *u) {
+
+#ifdef ENABLE_PLYMOUTH
         int fd = -1;
         union sockaddr_union sa;
         int n = 0;
@@ -1996,6 +2001,8 @@ finish:
                 close_nointr_nofail(fd);
 
         free(message);
+#endif
+
 }
 
 void manager_dispatch_bus_name_owner_changed(

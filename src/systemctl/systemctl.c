@@ -134,6 +134,7 @@ static bool private_bus = false;
 static int daemon_reload(DBusConnection *bus, char **args);
 static void halt_now(enum action a);
 
+#ifdef ENABLE_PASSWORD_AGENTS
 static void ask_password_agent_open_if_enabled(void) {
 
         /* Open the password agent as a child process if necessary */
@@ -146,6 +147,7 @@ static void ask_password_agent_open_if_enabled(void) {
 
         ask_password_agent_open();
 }
+#endif
 
 static int translate_bus_error_to_exit_status(int r, const DBusError *error) {
         assert(error);
@@ -739,6 +741,11 @@ static int compare_unit_file_list(const void *a, const void *b) {
 static bool output_show_unit_file(const UnitFileList *u) {
         const char *dot;
 
+        if (!strv_isempty(arg_states)) {
+			    if (!strv_find(arg_states, unit_file_state_to_string(u->state)))
+			            return false;
+		}
+
         return !arg_types || ((dot = strrchr(u->path, '.')) && strv_find(arg_types, dot+1));
 }
 
@@ -827,6 +834,10 @@ static int list_unit_files(DBusConnection *bus, char **args) {
                 }
 
                 n_units = hashmap_size(h);
+
+                if (n_units == 0)
+					    return 0;
+
                 units = new(UnitFileList, n_units);
                 if (!units) {
                         unit_file_list_free(h);
@@ -1902,7 +1913,9 @@ static int start_unit(DBusConnection *bus, char **args) {
 
         assert(bus);
 
+#ifdef ENABLE_PASSWORD_AGENTS
         ask_password_agent_open_if_enabled();
+#endif
 
         if (arg_action == ACTION_SYSTEMCTL) {
                 enum action action;
@@ -4510,6 +4523,7 @@ static int systemctl_help(void) {
                "     --no-legend      Do not print a legend (column headers and hints)\n"
                "     --no-ask-password\n"
                "                      Do not ask for system passwords\n"
+               "     --avoid-bus      Bypass system bus\n"
                "     --system         Connect to system manager\n"
                "     --user           Connect to user service manager\n"
                "     --global         Enable/disable unit files globally\n"
@@ -4696,7 +4710,8 @@ static int systemctl_parse_argv(int argc, char *argv[]) {
                 ARG_RUNTIME,
                 ARG_FORCE,
                 ARG_PLAIN,
-                ARG_STATE
+                ARG_STATE,
+                ARG_AVOID_BUS
         };
 
         static const struct option options[] = {
@@ -4735,6 +4750,7 @@ static int systemctl_parse_argv(int argc, char *argv[]) {
                 { "output",              required_argument, NULL, 'o'                     },
                 { "plain",               no_argument,       NULL, ARG_PLAIN               },
                 { "state",               required_argument, NULL, ARG_STATE               },
+                { "avoid-bus",           no_argument,       NULL, ARG_AVOID_BUS           },
                 { NULL,                  0,                 NULL, 0                       }
         };
 
@@ -4978,6 +4994,10 @@ static int systemctl_parse_argv(int argc, char *argv[]) {
                         }
                         break;
                 }
+
+                case ARG_AVOID_BUS:
+                        avoid_bus();
+                        break;
 
                 case '?':
                         return -EINVAL;
@@ -5714,6 +5734,7 @@ done:
 }
 
 static _noreturn_ void halt_now(enum action a) {
+	    sync();
 
        /* Make sure C-A-D is handled by the kernel from this
          * point on... */
@@ -5753,7 +5774,8 @@ static int halt_main(DBusConnection *bus) {
         if (geteuid() != 0) {
                 /* Try logind if we are a normal user and no special
                  * mode applies. Maybe PolicyKit allows us to shutdown
-                 * the machine. */
+                 * the machine.
+                 * logind is a noop here. */
 
                 if (arg_when <= 0 &&
                     !arg_dry &&
@@ -5859,12 +5881,6 @@ int main(int argc, char*argv[]) {
         if (arg_action == ACTION_RUNLEVEL) {
                 r = runlevel_main();
                 retval = r < 0 ? EXIT_FAILURE : r;
-                goto finish;
-        }
-
-        if (running_in_chroot() > 0 && arg_action != ACTION_SYSTEMCTL) {
-                log_info("Running in chroot, ignoring request.");
-                retval = 0;
                 goto finish;
         }
 

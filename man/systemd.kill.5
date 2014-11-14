@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSTEMD\&.KILL" "5" "" "systemd 3" "systemd.kill"
+.TH "SYSTEMD\&.KILL" "5" "" "systemd 7" "systemd.kill"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -35,11 +35,7 @@ This man page lists the configuration options shared by these four unit types\&.
 \fBsystemd.unit\fR(5)
 for the common options of all unit configuration files, and
 \fBsystemd.service\fR(5),
-\fBsystemd.socket\fR(5),
-\fBsystemd.swap\fR(5)
-and
-\fBsystemd.mount\fR(5)
-for more information on the specific unit configuration files\&. The execution specific configuration options are configured in the [Service], [Socket], [Mount], or [Swap] section, depending on the unit type\&.
+\fBsystemd.socket\fR(5), for more information on the specific unit configuration files\&. The execution specific configuration options are configured in the [Service] or [Socket] section, depending on the unit type\&.
 .SH "OPTIONS"
 .PP
 \fIKillMode=\fR
@@ -47,14 +43,18 @@ for more information on the specific unit configuration files\&. The execution s
 Specifies how processes of this service shall be killed\&. One of
 \fBcontrol\-group\fR,
 \fBprocess\fR,
-\fBnone\fR\&.
+\fBmixed\fR\fBnone\fR\&.
 .sp
 If set to
-\fBcontrol\-group\fR, all remaining processes in the control group of this unit will be terminated on unit stop (for services: after the stop command is executed, as configured with
+\fBcontrol\-group\fR, all remaining processes in the control group of this unit will be killed on unit stop (for services: after the stop command is executed, as configured with
 \fIExecStop=\fR)\&. If set to
 \fBprocess\fR, only the main process itself is killed\&. If set to
-\fBnone\fR, no process is killed\&. In this case only the stop command will be executed on unit stop, but no process be killed otherwise\&. Processes remaining alive after stop are left in their control group and the control group continues to exist after stop unless it is empty\&. Defaults to
-\fBcontrol\-group\fR\&.
+\fBmixed\fR, the
+\fBSIGTERM\fR
+signal (see below) is sent to the main process while the subsequent
+\fBSIGKILL\fR
+signal (see below) is sent to all remaining processes of the unit\*(Aqs control group\&. If set to
+\fBnone\fR, no process is killed\&. In this case only the stop command will be executed on unit stop, but no process be killed otherwise\&. Processes remaining alive after stop are left in their control group and the control group continues to exist after stop unless it is empty\&.
 .sp
 Processes will first be terminated via
 \fBSIGTERM\fR
@@ -71,6 +71,9 @@ signal (unless this is disabled via the
 option)\&. See
 \fBkill\fR(2)
 for more information\&.
+.sp
+Defaults to
+\fBcontrol\-group\fR\&.
 .RE
 .PP
 \fIKillSignal=\fR
