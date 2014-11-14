@@ -98,6 +98,8 @@ typedef struct Item {
         bool age_set:1;
 
         bool keep_first_level:1;
+
+        bool done:1;
 } Item;
 
 static Hashmap *items = NULL, *globs = NULL;
@@ -979,8 +981,22 @@ static int clean_item(Item *i) {
 
 static int process_item(Item *i) {
         int r, q, p;
+        char prefix[PATH_MAX];
 
         assert(i);
+
+        if (i->done)
+               return 0;
+
+        i->done = true;
+
+        PATH_FOREACH_PREFIX(prefix, i->path) {
+			    Item *j;
+
+			    j = hashmap_get(items, prefix);
+			    if (j)
+			            process_item(j);
+		}
 
         r = arg_create ? create_item(i) : 0;
         q = arg_remove ? remove_item(i) : 0;
