@@ -1084,7 +1084,10 @@ tests += \
 	test-hashmap \
 	test-list \
 	test-tables \
-	test-device-nodes
+	test-device-nodes \
+	test-ratelimit \
+	test-set \
+	test-async
 
 EXTRA_DIST += \
 	test/sched_idle_bad.service \
@@ -1348,6 +1351,24 @@ test_sched_prio_CFLAGS = \
 test_sched_prio_LDADD = \
 	libsystemd-core.la \
 	libsystemd-daemon.la
+
+test_ratelimit_SOURCES = \
+	src/test/test-ratelimit.c
+
+test_ratelimit_LDADD = \
+	libsystemd-shared.la
+
+test_set_SOURCES = \
+	src/test/test-set.c
+
+test_set_LDADD = \
+	libsystemd-shared.la
+
+test_async_SOURCES = \
+	src/test/test-async.c
+
+test_async_LDADD = \
+	libsystemd-core.la
 
 # ------------------------------------------------------------------------------
 ## .PHONY so it always rebuilds it
