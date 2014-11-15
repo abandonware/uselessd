@@ -28,6 +28,9 @@
 
 #include "util.h"
 #include "strv.h"
+#include "mkdir.h"
+#include "fileio.h"
+#include "def.h"
 
 static void test_streq_ptr(void) {
         assert_se(streq_ptr(NULL, NULL));
@@ -591,6 +594,73 @@ static void test_get_files_in_directory(void) {
         assert_se(get_files_in_directory(".", NULL) >= 0);
 }
 
+static void test_string_has_cc(void) {
+        assert_se(string_has_cc("abc\1"));
+        assert_se(string_has_cc("abc\x7f"));
+        assert_se(string_has_cc("abc\x7f"));
+        assert_se(string_has_cc("abc\t\x7f"));
+        assert_se(string_has_cc("abc\t\x7f"));
+        assert_se(string_has_cc("\x7f"));
+        assert_se(string_has_cc("\x7f"));
+
+        assert_se(!string_has_cc("abctt"));
+        assert_se(!string_has_cc("abctta"));
+        assert_se(!string_has_cc("aabtc"));
+}
+
+static void test_is_valid_documentation_url(void) {
+        assert_se(is_valid_documentation_url("http://www.uselessd.darknedgy.net/PidNone"));
+        assert_se(is_valid_documentation_url("https://www.kernel.org/doc/Documentation/binfmt_misc.txt"));
+        assert_se(is_valid_documentation_url("file:foo"));
+        assert_se(is_valid_documentation_url("man:systemd.special(7)"));
+        assert_se(is_valid_documentation_url("info:bar"));
+
+        assert_se(!is_valid_documentation_url("foo:"));
+        assert_se(!is_valid_documentation_url("info:"));
+        assert_se(!is_valid_documentation_url(""));
+}
+
+static void test_endswith(void) {
+        assert_se(endswith("foobar", "bar"));
+        assert_se(endswith("foobar", ""));
+        assert_se(endswith("foobar", "foobar"));
+        assert_se(endswith("", ""));
+
+        assert_se(!endswith("foobar", "foo"));
+        assert_se(!endswith("foobar", "foobarfoofoo"));
+}
+
+static void test_ignore_signals(void) {
+        assert_se(ignore_signals(SIGINT, -1) >= 0);
+        assert_se(kill(getpid(), SIGINT) >= 0);
+        assert_se(ignore_signals(SIGUSR1, SIGUSR2, SIGTERM, SIGPIPE, -1) >= 0);
+        assert_se(kill(getpid(), SIGUSR1) >= 0);
+        assert_se(kill(getpid(), SIGUSR2) >= 0);
+        assert_se(kill(getpid(), SIGTERM) >= 0);
+        assert_se(kill(getpid(), SIGPIPE) >= 0);
+        assert_se(default_signals(SIGINT, SIGUSR1, SIGUSR2, SIGTERM, SIGPIPE, -1) >= 0);
+}
+
+static void test_execute_directory(void) {
+        char name[] = "/tmp/test-execute_directory/script1";
+        char name2[] = "/tmp/test-execute_directory/script2";
+        char name3[] = "/tmp/test-execute_directory/useless";
+        char tempdir[] = "/tmp/test-execute_directory";
+
+        assert_se(mkdir_safe(tempdir, 0755, getuid(), getgid()) >= 0);
+        assert_se(write_string_file(name, "#!/bin/sh\necho 'Executing '$0\ntouch /tmp/test-execute_directory/it_works") == 0);
+        assert_se(write_string_file(name2, "#!/bin/sh\necho 'Executing '$0\ntouch /tmp/test-execute_directory/it_works2") == 0);
+        assert_se(chmod(name, 0755) == 0);
+        assert_se(chmod(name2, 0755) == 0);
+        assert_se(touch(name3) >= 0);
+
+        execute_directory(tempdir, NULL, NULL);
+        assert_se(access("/tmp/test-execute_directory/it_works", F_OK) >= 0);
+        assert_se(access("/tmp/test-execute_directory/it_works2", F_OK) >= 0);
+
+        rm_rf_dangerous(tempdir, false, true, false);
+}
+
 int main(int argc, char *argv[]) {
         test_streq_ptr();
         test_first_word();
@@ -628,6 +698,11 @@ int main(int argc, char *argv[]) {
         test_split_pair();
         test_fstab_node_to_udev_node();
         test_get_files_in_directory();
+        test_string_has_cc();
+        test_is_valid_documentation_url();
+        test_endswith();
+        test_ignore_signals();
+        test_execute_directory();
 
         return 0;
 }
