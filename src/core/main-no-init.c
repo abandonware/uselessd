@@ -58,9 +58,6 @@
 #include "sd-messages.h"
 
 #include "mount-setup.h"
-#ifdef HAVE_KMOD
-#include "kmod-setup.h"
-#endif
 #include "fileio.h"
 
 static enum {

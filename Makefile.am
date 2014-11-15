@@ -905,6 +905,8 @@ libsystemd_core_la_SOURCES = \
 	src/core/locale-setup.c \
 	src/core/mount-setup.c \
 	src/core/mount-setup.h \
+	src/core/kmod-setup.c \
+	src/core/kmod-setup.h \
 	src/core/condition.c \
 	src/core/condition.h \
 	src/core/namespace.c \
@@ -925,12 +927,6 @@ libsystemd_core_la_SOURCES = \
 	src/core/audit-fd.h \
 	src/core/async.c \
 	src/core/async.h
-
-if HAVE_KMOD
-libsystemd_core_la_SOURCES += \
-	src/core/kmod-setup.c \
-	src/core/kmod-setup.h
-endif
 
 nodist_libsystemd_core_la_SOURCES = \
 	src/core/load-fragment-gperf.c \

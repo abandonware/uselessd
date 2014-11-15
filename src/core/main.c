@@ -58,9 +58,7 @@
 #include "sd-messages.h"
 
 #include "mount-setup.h"
-#ifdef HAVE_KMOD
 #include "kmod-setup.h"
-#endif
 #include "fileio.h"
 
 static enum {
@@ -1459,9 +1457,7 @@ int main(int argc, char *argv[]) {
                 if (arg_show_status || plymouth_running())
                         status_welcome();
 
-#ifdef HAVE_KMOD
                 kmod_setup();
-#endif
 
                 test_mtab();
                 test_usr();
