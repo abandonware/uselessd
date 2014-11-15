@@ -22,7 +22,7 @@
   along with systemd; If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<refentry id="systemd-suspend.service" conditional="ENABLE_SLEEP">
+<refentry id="systemd-suspend.service">
 
         <refentryinfo>
                 <title>uselessd-suspend.service</title>

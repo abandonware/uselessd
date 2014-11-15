@@ -24,14 +24,13 @@ MANPAGES += \
 	man/systemd-fsck@.service.8 \
 	man/systemd-getty-generator.8 \
 	man/systemd-halt.service.8 \
+	man/systemd-inhibit.1 \
 	man/systemd-initctl.service.8 \
 	man/systemd-notify.1 \
-	man/systemd-inhibit.1 \
 	man/systemd-shutdownd.service.8 \
 	man/systemd-sysctl.service.8 \
 	man/systemd-system.conf.5 \
 	man/systemd-tmpfiles.8 \
-	man/systemd-tty-ask-password-agent.1 \
 	man/systemd.1 \
 	man/systemd.exec.5 \
 	man/systemd.kill.5 \
@@ -63,8 +62,7 @@ MANPAGES_ALIAS += \
 	man/SD_LISTEN_FDS_START.3 \
 	man/SD_NOTICE.3 \
 	man/SD_WARNING.3 \
-    man/init.1 \
-	man/uselessd.1 \
+	man/init.1 \
 	man/poweroff.8 \
 	man/reboot.8 \
 	man/sd_id128_equal.3 \
@@ -76,8 +74,6 @@ MANPAGES_ALIAS += \
 	man/sd_is_socket_inet.3 \
 	man/sd_is_socket_unix.3 \
 	man/sd_notifyf.3 \
-	man/systemd-ask-password-console.path.8 \
-	man/systemd-ask-password-wall.path.8 \
 	man/systemd-fsck-root.service.8 \
 	man/systemd-fsck.8 \
 	man/systemd-initctl.8 \
@@ -92,7 +88,8 @@ MANPAGES_ALIAS += \
 	man/systemd-tmpfiles-clean.service.8 \
 	man/systemd-tmpfiles-setup-dev.service.8 \
 	man/systemd-tmpfiles-setup.service.8 \
-	man/systemd-user.conf.5
+	man/systemd-user.conf.5 \
+	man/uselessd.1
 man/SD_ALERT.3: man/sd-daemon.3
 man/SD_CRIT.3: man/sd-daemon.3
 man/SD_DEBUG.3: man/sd-daemon.3
@@ -107,7 +104,6 @@ man/SD_LISTEN_FDS_START.3: man/sd_listen_fds.3
 man/SD_NOTICE.3: man/sd-daemon.3
 man/SD_WARNING.3: man/sd-daemon.3
 man/init.1: man/systemd.1
-man/uselessd.1: man/systemd.1
 man/poweroff.8: man/halt.8
 man/reboot.8: man/halt.8
 man/sd_id128_equal.3: man/sd-id128.3
@@ -119,8 +115,6 @@ man/sd_is_socket.3: man/sd_is_fifo.3
 man/sd_is_socket_inet.3: man/sd_is_fifo.3
 man/sd_is_socket_unix.3: man/sd_is_fifo.3
 man/sd_notifyf.3: man/sd_notify.3
-man/systemd-ask-password-console.path.8: man/systemd-ask-password-console.service.8
-man/systemd-ask-password-wall.path.8: man/systemd-ask-password-console.service.8
 man/systemd-fsck-root.service.8: man/systemd-fsck@.service.8
 man/systemd-fsck.8: man/systemd-fsck@.service.8
 man/systemd-initctl.8: man/systemd-initctl.service.8
@@ -136,6 +130,7 @@ man/systemd-tmpfiles-clean.service.8: man/systemd-tmpfiles.8
 man/systemd-tmpfiles-setup-dev.service.8: man/systemd-tmpfiles.8
 man/systemd-tmpfiles-setup.service.8: man/systemd-tmpfiles.8
 man/systemd-user.conf.5: man/systemd-system.conf.5
+man/uselessd.1: man/systemd.1
 man/SD_ALERT.html: man/sd-daemon.html
 	$(html-alias)
 
@@ -178,9 +173,6 @@ man/SD_WARNING.html: man/sd-daemon.html
 man/init.html: man/systemd.html
 	$(html-alias)
 
-man/uselessd.html: man/systemd.html
-	$(html-alias)
-
 man/poweroff.html: man/halt.html
 	$(html-alias)
 
@@ -212,12 +204,6 @@ man/sd_is_socket_unix.html: man/sd_is_fifo.html
 	$(html-alias)
 
 man/sd_notifyf.html: man/sd_notify.html
-	$(html-alias)
-
-man/systemd-ask-password-console.path.html: man/systemd-ask-password-console.service.html
-	$(html-alias)
-
-man/systemd-ask-password-wall.path.html: man/systemd-ask-password-console.service.html
 	$(html-alias)
 
 man/systemd-fsck-root.service.html: man/systemd-fsck@.service.html
@@ -265,6 +251,106 @@ man/systemd-tmpfiles-setup.service.html: man/systemd-tmpfiles.html
 man/systemd-user.conf.html: man/systemd-system.conf.html
 	$(html-alias)
 
+man/uselessd.html: man/systemd.html
+	$(html-alias)
+
+
+if ENABLE_ACTIVATE
+MANPAGES += \
+	man/systemd-activate.8
+MANPAGES_ALIAS += \
+	#
+
+
+endif
+
+if ENABLE_ANALYZE
+MANPAGES += \
+	man/systemd-analyze.1
+MANPAGES_ALIAS += \
+	#
+
+
+endif
+
+if ENABLE_CGLS
+MANPAGES += \
+	man/uselessd-cgls.1
+MANPAGES_ALIAS += \
+	#
+
+
+endif
+
+if ENABLE_CGTOP
+MANPAGES += \
+	man/systemd-cgtop.1
+MANPAGES_ALIAS += \
+	#
+
+
+endif
+
+if ENABLE_DELTA
+MANPAGES += \
+	man/systemd-delta.1
+MANPAGES_ALIAS += \
+	#
+
+
+endif
+
+if ENABLE_HOSTNAME_SETUP
+MANPAGES += \
+	man/uselessd-hostname-setup.1
+MANPAGES_ALIAS += \
+	#
+
+
+endif
+
+if ENABLE_LOOPBACK_SETUP
+MANPAGES += \
+	man/uselessd-loopback-setup.1
+MANPAGES_ALIAS += \
+	#
+
+
+endif
+
+if ENABLE_MACHINE_ID_SETUP
+MANPAGES += \
+	man/machine-id.5 \
+	man/systemd-machine-id-setup.1
+MANPAGES_ALIAS += \
+	#
+
+
+endif
+
+if ENABLE_PASSWORD_AGENTS
+MANPAGES += \
+	man/systemd-ask-password-console.service.8 \
+	man/systemd-ask-password.1 \
+	man/systemd-tty-ask-password-agent.1
+MANPAGES_ALIAS += \
+	man/systemd-ask-password-console.path.8 \
+	man/systemd-ask-password-wall.path.8 \
+	man/systemd-ask-password-wall.service.8
+man/systemd-ask-password-console.path.8: man/systemd-ask-password-console.service.8
+man/systemd-ask-password-wall.path.8: man/systemd-ask-password-console.service.8
+man/systemd-ask-password-wall.service.8: man/systemd-ask-password-console.service.8
+man/systemd-ask-password-console.path.html: man/systemd-ask-password-console.service.html
+	$(html-alias)
+
+man/systemd-ask-password-wall.path.html: man/systemd-ask-password-console.service.html
+	$(html-alias)
+
+man/systemd-ask-password-wall.service.html: man/systemd-ask-password-console.service.html
+	$(html-alias)
+
+endif
+
 if ENABLE_RANDOMSEED
 MANPAGES += \
 	man/systemd-random-seed.service.8
@@ -276,79 +362,12 @@ man/systemd-random-seed.html: man/systemd-random-seed.service.html
 
 endif
 
-if ENABLE_MACHINE_ID_SETUP
-MANPAGES += \
-	man/systemd-machine-id-setup.1 \
-	man/machine-id.5
-
-endif
-
-if ENABLE_HOSTNAME_SETUP
-MANPAGES += \
-	man/uselessd-hostname-setup.1
-
-endif
-
-if ENABLE_LOOPBACK_SETUP
-MANPAGES += \
-	man/uselessd-loopback-setup.1
-
-endif
-
-if ENABLE_ANALYZE
-MANPAGES += \
-	man/systemd-analyze.1
-
-endif
-
-if ENABLE_ACTIVATE
-MANPAGES += \
-	man/systemd-activate.8
-
-endif
-
-if ENABLE_CGTOP
-MANPAGES += \
-	man/systemd-cgtop.1
-
-endif
-
-if ENABLE_CGLS
-MANPAGES += \
-	man/uselessd-cgls.1
-
-endif
-
-if ENABLE_DELTA
-MANPAGES += \
-	man/systemd-delta.1
-
-endif
-
-if ENABLE_PASSWORD_AGENTS
-MANPAGES += \
-	man/systemd-ask-password-console.service.8 \
-	man/systemd-ask-password.1
-
-MANPAGES_ALIAS += \
-	man/systemd-ask-password-wall.service.8
-
-man/systemd-ask-password-wall.service.8: man/systemd-ask-password-console.service.8
-
-man/systemd-ask-password-wall.service.html: man/systemd-ask-password-console.service.html
-	$(html-alias)
-
-endif
-
 if ENABLE_REMOUNT_FS
 MANPAGES += \
 	man/systemd-remount-fs.service.8
-
 MANPAGES_ALIAS += \
 	man/systemd-remount-fs.8
-
 man/systemd-remount-fs.8: man/systemd-remount-fs.service.8
-
 man/systemd-remount-fs.html: man/systemd-remount-fs.service.html
 	$(html-alias)
 
@@ -356,27 +375,23 @@ endif
 
 if ENABLE_SLEEP
 MANPAGES += \
-	man/systemd-sleep.conf.5 \
-	man/systemd-suspend.service.8
-
+	man/systemd-sleep.conf.5
 MANPAGES_ALIAS += \
-	man/systemd-sleep.8 \
-	man/uselessd-sleep.8 \
-	man/systemd-hibernate.service.8 \
-	man/systemd-hybrid-sleep.service.8
-
-man/systemd-hibernate.service.8: man/systemd-suspend.service.8
-man/systemd-hybrid-sleep.service.8: man/systemd-suspend.service.8
-man/systemd-sleep.8: man/systemd-suspend.service.8
+    man/uselessd-suspend.service.8 \
+	man/uselessd-hibernate.service.8 \
+	man/uselessd-hybrid-sleep.service.8 \
+	man/uselessd-sleep.8
+man/uselessd-suspend.service.8: man/systemd-suspend.service.8
+man/uselessd-hibernate.service.8: man/systemd-suspend.service.8
+man/uselessd-hybrid-sleep.service.8: man/systemd-suspend.service.8
 man/uselessd-sleep.8: man/systemd-suspend.service.8
-
-man/systemd-hibernate.service.html: man/systemd-suspend.service.html
+man/uselessd-suspend.service.html: man/systemd-suspend.service.html
 	$(html-alias)
 
-man/systemd-hybrid-sleep.service.html: man/systemd-suspend.service.html
+man/uselessd-hibernate.service.html: man/systemd-suspend.service.html
 	$(html-alias)
 
-man/systemd-sleep.html: man/systemd-suspend.service.html
+man/uselessd-hybrid-sleep.service.html: man/systemd-suspend.service.html
 	$(html-alias)
 
 man/uselessd-sleep.html: man/systemd-suspend.service.html
@@ -388,14 +403,11 @@ if ENABLE_UPDATE_UTMP
 MANPAGES += \
 	man/runlevel.8 \
 	man/systemd-update-utmp.service.8
-
 MANPAGES_ALIAS += \
 	man/systemd-update-utmp-runlevel.service.8 \
 	man/systemd-update-utmp.8
-
 man/systemd-update-utmp-runlevel.service.8: man/systemd-update-utmp.service.8
 man/systemd-update-utmp.8: man/systemd-update-utmp.service.8
-
 man/systemd-update-utmp-runlevel.service.html: man/systemd-update-utmp.service.html
 	$(html-alias)
 
