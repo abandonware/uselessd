@@ -636,69 +636,6 @@ static int version(void) {
         return 0;
 }
 
-static int prepare_reexecute(Manager *m, FILE **_f, FDSet **_fds, bool switching_root) {
-        FILE *f = NULL;
-        FDSet *fds = NULL;
-        int r;
-
-        assert(m);
-        assert(_f);
-        assert(_fds);
-
-        r = manager_open_serialization(m, &f);
-        if (r < 0) {
-                log_error("Failed to create serialization file: %s", strerror(-r));
-                goto fail;
-        }
-
-        /* Make sure nothing is really destructed when we shut down */
-        m->n_reloading ++;
-        bus_broadcast_reloading(m, true);
-
-        fds = fdset_new();
-        if (!fds) {
-                r = -ENOMEM;
-                log_error("Failed to allocate fd set: %s", strerror(-r));
-                goto fail;
-        }
-
-        r = manager_serialize(m, f, fds, switching_root);
-        if (r < 0) {
-                log_error("Failed to serialize state: %s", strerror(-r));
-                goto fail;
-        }
-
-        if (fseeko(f, 0, SEEK_SET) < 0) {
-                log_error("Failed to rewind serialization fd: %m");
-                goto fail;
-        }
-
-        r = fd_cloexec(fileno(f), false);
-        if (r < 0) {
-                log_error("Failed to disable O_CLOEXEC for serialization: %s", strerror(-r));
-                goto fail;
-        }
-
-        r = fdset_cloexec(fds, false);
-        if (r < 0) {
-                log_error("Failed to disable O_CLOEXEC for serialization fds: %s", strerror(-r));
-                goto fail;
-        }
-
-        *_f = f;
-        *_fds = fds;
-
-        return 0;
-
-fail:
-        fdset_free(fds);
-
-        if (f)
-                fclose(f);
-
-        return r;
-}
-
 static int bump_rlimit_nofile(struct rlimit *saved_rlimit) {
         struct rlimit nl;
         int r;
@@ -810,7 +747,6 @@ int main(int argc, char *argv[]) {
         usec_t before_startup, after_startup;
         char timespan[FORMAT_TIMESPAN_MAX];
         FDSet *fds = NULL;
-        bool reexecute = false;
         dual_timestamp initrd_timestamp = { 0ULL, 0ULL };
         dual_timestamp userspace_timestamp = { 0ULL, 0ULL };
         dual_timestamp kernel_timestamp = { 0ULL, 0ULL };
@@ -1096,7 +1032,7 @@ int main(int argc, char *argv[]) {
 
                 case MANAGER_EXIT:
                         retval = EXIT_SUCCESS;
-                        log_debug("Exit.");
+                        log_debug("Remove uselessd from the premises.");
                         goto finish;
 
                 case MANAGER_RELOAD:
@@ -1107,12 +1043,7 @@ int main(int argc, char *argv[]) {
                         break;
 
                 case MANAGER_REEXECUTE:
-
-                        if (prepare_reexecute(m, &serialization, &fds, false) < 0)
-                                goto finish;
-
-                        reexecute = true;
-                        log_notice("Remove uselessd from the premises.");
+                        log_notice("Reexecute request leads to exit in non-init. Exiting.");
                         goto finish;
 
                 case MANAGER_SWITCH_ROOT:
