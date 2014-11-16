@@ -1,5 +1,58 @@
 uselessd System and Service Manager
 
+Version 8 (2014-11-16)
+----------------------
+   *  A new feature has been introduced - hard job failures for uselessd
+      conditions. By default, if a Condition*= directive in a systemd
+      or uselessd service is false, the job is skipped. On the other hand,
+      if the file /run/systemd/condition-job-failure exists with a text
+      string of Y, T, yes or true, all false conditions will lead to a
+      job failure being logged for units on a global level. This is
+      similar to systemd-git's (presumably will be in 218) Assert*=
+      options, except implemented as a global and volatile flag in the
+      /run directory. The default tmpfiles.d configuration creates the
+      file with a value of N.
+
+   *  The default tmpfiles.d configuration now respects the legacy
+      /forcefsck, /fastboot and /forcequotacheck files and will not
+      interfere with them existing.
+
+   *  systemd-sleep has been replaced with a shell script called
+      uselessd-sleep. Much simpler, it is currently limited - it
+      only executes the /usr/lib/systemd/system-sleep directory once
+      and expects shell scripts with an *.sh extension only. In addition,
+      it requires an explicitly configured /etc/systemd/sleep.conf file.
+      As a result, we provide a stock one. Relevant units have been
+      updated to use uselessd-sleep.
+
+   *  systemd-shutdown and systemd-shutdownd will no longer be built if
+      --disable-initd is passed to the configure script.
+
+   *  A new configure switch has been introduced: --disable-update-utmp,
+      for stripping out the systemd-update-utmp tool from the build.
+
+   *  main-no-init has been significantly simplified. In keeping with
+      its purpose as a stage 2 process manager/supervisor, it no longer
+      handles things irrelevant to it: /proc/cmdline parsing, crash
+      shells, crash VTs, watchdog timers, switch-root handling, daemon
+      reexec/keexec/shutdown/reboot/halt/poweroff. In addition, it
+      no longer dumps core by default and the --user option has been
+      removed, due to main-no-init's intended usage being as a global
+      system instance.
+
+      System generator directories are no longer managed and the
+      SIGINT/SIGTERM signals are interpreted as a MANAGER_EXIT.
+
+   *  Some updates to systemd-tmpfiles, such as following symlinks
+      in lines with w commands and parsing prefixes before suffixes in
+      e.g. directories. No major post-208 features as of yet, however.
+
+   *  A few new test cases have been imported from upstream systemd
+      with some modifications: test-async, test-set and test-ratelimit.
+      More cases for test-util have been added, as well.
+
+   *  Miscellaneous bugfixes and source refactoring.
+
 Version 7 (2014-11-07)
 ----------------------
    *  A new program has been introduced - uselessd-cgls, which
