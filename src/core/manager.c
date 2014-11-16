@@ -1457,15 +1457,20 @@ static int manager_process_signal_fd(Manager *m) {
                                  * original sysvinit */
                                 m->exit_code = MANAGER_REEXECUTE;
                                 break;
-                        }
+                        } else {
+							    m->exit_code = MANAGER_EXIT;
+					    }
 
                         /* Fall through */
 
                 case SIGINT:
-                        if (m->running_as == SYSTEMD_SYSTEM) {
+                        if (m->running_as == SYSTEMD_SYSTEM && getpid() == 1) {
                                 manager_start_target(m, SPECIAL_CTRL_ALT_DEL_TARGET, JOB_REPLACE_IRREVERSIBLY);
                                 break;
-                        }
+                        } else {
+							    m->exit_code = MANAGER_EXIT;
+							    break;
+						}
 
                         /* Run the exit target if there is one, if not, just exit. */
                         if (manager_start_target(m, SPECIAL_EXIT_TARGET, JOB_REPLACE) < 0) {
@@ -2521,8 +2526,12 @@ void manager_check_finished(Manager *m) {
 }
 
 static int create_generator_dir(Manager *m, char **generator, const char *name) {
-        char *p;
+	    char *p;
         int r;
+
+#ifndef ENABLE_INIT
+        return 0;
+#endif
 
         assert(m);
         assert(generator);
@@ -2562,6 +2571,9 @@ static int create_generator_dir(Manager *m, char **generator, const char *name) 
 }
 
 static void trim_generator_dir(Manager *m, char **generator) {
+#ifndef ENABLE_INIT
+        return;
+#endif
         assert(m);
         assert(generator);
 
@@ -2577,10 +2589,14 @@ static void trim_generator_dir(Manager *m, char **generator) {
 }
 
 void manager_run_generators(Manager *m) {
-        DIR *d = NULL;
-        const char *generator_path;
+	    const char *generator_path;
         const char *argv[5];
         int r;
+        DIR *d = NULL;
+
+#ifndef ENABLE_INIT
+        return;
+#endif
 
         assert(m);
 
@@ -2627,6 +2643,9 @@ finish:
 }
 
 static void remove_generator_dir(Manager *m, char **generator) {
+#ifndef ENABLE_INIT
+        return;
+#endif
         assert(m);
         assert(generator);
 
@@ -2641,6 +2660,9 @@ static void remove_generator_dir(Manager *m, char **generator) {
 }
 
 void manager_undo_generators(Manager *m) {
+#ifndef ENABLE_INIT
+        return;
+#endif
         assert(m);
 
         remove_generator_dir(m, &m->generator_unit_path);
