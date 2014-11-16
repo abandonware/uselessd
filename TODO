@@ -51,7 +51,7 @@ Decouple stuff from PID1.
 
 	!!Port back inhibitor locks. OS X caffeinate?
 
-	Rewrite systemd-remount-fs as shell script?
+	Rewrite systemd-remount-fs as a shell script?
 
 	Change <productname> in manpages to uselessd.
 
@@ -76,5 +76,11 @@ Decouple stuff from PID1.
 	Update systemd-tmpfiles.
 
 	Simplify main and main-no-init some more.
+
+	Find a way to use sd_pid_notify() in systemd-notify.
+
+	Reject invalid quoted strings.
+
+	Make dry runs with uselessd --test --system easier to perform.
 
 	REMINDER: Backport bugfixes from systemd-stable.
