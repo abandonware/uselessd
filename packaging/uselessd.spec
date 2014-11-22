@@ -68,7 +68,7 @@ at boot.
 cp %{SOURCE1} .
 
 %build
-%configure \
+%reconfigure \
         --libexecdir=%{_prefix}/lib \
         --docdir=%{_docdir}/uselessd \
         --disable-static \
