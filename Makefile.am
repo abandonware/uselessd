@@ -890,6 +890,8 @@ libsystemd_core_la_SOURCES = \
 	src/core/dbus-cgroup.h \
 	src/core/cgroup.c \
 	src/core/cgroup.h \
+	src/core/smack-setup.c \
+	src/core/smack-setup.h \
 	src/core/locale-setup.h \
 	src/core/locale-setup.c \
 	src/core/mount-setup.c \

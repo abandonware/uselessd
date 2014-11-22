@@ -62,6 +62,7 @@
 #include "kmod-setup.h"
 #endif
 #include "fileio.h"
+#include "smack-setup.h"
 
 static enum {
         ACTION_RUN,
@@ -1274,6 +1275,7 @@ int main(int argc, char *argv[]) {
 
                 if (!skip_setup) {
                         mount_setup_early();
+                        smack_setup();
                 }
 
                 if (label_init(NULL) < 0)

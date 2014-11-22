@@ -437,6 +437,32 @@ AC_SUBST(XATTR_LIBS)
 AM_CONDITIONAL([HAVE_XATTR], [test "x$have_xattr" != xno])
 
 # ------------------------------------------------------------------------------
+AC_ARG_ENABLE([smack],
+        AS_HELP_STRING([--disable-smack],[disable optional SMACK support]),
+                [case "${enableval}" in
+                        yes) have_smack=yes ;;
+                        no) have_smack=no ;;
+                        *) AC_MSG_ERROR(bad value ${enableval} for --disable-smack) ;;
+                esac],
+                [have_smack=auto])
+
+if test "x${have_xattr}" = xno ; then
+         if test "x${have_smack}" = xyes ; then
+                 AC_MSG_ERROR(SMACK requires xattr support)
+         else
+                  have_smack=no
+         fi
+else
+         if test "x${have_smack}" = xauto ; then
+                  have_smack=no
+         fi
+fi
+
+if test "x${have_smack}" = xyes ; then
+        AC_DEFINE(HAVE_SMACK, 1, [Define if SMACK is available])
+fi
+
+# ------------------------------------------------------------------------------
 AC_ARG_ENABLE([audit],
         AS_HELP_STRING([--disable-audit],[disable optional libaudit support]),
                 [case "${enableval}" in
@@ -828,6 +854,7 @@ AC_MSG_RESULT([
 
         PAM:                     ${have_pam}
         AUDIT:                   ${have_audit}
+        SMACK:                   ${have_smack}
         ACL:                     ${have_acl}
         XATTR:                   ${have_xattr}
         CHKCONFIG:               ${have_chkconfig}
