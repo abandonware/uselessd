@@ -29,6 +29,7 @@
 
 #include "smack-setup.h"
 #include "util.h"
+#include "fileio.h"
 #include "log.h"
 
 #define ACCESSES_D_PATH "/etc/smack/accesses.d/"
@@ -42,6 +43,7 @@ int smack_setup(void) {
         struct dirent *entry;
         char buf[NAME_MAX];
         int dfd = -1;
+        int r;
 
         smack = fopen("/sys/fs/smackfs/load2", "w");
         if (!smack) {
@@ -94,6 +96,15 @@ int smack_setup(void) {
         }
 
         log_info("Successfully loaded Smack policies.");
+
+#ifdef SMACK_RUN_LABEL
+
+       r = write_string_file("/proc/self/attr/current", SMACK_RUN_LABEL);
+       if (r)
+                log_warning("Failed to set SMACK label \"%s\" on self: %s",
+                            SMACK_RUN_LABEL, strerror(-r));
+
+#endif
 
 #endif
 

@@ -458,6 +458,12 @@ else
          fi
 fi
 
+AC_ARG_WITH(smack-run-label,
+AS_HELP_STRING([--with-smack-run-label=STRING],
+        [run uselessd --system with a specific SMACK label]),
+        [AC_DEFINE_UNQUOTED(SMACK_RUN_LABEL, ["$withval"], [Run with a smack label])],
+        [])
+
 if test "x${have_smack}" = xyes ; then
         AC_DEFINE(HAVE_SMACK, 1, [Define if SMACK is available])
 fi
