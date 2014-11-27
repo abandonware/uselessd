@@ -99,8 +99,8 @@ int smack_setup(void) {
 
 #ifdef SMACK_RUN_LABEL
 
-       r = write_string_file("/proc/self/attr/current", SMACK_RUN_LABEL);
-       if (r)
+        r = write_string_file("/proc/self/attr/current", SMACK_RUN_LABEL);
+        if (r)
                 log_warning("Failed to set SMACK label \"%s\" on self: %s",
                             SMACK_RUN_LABEL, strerror(-r));
 
