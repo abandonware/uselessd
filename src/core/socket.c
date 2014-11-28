@@ -724,6 +724,16 @@ static void socket_apply_socket_options(Socket *s, int fd) {
                 if (setsockopt(fd, SOL_SOCKET, SO_REUSEPORT, &b, sizeof(b)))
                         log_warning_unit(UNIT(s)->id, "SO_REUSEPORT failed: %m");
         }
+
+        if (s->smack_ip_in) {
+                if (fsetxattr(fd, "security.SMACK64IPIN", s->smack_ip_in, strlen(s->smack_ip_in), 0) < 0)
+                        log_error("fsetxattr(\"security.SMACK64IPIN\"): %m");
+        }
+
+        if (s->smack_ip_out) {
+                if (fsetxattr(fd, "security.SMACK64IPOUT", s->smack_ip_out, strlen(s->smack_ip_out), 0) < 0)
+                        log_error("fsetxattr(\"security.SMACK64IPOUT\"): %m");
+        }
 }
 
 static void socket_apply_fifo_options(Socket *s, int fd) {
@@ -734,6 +744,10 @@ static void socket_apply_fifo_options(Socket *s, int fd) {
                 if (fcntl(fd, F_SETPIPE_SZ, s->pipe_size) < 0)
                         log_warning_unit(UNIT(s)->id,
                                          "F_SETPIPE_SZ: %m");
+
+        if (s->smack)
+                if (fsetxattr(fd, "security.SMACK64", s->smack, strlen(s->smack), 0) < 0)
+                        log_error("fsetxattr(\"security.SMACK64\"): %m");
 }
 
 static int fifo_address_create(
