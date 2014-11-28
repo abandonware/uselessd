@@ -127,6 +127,9 @@ const char* exit_status_to_string(ExitStatus status, ExitStatusLevel level) {
 
                 case EXIT_SECCOMP:
                         return "SECCOMP";
+
+                case EXIT_SMACK:
+                        return "SMACK";
                 }
         }
 
