@@ -74,6 +74,9 @@ $1.PrivateNetwork,               config_parse_bool,                  0,         
 $1.MountFlags,                   config_parse_exec_mount_flags,      0,                             offsetof($1, exec_context)
 $1.PAMName,                      config_parse_unit_string_printf,    0,                             offsetof($1, exec_context.pam_name)
 $1.IgnoreSIGPIPE,                config_parse_bool,                  0,                             offsetof($1, exec_context.ignore_sigpipe)
+m4_ifdef(`HAVE_SMACK',
+`$1.SmackExecLabel,              config_parse_string,                0,                             offsetof($1, exec_context.smack_exec)',
+`$1.SmackExecLabel,              config_parse_warn_compat,           0,                             0')
 $1.UtmpIdentifier,               config_parse_unit_string_printf,    0,                             offsetof($1, exec_context.utmp_id)'
 )m4_dnl
 m4_define(`KILL_CONTEXT_CONFIG_ITEMS',

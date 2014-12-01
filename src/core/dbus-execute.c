@@ -431,5 +431,6 @@ const BusProperty bus_exec_context_properties[] = {
         { "IgnoreSIGPIPE",            bus_property_append_bool,              "b", offsetof(ExecContext, ignore_sigpipe)               },
         { "NoNewPrivileges",          bus_property_append_bool,              "b", offsetof(ExecContext, no_new_privileges)            },
         { "SystemCallFilter",         bus_execute_append_syscall_filter,    "au", 0                                                   },
+        { "SmackExecLabel",           bus_property_append_string,            "s", offsetof(ExecContext, smack_exec),             true },
         {}
 };

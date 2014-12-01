@@ -1377,6 +1377,19 @@ int exec_spawn(ExecCommand *command,
                         goto fail_child;
                 }
 
+#ifdef HAVE_SMACK
+                if (context->smack_exec) {
+                        err = write_string_file("/proc/self/attr/current", context->smack_exec);
+                        if (err < 0) {
+                                /* Other errors indicate that Smack is not enabled */
+                                if (errno == EPERM) {
+                                        r = EXIT_SMACK;
+                                        goto fail_child;
+                                }
+                        }
+                }
+#endif
+
                 if (apply_permissions) {
 
                         for (i = 0; i < RLIMIT_NLIMITS; i++) {
@@ -1957,6 +1970,13 @@ void exec_context_dump(ExecContext *c, FILE* f, const char *prefix) {
                 free(lvl_str);
                 free(fac_str);
         }
+
+#ifdef HAVE_SMACK
+        if (c->smack_exec)
+                fprintf(f,
+                        "%sSmackExecLabel: %s\n",
+                        prefix, c->smack_exec);
+#endif
 
         if (c->capabilities) {
                 char *t;
