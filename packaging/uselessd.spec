@@ -74,6 +74,7 @@ cp %{SOURCE1} .
         --disable-static \
         --with-sysvinit-path= \
         --with-sysvrcnd-path= \
+        --enable-smack \
         --with-smack-run-label=System
 make %{?_smp_mflags} \
         systemunitdir=%{_unitdir} \
