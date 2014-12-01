@@ -23,4 +23,8 @@
   along with systemd; If not, see <http://www.gnu.org/licenses/>.
 ***/
 
+#include <stdbool.h>
+
+bool use_smack(void);
+
 int smack_setup(void);

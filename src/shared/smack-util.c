@@ -34,6 +34,26 @@
 
 #define ACCESSES_D_PATH "/etc/smack/accesses.d/"
 
+static int use_smack_cached = -1;
+
+bool use_smack(void) {
+#ifdef HAVE_SMACK
+        _cleanup_fclose_ FILE *smack = NULL;
+
+        if (use_smack_cached < 0) {
+                smack = fopen("/sys/fs/smackfs", "r");
+                if (!smack)
+                        use_smack_cached = false;
+                else
+                        use_smack_cached = true;
+        }
+
+        return use_smack_cached;
+#else
+        return false;
+#endif
+}
+
 int smack_setup(void) {
 
 #ifdef HAVE_SMACK
